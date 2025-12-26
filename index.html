@@ -352,24 +352,34 @@
         });
 
         // 拖拽上传
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        uploadArea.addEventListener('dragenter', () => {
+            uploadArea.classList.add('border-indigo-500', 'bg-gray-700/50');
+            uploadArea.classList.remove('border-gray-600', 'bg-gray-700/30');
+        });
+
         uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
             e.dataTransfer.dropEffect = 'copy';
+            // 确保在拖拽过程中始终保持高亮状态
             uploadArea.classList.add('border-indigo-500', 'bg-gray-700/50');
             uploadArea.classList.remove('border-gray-600', 'bg-gray-700/30');
         });
 
         uploadArea.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            uploadArea.classList.remove('border-indigo-500', 'bg-gray-700/50');
-            uploadArea.classList.add('border-gray-600', 'bg-gray-700/30');
+            // 增加判断，防止子元素触发 dragleave
+            if (e.currentTarget === uploadArea && !uploadArea.contains(e.relatedTarget)) {
+                uploadArea.classList.remove('border-indigo-500', 'bg-gray-700/50');
+                uploadArea.classList.add('border-gray-600', 'bg-gray-700/30');
+            }
         });
 
         uploadArea.addEventListener('drop', async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
             uploadArea.classList.remove('border-indigo-500', 'bg-gray-700/50');
             uploadArea.classList.add('border-gray-600', 'bg-gray-700/30');
             
