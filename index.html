@@ -3,227 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Markdown 分类拆分工具 - 智能识别标题分类，自动拆分内容，支持批量处理和一键导出。">
+    <meta name="keywords" content="Markdown, 拆分工具, 文档处理, 批量导出, 效率工具">
+    <meta name="author" content="LinshuTech">
+    <meta property="og:title" content="Markdown 分类拆分工具">
+    <meta property="og:description" content="智能识别标题分类，自动拆分内容，提升文档处理效率。">
+    <meta property="og:type" content="website">
     <title>Markdown 分类拆分工具</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; 
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-7xl">
+<body class="bg-gray-900 min-h-screen text-gray-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div class="container mx-auto px-4 py-12 max-w-7xl">
         <!-- 标题区域 -->
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-light text-gray-800 mb-2 tracking-wide">Markdown 分类拆分工具</h1>
-            <p class="text-gray-500 text-sm">智能识别标题分类，自动拆分内容</p>
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-4 tracking-tight">Markdown 分类拆分工具</h1>
+            <p class="text-gray-400 text-base max-w-2xl mx-auto">智能识别标题分类，自动拆分内容，让文档管理更高效</p>
         </div>
 
         <!-- Hero 区域 - 操作指引 -->
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-sm p-8 mb-6">
-            <h2 class="text-center text-lg font-medium text-gray-800 mb-6">使用步骤</h2>
+        <div class="bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8 mb-8 backdrop-blur-sm bg-opacity-80">
+            <h2 class="text-center text-xl font-semibold text-gray-200 mb-8">使用步骤</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- 步骤 1 -->
-                <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
-                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 文档图标 -->
-                            <rect x="25" y="15" width="50" height="70" rx="4" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
-                            <path d="M55 15 L55 30 L70 30 L55 15 Z" fill="#818CF8" stroke="#6366F1" stroke-width="2"/>
-                            <line x1="35" y1="45" x2="65" y2="45" stroke="#6366F1" stroke-width="2"/>
-                            <line x1="35" y1="55" x2="60" y2="55" stroke="#6366F1" stroke-width="2"/>
-                            <line x1="35" y1="65" x2="65" y2="65" stroke="#6366F1" stroke-width="2"/>
-                            <!-- 上传箭头 -->
-                            <path d="M50 75 L50 90" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M45 80 L50 75 L55 80" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
+                        <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">1</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-800 mb-2">上传文件</h3>
-                    <p class="text-xs text-gray-500 text-center">上传 Markdown 文件或直接粘贴内容</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">上传文件</h3>
+                    <p class="text-xs text-gray-400 text-center">上传 Markdown 文件或直接粘贴内容</p>
                 </div>
 
                 <!-- 步骤 2 -->
-                <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
-                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 设置图标 -->
-                            <circle cx="50" cy="50" r="12" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
-                            <circle cx="50" cy="50" r="22" fill="none" stroke="#6366F1" stroke-width="2" stroke-dasharray="3 3"/>
-                            <!-- 标题符号 -->
-                            <text x="42" y="35" font-size="16" fill="#6366F1" font-weight="bold">#</text>
-                            <!-- 括号 -->
-                            <path d="M30 45 Q28 50 30 55" stroke="#10B981" stroke-width="2" fill="none"/>
-                            <path d="M70 45 Q72 50 70 55" stroke="#10B981" stroke-width="2" fill="none"/>
-                            <text x="46" y="72" font-size="10" fill="#6B7280">【】</text>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
+                        <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">2</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-800 mb-2">配置规则</h3>
-                    <p class="text-xs text-gray-500 text-center">选择标题层级和分类符号</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">配置规则</h3>
+                    <p class="text-xs text-gray-400 text-center">选择标题层级和分类符号</p>
                 </div>
 
                 <!-- 步骤 3 -->
-                <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
-                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 拆分图标 -->
-                            <rect x="20" y="30" width="60" height="40" rx="3" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
-                            <!-- 闪电符号 -->
-                            <path d="M50 35 L45 50 L52 50 L48 65" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                            <!-- 分裂效果 -->
-                            <path d="M35 30 L30 25 L25 25 L25 35" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
-                            <path d="M65 30 L70 25 L75 25 L75 35" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
+                        <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">3</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-800 mb-2">智能拆分</h3>
-                    <p class="text-xs text-gray-500 text-center">点击按钮自动分类拆分</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">智能拆分</h3>
+                    <p class="text-xs text-gray-400 text-center">点击按钮自动分类拆分</p>
                 </div>
 
                 <!-- 步骤 4 -->
-                <div class="flex flex-col items-center">
-                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
-                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- 多文档图标 -->
-                            <rect x="35" y="25" width="40" height="50" rx="3" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
-                            <rect x="30" y="30" width="40" height="50" rx="3" fill="#BFDBFE" stroke="#3B82F6" stroke-width="2"/>
-                            <rect x="25" y="35" width="40" height="50" rx="3" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
-                            <!-- 下载箭头 -->
-                            <circle cx="70" cy="70" r="12" fill="#10B981"/>
-                            <path d="M70 64 L70 76" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M66 72 L70 76 L74 72" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
+                        <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">4</div>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">4</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-800 mb-2">导出结果</h3>
-                    <p class="text-xs text-gray-500 text-center">查看分类并下载 Markdown 文件</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">导出结果</h3>
+                    <p class="text-xs text-gray-400 text-center">查看分类并下载 Markdown 文件</p>
                 </div>
             </div>
 
-            <!-- 示例说明 -->
-            <div class="mt-8 pt-6 border-t border-indigo-200">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800 mb-2">示例</h4>
-                        <div class="bg-white rounded-lg p-3 font-mono text-xs text-gray-700 space-y-1">
-                            <div class="text-indigo-600">## 【插件】SEO 检测工具</div>
-                            <div class="text-gray-500">内容介绍...</div>
-                            <div class="mt-2 text-indigo-600">## 【AI】智能写作助手</div>
-                            <div class="text-gray-500">内容介绍...</div>
-                            <div class="mt-3 flex items-center text-green-600">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                                </svg>
-                                <span>拆分为 "插件" 和 "AI" 两个文件</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- 引导语 -->
+            <div class="mt-8 pt-6 border-t border-gray-700 text-center">
+                <p class="text-sm text-gray-400 flex items-center justify-center gap-2">
+                    <span class="text-yellow-400">💡</span> 
+                    <span><span class="font-medium text-gray-300">小贴士：</span> 本工具支持批量上传 Markdown 文件，或直接粘贴内容。设置好标题层级和分类符号后，即可一键拆分并打包下载。</span>
+                </p>
             </div>
         </div>
 
         <!-- 配置区域 -->
-        <div class="bg-white rounded-xl shadow-sm p-4 mb-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-6 backdrop-blur-sm bg-opacity-80">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- 标题层级选择 -->
                 <div>
-                    <label class="block text-gray-700 text-xs font-medium mb-1.5">标题层级</label>
-                    <select id="headingLevel" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm">
-                        <option value="1"># 一级标题</option>
-                        <option value="2" selected>## 二级标题</option>
-                        <option value="3">### 三级标题</option>
-                        <option value="4">#### 四级标题</option>
-                        <option value="5">##### 五级标题</option>
-                        <option value="6">###### 六级标题</option>
-                    </select>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">标题层级</label>
+                    <div class="relative">
+                        <select id="headingLevel" class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm text-gray-200 appearance-none cursor-pointer hover:bg-gray-600 transition-colors">
+                            <option value="1"># 一级标题</option>
+                            <option value="2" selected>## 二级标题</option>
+                            <option value="3">### 三级标题</option>
+                            <option value="4">#### 四级标题</option>
+                            <option value="5">##### 五级标题</option>
+                            <option value="6">###### 六级标题</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 左符号输入 -->
                 <div>
-                    <label class="block text-gray-700 text-xs font-medium mb-1.5">左符号</label>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">左符号</label>
                     <input type="text" id="leftSymbol" value="【" maxlength="1" 
-                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm">
+                        class="w-24 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm text-center text-gray-200 font-mono hover:bg-gray-600 transition-colors">
                 </div>
 
                 <!-- 右符号输入 -->
                 <div>
-                    <label class="block text-gray-700 text-xs font-medium mb-1.5">右符号</label>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">右符号</label>
                     <input type="text" id="rightSymbol" value="】" maxlength="1" 
-                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm">
+                        class="w-24 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm text-center text-gray-200 font-mono hover:bg-gray-600 transition-colors">
                 </div>
             </div>
         </div>
 
         <!-- 输入区域 -->
-        <div class="bg-white rounded-xl shadow-sm p-4 mb-4">
-            <label class="block text-gray-700 text-xs font-medium mb-2">上传或输入 Markdown 内容</label>
-            
-            <!-- 文件上传和操作按钮 -->
-            <div class="flex gap-2 mb-3">
-                <label class="flex-1 flex items-center justify-center px-4 py-2.5 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-all duration-200 hover:bg-gray-50" id="uploadArea">
-                    <svg class="w-4 h-4 text-gray-400 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                    </svg>
-                    <span class="text-xs text-gray-600">点击选择或拖拽文件（支持多选）</span>
-                    <input type="file" id="fileInput" accept=".md,.markdown,.txt" multiple class="hidden">
-                </label>
-                
-                <button id="splitBtn" class="px-6 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md flex items-center">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12m-7 5h7"/>
-                    </svg>
-                    拆分内容
-                </button>
-            </div>
-
-            <!-- 已上传文件列表 -->
-            <div id="fileList" class="mb-3 hidden">
-                <div class="bg-gray-50 rounded-lg p-2">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-xs text-gray-600 font-medium">已选择文件:</span>
-                        <button id="clearFiles" class="text-xs text-red-600 hover:text-red-700">清除全部</button>
-                    </div>
-                    <div id="fileListContent" class="flex flex-wrap gap-1"></div>
-                </div>
-            </div>
-
-            <!-- 文本输入框 -->
-            <div class="relative">
-                <textarea id="markdownInput" 
-                    class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent resize-none font-mono text-xs leading-relaxed"
-                    style="height: 480px;"
-                    placeholder="或直接粘贴 Markdown 内容到这里..."></textarea>
-                
-                <!-- 字数统计和清除按钮 -->
-                <div class="flex items-center justify-between mt-2">
-                    <span class="text-xs text-gray-500">字符数: <span id="charCount">0</span></span>
-                    <button id="clearBtn" class="px-3 py-1.5 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-all duration-200 flex items-center">
-                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-6 backdrop-blur-sm bg-opacity-80">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[600px]">
+                <!-- 左侧边栏 -->
+                <div class="lg:col-span-1 flex flex-col gap-4 h-full">
+                    <!-- 上传区域 -->
+                    <label class="flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-gray-700/50 transition-all duration-300 bg-gray-700/30 group" id="uploadArea">
+                        <svg class="w-8 h-8 text-gray-500 mb-2 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                         </svg>
-                        清空
-                    </button>
+                        <span class="text-xs text-gray-400 font-medium group-hover:text-gray-300 transition-colors">点击或拖拽上传</span>
+                        <input type="file" id="fileInput" accept=".md,.markdown,.txt" multiple class="hidden">
+                    </label>
+
+                    <!-- 文件列表区域 -->
+                    <div class="flex-1 bg-gray-900/50 rounded-xl border border-gray-700 flex flex-col overflow-hidden">
+                        <div class="p-3 border-b border-gray-700 flex justify-between items-center bg-gray-800/50">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">上传文件列表</span>
+                            <button id="clearFiles" class="text-xs text-red-400 hover:text-red-300 hidden transition-colors">清空</button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-2 relative custom-scrollbar">
+                            <div id="fileListContent" class="flex flex-col gap-2"></div>
+                            <div id="emptyFileTip" class="absolute inset-0 flex items-center justify-center text-xs text-gray-600 pointer-events-none">
+                                暂无文件
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧输入区域 -->
+                <div class="lg:col-span-3 flex flex-col h-full">
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Markdown 内容输入</label>
+                    <textarea id="markdownInput" 
+                        class="flex-1 w-full p-4 bg-gray-900 border border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none font-mono text-sm leading-relaxed mb-4 text-gray-300 placeholder-gray-600 custom-scrollbar"
+                        placeholder="在此输入 Markdown 内容..."></textarea>
+                    
+                    <!-- 底部操作栏 -->
+                    <div class="flex items-center justify-between bg-gray-900/50 p-4 rounded-xl border border-gray-700">
+                        <div class="text-xs text-gray-500 font-medium">
+                            字数统计: <span id="charCount" class="text-indigo-400 font-mono ml-1">0</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button id="clearBtn" class="px-4 py-2 bg-gray-800 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white text-xs font-medium transition-all duration-200">
+                                清空
+                            </button>
+                            <button id="splitBtn" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg hover:from-indigo-500 hover:to-blue-500 text-xs font-bold shadow-lg shadow-indigo-500/30 transition-all duration-200 flex items-center transform hover:-translate-y-0.5">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                拆分内容
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- 结果区域 -->
         <div id="resultArea" class="hidden">
-            <div class="bg-white rounded-xl shadow-sm p-3 mb-4">
-                <div class="flex items-center justify-between mb-3">
+            <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-4 mb-6 backdrop-blur-sm bg-opacity-80">
+                <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 text-green-600 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <h2 class="text-lg font-light text-gray-800">拆分结果</h2>
+                        <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-semibold text-gray-200">拆分结果</h2>
                     </div>
-                    <button id="downloadAllBtn" class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md flex items-center">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button id="downloadAllBtn" class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 border border-gray-600 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md flex items-center group">
+                        <svg class="w-4 h-4 mr-2 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
                         下载全部 (ZIP)
@@ -231,11 +220,11 @@
                 </div>
 
                 <!-- 分类统计 -->
-                <div id="categoryStats" class="flex flex-wrap gap-1.5"></div>
+                <div id="categoryStats" class="flex flex-wrap gap-2"></div>
             </div>
             
             <!-- 拆分结果卡片 -->
-            <div id="splitResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            <div id="splitResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
     </div>
 
@@ -271,7 +260,7 @@
             charCount.textContent = '0';
             uploadedFiles = [];
             fileInput.value = '';
-            fileList.classList.add('hidden');
+            displayFileList();
             resultArea.classList.add('hidden');
             splitFiles = [];
         });
@@ -280,29 +269,39 @@
         clearFiles.addEventListener('click', () => {
             uploadedFiles = [];
             fileInput.value = '';
-            fileList.classList.add('hidden');
-            fileListContent.innerHTML = '';
+            displayFileList();
             markdownInput.value = '';
             charCount.textContent = '0';
         });
 
         // 显示文件列表
         function displayFileList() {
+            const emptyTip = document.getElementById('emptyFileTip');
+            
             if (uploadedFiles.length === 0) {
-                fileList.classList.add('hidden');
+                emptyTip.classList.remove('hidden');
+                clearFiles.classList.add('hidden');
+                fileListContent.innerHTML = '';
                 return;
             }
 
-            fileList.classList.remove('hidden');
+            emptyTip.classList.add('hidden');
+            clearFiles.classList.remove('hidden');
+            
             fileListContent.innerHTML = uploadedFiles.map((file, index) => `
-                <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                    ${file.name}
-                    <button class="ml-1 hover:text-blue-900" onclick="removeFile(${index})">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center justify-between p-2.5 bg-gray-800 border border-gray-700 rounded-lg shadow-sm group hover:border-indigo-500/50 hover:bg-gray-700/50 transition-all duration-200">
+                    <div class="flex items-center min-w-0 flex-1 mr-2">
+                        <svg class="w-4 h-4 text-gray-500 group-hover:text-indigo-400 mr-2.5 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span class="text-xs text-gray-300 truncate font-medium" title="${file.name}">${file.name}</span>
+                    </div>
+                    <button class="text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all duration-200 p-1 hover:bg-gray-600 rounded" onclick="removeFile(${index})">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </button>
-                </span>
+                </div>
             `).join('');
         }
 
@@ -476,7 +475,7 @@
         // 创建结果卡片
         function createResultCard(file, index) {
             const card = document.createElement('div');
-            card.className = 'bg-white rounded-xl shadow-sm overflow-hidden flex flex-col';
+            card.className = 'bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden flex flex-col transition-transform hover:scale-[1.02] duration-200';
             
             const colors = [
                 'from-blue-600 to-blue-700',
@@ -494,22 +493,24 @@
             const colorClass = colors[index % colors.length];
             
             card.innerHTML = `
-                <div class="bg-gradient-to-r ${colorClass} px-3 py-2 flex items-center justify-between">
+                <div class="bg-gradient-to-r ${colorClass} px-4 py-3 flex items-center justify-between">
                     <div class="flex items-center min-w-0">
-                        <div class="w-7 h-7 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-2 flex-shrink-0">
-                            <span class="text-white font-semibold text-xs">${index + 1}</span>
+                        <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 backdrop-blur-sm">
+                            <span class="text-white font-bold text-xs font-mono">${index + 1}</span>
                         </div>
-                        <h3 class="text-white font-medium truncate text-sm">${file.category}</h3>
+                        <h3 class="text-white font-medium truncate text-sm tracking-wide">${file.category}</h3>
                     </div>
-                    <button class="download-single px-2 py-1 bg-white bg-opacity-20 text-white rounded-md hover:bg-opacity-30 transition-all duration-200 text-xs flex items-center flex-shrink-0" data-index="${index}">
+                    <button class="download-single px-2.5 py-1.5 bg-white/20 text-white rounded-md hover:bg-white/30 transition-all duration-200 text-xs flex items-center flex-shrink-0 backdrop-blur-sm" data-index="${index}" title="下载此文件">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
                     </button>
                 </div>
-                <div class="p-3 flex flex-col" style="height: 280px;">
-                    <textarea class="w-full flex-1 px-2.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent resize-none font-mono text-xs leading-relaxed bg-gray-50" readonly>${file.content}</textarea>
-                    <div class="text-xs text-gray-500 mt-1.5">内容数: ${file.count}</div>
+                <div class="p-4 flex flex-col bg-gray-800" style="height: 280px;">
+                    <textarea class="w-full flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none font-mono text-xs leading-relaxed text-gray-300 custom-scrollbar" readonly>${file.content}</textarea>
+                    <div class="text-xs text-gray-500 mt-2 flex items-center justify-end">
+                        <span class="bg-gray-700 px-2 py-0.5 rounded text-gray-400">内容数: ${file.count}</span>
+                    </div>
                 </div>
             `;
 
