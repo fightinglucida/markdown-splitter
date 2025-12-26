@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown 分类拆分工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- 标题区域 -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-light text-gray-800 mb-2 tracking-wide">Markdown 分类拆分工具</h1>
+            <p class="text-gray-500 text-sm">智能识别标题分类，自动拆分内容</p>
+        </div>
+
+        <!-- Hero 区域 - 操作指引 -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-sm p-8 mb-6">
+            <h2 class="text-center text-lg font-medium text-gray-800 mb-6">使用步骤</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- 步骤 1 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 文档图标 -->
+                            <rect x="25" y="15" width="50" height="70" rx="4" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+                            <path d="M55 15 L55 30 L70 30 L55 15 Z" fill="#818CF8" stroke="#6366F1" stroke-width="2"/>
+                            <line x1="35" y1="45" x2="65" y2="45" stroke="#6366F1" stroke-width="2"/>
+                            <line x1="35" y1="55" x2="60" y2="55" stroke="#6366F1" stroke-width="2"/>
+                            <line x1="35" y1="65" x2="65" y2="65" stroke="#6366F1" stroke-width="2"/>
+                            <!-- 上传箭头 -->
+                            <path d="M50 75 L50 90" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M45 80 L50 75 L55 80" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </svg>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-800 mb-2">上传文件</h3>
+                    <p class="text-xs text-gray-500 text-center">上传 Markdown 文件或直接粘贴内容</p>
+                </div>
+
+                <!-- 步骤 2 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 设置图标 -->
+                            <circle cx="50" cy="50" r="12" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="22" fill="none" stroke="#6366F1" stroke-width="2" stroke-dasharray="3 3"/>
+                            <!-- 标题符号 -->
+                            <text x="42" y="35" font-size="16" fill="#6366F1" font-weight="bold">#</text>
+                            <!-- 括号 -->
+                            <path d="M30 45 Q28 50 30 55" stroke="#10B981" stroke-width="2" fill="none"/>
+                            <path d="M70 45 Q72 50 70 55" stroke="#10B981" stroke-width="2" fill="none"/>
+                            <text x="46" y="72" font-size="10" fill="#6B7280">【】</text>
+                        </svg>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-800 mb-2">配置规则</h3>
+                    <p class="text-xs text-gray-500 text-center">选择标题层级和分类符号</p>
+                </div>
+
+                <!-- 步骤 3 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 拆分图标 -->
+                            <rect x="20" y="30" width="60" height="40" rx="3" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+                            <!-- 闪电符号 -->
+                            <path d="M50 35 L45 50 L52 50 L48 65" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <!-- 分裂效果 -->
+                            <path d="M35 30 L30 25 L25 25 L25 35" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
+                            <path d="M65 30 L70 25 L75 25 L75 35" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </svg>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-800 mb-2">智能拆分</h3>
+                    <p class="text-xs text-gray-500 text-center">点击按钮自动分类拆分</p>
+                </div>
+
+                <!-- 步骤 4 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 relative">
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 多文档图标 -->
+                            <rect x="35" y="25" width="40" height="50" rx="3" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+                            <rect x="30" y="30" width="40" height="50" rx="3" fill="#BFDBFE" stroke="#3B82F6" stroke-width="2"/>
+                            <rect x="25" y="35" width="40" height="50" rx="3" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+                            <!-- 下载箭头 -->
+                            <circle cx="70" cy="70" r="12" fill="#10B981"/>
+                            <path d="M70 64 L70 76" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M66 72 L70 76 L74 72" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+                        </svg>
+                        <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">4</div>
+                    </div>
+                    <h3 class="text-sm font-medium text-gray-800 mb-2">导出结果</h3>
+                    <p class="text-xs text-gray-500 text-center">查看分类并下载 Markdown 文件</p>
+                </div>
+            </div>
+
+            <!-- 示例说明 -->
+            <div class="mt-8 pt-6 border-t border-indigo-200">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-medium text-gray-800 mb-2">示例</h4>
+                        <div class="bg-white rounded-lg p-3 font-mono text-xs text-gray-700 space-y-1">
+                            <div class="text-indigo-600">## 【插件】SEO 检测工具</div>
+                            <div class="text-gray-500">内容介绍...</div>
+                            <div class="mt-2 text-indigo-600">## 【AI】智能写作助手</div>
+                            <div class="text-gray-500">内容介绍...</div>
+                            <div class="mt-3 flex items-center text-green-600">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                                <span>拆分为 "插件" 和 "AI" 两个文件</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 配置区域 -->
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <!-- 标题层级选择 -->
+                <div>
+                    <label class="block text-gray-700 text-xs font-medium mb-1.5">标题层级</label>
+                    <select id="headingLevel" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm">
+                        <option value="1"># 一级标题</option>
+                        <option value="2" selected>## 二级标题</option>
+                        <option value="3">### 三级标题</option>
+                        <option value="4">#### 四级标题</option>
+                        <option value="5">##### 五级标题</option>
+                        <option value="6">###### 六级标题</option>
+                    </select>
+                </div>
+
+                <!-- 左符号输入 -->
+                <div>
+                    <label class="block text-gray-700 text-xs font-medium mb-1.5">左符号</label>
+                    <input type="text" id="leftSymbol" value="【" maxlength="1" 
+                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm">
+                </div>
+
+                <!-- 右符号输入 -->
+                <div>
+                    <label class="block text-gray-700 text-xs font-medium mb-1.5">右符号</label>
+                    <input type="text" id="rightSymbol" value="】" maxlength="1" 
+                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm">
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-4">
+            <label class="block text-gray-700 text-xs font-medium mb-2">上传或输入 Markdown 内容</label>
+            
+            <!-- 文件上传和操作按钮 -->
+            <div class="flex gap-2 mb-3">
+                <label class="flex-1 flex items-center justify-center px-4 py-2.5 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-all duration-200 hover:bg-gray-50" id="uploadArea">
+                    <svg class="w-4 h-4 text-gray-400 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    <span class="text-xs text-gray-600">点击选择或拖拽文件（支持多选）</span>
+                    <input type="file" id="fileInput" accept=".md,.markdown,.txt" multiple class="hidden">
+                </label>
+                
+                <button id="splitBtn" class="px-6 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md flex items-center">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12m-7 5h7"/>
+                    </svg>
+                    拆分内容
+                </button>
+            </div>
+
+            <!-- 已上传文件列表 -->
+            <div id="fileList" class="mb-3 hidden">
+                <div class="bg-gray-50 rounded-lg p-2">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-gray-600 font-medium">已选择文件:</span>
+                        <button id="clearFiles" class="text-xs text-red-600 hover:text-red-700">清除全部</button>
+                    </div>
+                    <div id="fileListContent" class="flex flex-wrap gap-1"></div>
+                </div>
+            </div>
+
+            <!-- 文本输入框 -->
+            <div class="relative">
+                <textarea id="markdownInput" 
+                    class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent resize-none font-mono text-xs leading-relaxed"
+                    style="height: 480px;"
+                    placeholder="或直接粘贴 Markdown 内容到这里..."></textarea>
+                
+                <!-- 字数统计和清除按钮 -->
+                <div class="flex items-center justify-between mt-2">
+                    <span class="text-xs text-gray-500">字符数: <span id="charCount">0</span></span>
+                    <button id="clearBtn" class="px-3 py-1.5 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-all duration-200 flex items-center">
+                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        清空
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果区域 -->
+        <div id="resultArea" class="hidden">
+            <div class="bg-white rounded-xl shadow-sm p-3 mb-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-green-600 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <h2 class="text-lg font-light text-gray-800">拆分结果</h2>
+                    </div>
+                    <button id="downloadAllBtn" class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md flex items-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        下载全部 (ZIP)
+                    </button>
+                </div>
+
+                <!-- 分类统计 -->
+                <div id="categoryStats" class="flex flex-wrap gap-1.5"></div>
+            </div>
+            
+            <!-- 拆分结果卡片 -->
+            <div id="splitResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileList = document.getElementById('fileList');
+        const fileListContent = document.getElementById('fileListContent');
+        const clearFiles = document.getElementById('clearFiles');
+        const markdownInput = document.getElementById('markdownInput');
+        const splitBtn = document.getElementById('splitBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const charCount = document.getElementById('charCount');
+        const resultArea = document.getElementById('resultArea');
+        const splitResults = document.getElementById('splitResults');
+        const categoryStats = document.getElementById('categoryStats');
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const headingLevel = document.getElementById('headingLevel');
+        const leftSymbol = document.getElementById('leftSymbol');
+        const rightSymbol = document.getElementById('rightSymbol');
+
+        let splitFiles = [];
+        let uploadedFiles = [];
+
+        // 字数统计
+        markdownInput.addEventListener('input', () => {
+            charCount.textContent = markdownInput.value.length;
+        });
+
+        // 清空按钮
+        clearBtn.addEventListener('click', () => {
+            markdownInput.value = '';
+            charCount.textContent = '0';
+            uploadedFiles = [];
+            fileInput.value = '';
+            fileList.classList.add('hidden');
+            resultArea.classList.add('hidden');
+            splitFiles = [];
+        });
+
+        // 清除文件列表
+        clearFiles.addEventListener('click', () => {
+            uploadedFiles = [];
+            fileInput.value = '';
+            fileList.classList.add('hidden');
+            fileListContent.innerHTML = '';
+            markdownInput.value = '';
+            charCount.textContent = '0';
+        });
+
+        // 显示文件列表
+        function displayFileList() {
+            if (uploadedFiles.length === 0) {
+                fileList.classList.add('hidden');
+                return;
+            }
+
+            fileList.classList.remove('hidden');
+            fileListContent.innerHTML = uploadedFiles.map((file, index) => `
+                <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                    ${file.name}
+                    <button class="ml-1 hover:text-blue-900" onclick="removeFile(${index})">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </span>
+            `).join('');
+        }
+
+        // 移除单个文件
+        window.removeFile = (index) => {
+            uploadedFiles.splice(index, 1);
+            displayFileList();
+            loadFilesToTextarea();
+        };
+
+        // 加载所有文件内容到输入框
+        function loadFilesToTextarea() {
+            if (uploadedFiles.length === 0) {
+                markdownInput.value = '';
+                charCount.textContent = '0';
+                return;
+            }
+
+            const allContent = uploadedFiles.map(file => {
+                return `<!-- 文件: ${file.name} -->\n\n${file.content}`;
+            }).join('\n\n---\n\n');
+
+            markdownInput.value = allContent;
+            charCount.textContent = allContent.length;
+        }
+
+        // 文件上传处理
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            
+            for (const file of files) {
+                const content = await file.text();
+                uploadedFiles.push({ name: file.name, content });
+            }
+            
+            displayFileList();
+            loadFilesToTextarea();
+        });
+
+        // 拖拽上传
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('border-gray-400', 'bg-gray-50');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-gray-400', 'bg-gray-50');
+        });
+
+        uploadArea.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-gray-400', 'bg-gray-50');
+            
+            const files = Array.from(e.dataTransfer.files).filter(file => 
+                file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.name.endsWith('.txt')
+            );
+
+            for (const file of files) {
+                const content = await file.text();
+                uploadedFiles.push({ name: file.name, content });
+            }
+            
+            displayFileList();
+            loadFilesToTextarea();
+        });
+
+        // 提取分类符号中的内容
+        function extractCategory(line, left, right) {
+            const leftEscaped = left.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const rightEscaped = right.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const pattern = new RegExp(`${leftEscaped}([^${rightEscaped}]+)${rightEscaped}`);
+            const match = line.match(pattern);
+            return match ? match[1].trim() : null;
+        }
+
+        // 拆分 Markdown 内容
+        function splitMarkdown(content, level, left, right) {
+            const lines = content.split('\n');
+            const categories = {};
+            let currentCategory = null;
+            let currentContent = [];
+            const headingPattern = new RegExp(`^#{1,${level}}\\s`);
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const isTargetHeading = line.match(headingPattern) && !line.match(new RegExp(`^#{${parseInt(level) + 1},}`));
+
+                if (isTargetHeading) {
+                    const category = extractCategory(line, left, right);
+                    
+                    if (category) {
+                        // 保存之前的内容
+                        if (currentCategory && currentContent.length > 0) {
+                            if (!categories[currentCategory]) {
+                                categories[currentCategory] = [];
+                            }
+                            categories[currentCategory].push(...currentContent);
+                        }
+
+                        // 开始新分类
+                        currentCategory = category;
+                        currentContent = [line];
+                    } else if (currentCategory) {
+                        currentContent.push(line);
+                    }
+                } else if (currentCategory) {
+                    currentContent.push(line);
+                }
+            }
+
+            // 保存最后一个分类
+            if (currentCategory && currentContent.length > 0) {
+                if (!categories[currentCategory]) {
+                    categories[currentCategory] = [];
+                }
+                categories[currentCategory].push(...currentContent);
+            }
+
+            // 转换为数组格式
+            return Object.entries(categories).map(([category, lines]) => ({
+                category,
+                content: lines.join('\n').trim(),
+                count: lines.filter(l => l.match(headingPattern)).length
+            }));
+        }
+
+        // 创建分类统计标签
+        function createCategoryStats(files) {
+            const totalCategories = new Set(files.map(f => f.category)).size;
+            
+            let html = `
+                <span class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full text-xs font-medium shadow-sm">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    共 ${totalCategories} 个分类
+                </span>
+            `;
+
+            const categoryCount = {};
+            files.forEach(f => {
+                categoryCount[f.category] = (categoryCount[f.category] || 0) + f.count;
+            });
+
+            const colors = [
+                'from-blue-400 to-blue-500',
+                'from-green-400 to-green-500',
+                'from-purple-400 to-purple-500',
+                'from-yellow-400 to-yellow-500',
+                'from-pink-400 to-pink-500',
+                'from-indigo-400 to-indigo-500',
+                'from-red-400 to-red-500',
+                'from-teal-400 to-teal-500',
+                'from-orange-400 to-orange-500',
+                'from-cyan-400 to-cyan-500'
+            ];
+
+            Object.entries(categoryCount).forEach(([category, count], index) => {
+                const colorClass = colors[index % colors.length];
+                html += `
+                    <span class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r ${colorClass} text-white rounded-full text-xs shadow-sm">
+                        ${category} <span class="ml-1.5 font-semibold">${count}</span>
+                    </span>
+                `;
+            });
+
+            return html;
+        }
+
+        // 创建结果卡片
+        function createResultCard(file, index) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-xl shadow-sm overflow-hidden flex flex-col';
+            
+            const colors = [
+                'from-blue-600 to-blue-700',
+                'from-green-600 to-green-700',
+                'from-purple-600 to-purple-700',
+                'from-yellow-600 to-yellow-700',
+                'from-pink-600 to-pink-700',
+                'from-indigo-600 to-indigo-700',
+                'from-red-600 to-red-700',
+                'from-teal-600 to-teal-700',
+                'from-orange-600 to-orange-700',
+                'from-cyan-600 to-cyan-700'
+            ];
+            
+            const colorClass = colors[index % colors.length];
+            
+            card.innerHTML = `
+                <div class="bg-gradient-to-r ${colorClass} px-3 py-2 flex items-center justify-between">
+                    <div class="flex items-center min-w-0">
+                        <div class="w-7 h-7 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-2 flex-shrink-0">
+                            <span class="text-white font-semibold text-xs">${index + 1}</span>
+                        </div>
+                        <h3 class="text-white font-medium truncate text-sm">${file.category}</h3>
+                    </div>
+                    <button class="download-single px-2 py-1 bg-white bg-opacity-20 text-white rounded-md hover:bg-opacity-30 transition-all duration-200 text-xs flex items-center flex-shrink-0" data-index="${index}">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-3 flex flex-col" style="height: 280px;">
+                    <textarea class="w-full flex-1 px-2.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent resize-none font-mono text-xs leading-relaxed bg-gray-50" readonly>${file.content}</textarea>
+                    <div class="text-xs text-gray-500 mt-1.5">内容数: ${file.count}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // 下载单个文件
+        function downloadSingle(index) {
+            const file = splitFiles[index];
+            const blob = new Blob([file.content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${file.category}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 下载全部文件为 ZIP
+        async function downloadAll() {
+            const zip = new JSZip();
+            
+            splitFiles.forEach((file) => {
+                zip.file(`${file.category}.md`, file.content);
+            });
+
+            const blob = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'markdown_split.zip';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 拆分按钮点击事件
+        splitBtn.addEventListener('click', () => {
+            // 直接使用文本框内容（已经包含了上传文件的内容）
+            const textContent = markdownInput.value.trim();
+            
+            if (!textContent) {
+                alert('请先上传文件或输入 Markdown 内容');
+                return;
+            }
+
+            const level = headingLevel.value;
+            const left = leftSymbol.value.trim();
+            const right = rightSymbol.value.trim();
+
+            if (!left || !right) {
+                alert('请输入有效的左右符号');
+                return;
+            }
+
+            // 处理内容
+            splitFiles = splitMarkdown(textContent, level, left, right);
+            
+            if (splitFiles.length === 0) {
+                alert(`未找到可识别的分类标签（使用 ${'#'.repeat(level)} 级标题和 ${left}${right} 符号）`);
+                return;
+            }
+
+            // 清空之前的结果
+            splitResults.innerHTML = '';
+            
+            // 创建分类统计
+            categoryStats.innerHTML = createCategoryStats(splitFiles);
+            
+            // 创建结果卡片
+            splitFiles.forEach((file, index) => {
+                const card = createResultCard(file, index);
+                splitResults.appendChild(card);
+            });
+
+            // 显示结果区域
+            resultArea.classList.remove('hidden');
+            
+            // 滚动到结果区域
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // 事件委托处理下载按钮
+        splitResults.addEventListener('click', (e) => {
+            const btn = e.target.closest('.download-single');
+            if (btn) {
+                const index = parseInt(btn.dataset.index);
+                downloadSingle(index);
+            }
+        });
+
+        // 下载全部按钮
+        downloadAllBtn.addEventListener('click', downloadAll);
+    </script>
+</body>
+</html>
