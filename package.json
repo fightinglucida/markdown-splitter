@@ -1,0 +1,17 @@
+{
+  "name": "markdown-splitter",
+  "version": "1.0.0",
+  "description": "A smart Markdown splitting tool that categorizes content based on headings.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "markdown",
+    "splitter",
+    "tool",
+    "cloudflare-pages"
+  ],
+  "author": "LinshuTech",
+  "license": "MIT"
+}
