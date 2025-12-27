@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Markdown Category Splitter - Intelligently identify heading categories, automatically split content, supports batch processing and one-click export.">
-    <meta name="keywords" content="Markdown, Splitter, Document Processing, Batch Export, Productivity Tool">
+    <meta name="description" content="Markdown 分类拆分工具 - 智能识别标题分类，自动拆分内容，支持批量处理和一键导出。">
+    <meta name="keywords" content="Markdown, 拆分工具, 文档处理, 批量导出, 效率工具">
     <meta name="author" content="LinshuTech">
-    <meta property="og:title" content="Markdown Category Splitter">
-    <meta property="og:description" content="Intelligently identify heading categories, automatically split content, and improve document processing efficiency.">
+    <meta property="og:title" content="Markdown 分类拆分工具">
+    <meta property="og:description" content="智能识别标题分类，自动拆分内容，提升文档处理效率。">
     <meta property="og:type" content="website">
-    <title>Markdown Category Splitter</title>
+    <title>Markdown 分类拆分工具</title>
     
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR5DZFY634"></script>
@@ -23,7 +23,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        /* Custom Scrollbar */
+        /* 自定义滚动条 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -42,25 +42,25 @@
 </head>
 <body class="bg-gray-900 min-h-screen text-gray-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
     <div class="container mx-auto px-4 py-12 max-w-7xl relative">
-        <!-- Language Switcher -->
+        <!-- 语言切换 -->
         <div class="absolute top-4 right-4">
-            <a href="/index_zh.html" class="text-xs text-gray-500 hover:text-indigo-400 transition-colors flex items-center gap-1">
+            <a href="/" class="text-xs text-gray-500 hover:text-indigo-400 transition-colors flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
-                中文版
+                English
             </a>
         </div>
-        <!-- Header Area -->
+        <!-- 标题区域 -->
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-4 tracking-tight">Markdown Category Splitter</h1>
-            <p class="text-gray-400 text-base max-w-2xl mx-auto">Intelligently identify heading categories and automatically split content for efficient document management.</p>
+            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-4 tracking-tight">Markdown 分类拆分工具</h1>
+            <p class="text-gray-400 text-base max-w-2xl mx-auto">智能识别标题分类，自动拆分内容，让文档管理更高效</p>
         </div>
 
-        <!-- Hero Area - Instructions -->
+        <!-- Hero 区域 - 操作指引 -->
         <div class="bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8 mb-8 backdrop-blur-sm bg-opacity-80">
-            <h2 class="text-center text-xl font-semibold text-gray-200 mb-8">How to Use</h2>
+            <h2 class="text-center text-xl font-semibold text-gray-200 mb-8">使用步骤</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Step 1 -->
+                <!-- 步骤 1 -->
                 <div class="flex flex-col items-center group">
                     <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
                         <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -68,11 +68,11 @@
                         </svg>
                         <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">1</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-200 mb-2">Upload Files</h3>
-                    <p class="text-xs text-gray-400 text-center">Upload Markdown files or paste content directly.</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">上传文件</h3>
+                    <p class="text-xs text-gray-400 text-center">上传 Markdown 文件或直接粘贴内容</p>
                 </div>
 
-                <!-- Step 2 -->
+                <!-- 步骤 2 -->
                 <div class="flex flex-col items-center group">
                     <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
                         <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -81,11 +81,11 @@
                         </svg>
                         <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">2</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-200 mb-2">Configure Rules</h3>
-                    <p class="text-xs text-gray-400 text-center">Select heading level and category symbols.</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">配置规则</h3>
+                    <p class="text-xs text-gray-400 text-center">选择标题层级和分类符号</p>
                 </div>
 
-                <!-- Step 3 -->
+                <!-- 步骤 3 -->
                 <div class="flex flex-col items-center group">
                     <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
                         <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -93,11 +93,11 @@
                         </svg>
                         <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">3</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-200 mb-2">Smart Split</h3>
-                    <p class="text-xs text-gray-400 text-center">Click the button to automatically split by category.</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">智能拆分</h3>
+                    <p class="text-xs text-gray-400 text-center">点击按钮自动分类拆分</p>
                 </div>
 
-                <!-- Step 4 -->
+                <!-- 步骤 4 -->
                 <div class="flex flex-col items-center group">
                     <div class="w-20 h-20 bg-gray-700 rounded-2xl shadow-lg flex items-center justify-center mb-4 relative group-hover:scale-105 transition-transform duration-300 border border-gray-600">
                         <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -105,34 +105,34 @@
                         </svg>
                         <div class="absolute -top-2 -right-2 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md">4</div>
                     </div>
-                    <h3 class="text-sm font-medium text-gray-200 mb-2">Export Results</h3>
-                    <p class="text-xs text-gray-400 text-center">View categories and download Markdown files.</p>
+                    <h3 class="text-sm font-medium text-gray-200 mb-2">导出结果</h3>
+                    <p class="text-xs text-gray-400 text-center">查看分类并下载 Markdown 文件</p>
                 </div>
             </div>
 
-            <!-- Tip -->
+            <!-- 引导语 -->
             <div class="mt-8 pt-6 border-t border-gray-700 text-center">
                 <p class="text-sm text-gray-400 flex items-center justify-center gap-2">
                     <span class="text-yellow-400">💡</span> 
-                    <span><span class="font-medium text-gray-300">Tip:</span> This tool supports batch uploading of Markdown files or direct pasting of content. After setting the heading level and category symbols, you can split and download them in one click.</span>
+                    <span><span class="font-medium text-gray-300">小贴士：</span> 本工具支持批量上传 Markdown 文件，或直接粘贴内容。设置好标题层级和分类符号后，即可一键拆分并打包下载。</span>
                 </p>
             </div>
         </div>
 
-        <!-- Configuration Area -->
+        <!-- 配置区域 -->
         <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-6 backdrop-blur-sm bg-opacity-80">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Heading Level Selection -->
+                <!-- 标题层级选择 -->
                 <div>
-                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Heading Level</label>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">标题层级</label>
                     <div class="relative">
                         <select id="headingLevel" class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm text-gray-200 appearance-none cursor-pointer hover:bg-gray-600 transition-colors">
-                            <option value="1"># Level 1 Heading</option>
-                            <option value="2" selected>## Level 2 Heading</option>
-                            <option value="3">### Level 3 Heading</option>
-                            <option value="4">#### Level 4 Heading</option>
-                            <option value="5">##### Level 5 Heading</option>
-                            <option value="6">###### Level 6 Heading</option>
+                            <option value="1"># 一级标题</option>
+                            <option value="2" selected>## 二级标题</option>
+                            <option value="3">### 三级标题</option>
+                            <option value="4">#### 四级标题</option>
+                            <option value="5">##### 五级标题</option>
+                            <option value="6">###### 六级标题</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,73 +142,73 @@
                     </div>
                 </div>
 
-                <!-- Left Symbol Input -->
+                <!-- 左符号输入 -->
                 <div>
-                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Left Symbol</label>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">左符号</label>
                     <input type="text" id="leftSymbol" value="【" maxlength="1" 
                         class="w-24 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm text-center text-gray-200 font-mono hover:bg-gray-600 transition-colors">
                 </div>
 
-                <!-- Right Symbol Input -->
+                <!-- 右符号输入 -->
                 <div>
-                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Right Symbol</label>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">右符号</label>
                     <input type="text" id="rightSymbol" value="】" maxlength="1" 
                         class="w-24 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm text-center text-gray-200 font-mono hover:bg-gray-600 transition-colors">
                 </div>
             </div>
         </div>
 
-        <!-- Input Area -->
+        <!-- 输入区域 -->
         <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6 mb-6 backdrop-blur-sm bg-opacity-80">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[600px]">
-                <!-- Left Sidebar -->
+                <!-- 左侧边栏 -->
                 <div class="lg:col-span-1 flex flex-col gap-4 h-full">
-                    <!-- Upload Area -->
+                    <!-- 上传区域 -->
                     <label class="flex flex-col items-center justify-center h-32 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-indigo-500 hover:bg-gray-700/50 transition-all duration-300 bg-gray-700/30 group" id="uploadArea">
                         <svg class="w-8 h-8 text-gray-500 mb-2 group-hover:text-indigo-400 transition-colors pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                         </svg>
-                        <span class="text-xs text-gray-400 font-medium group-hover:text-gray-300 transition-colors pointer-events-none">Click or drag to upload</span>
+                        <span class="text-xs text-gray-400 font-medium group-hover:text-gray-300 transition-colors pointer-events-none">点击或拖拽上传</span>
                         <input type="file" id="fileInput" accept=".md,.markdown,.txt" multiple class="hidden">
                     </label>
 
-                    <!-- File List Area -->
+                    <!-- 文件列表区域 -->
                     <div class="flex-1 bg-gray-900/50 rounded-xl border border-gray-700 flex flex-col overflow-hidden">
                         <div class="p-3 border-b border-gray-700 flex justify-between items-center bg-gray-800/50">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Uploaded Files</span>
-                            <button id="clearFiles" class="text-xs text-red-400 hover:text-red-300 hidden transition-colors">Clear</button>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">上传文件列表</span>
+                            <button id="clearFiles" class="text-xs text-red-400 hover:text-red-300 hidden transition-colors">清空</button>
                         </div>
                         <div class="flex-1 overflow-y-auto p-2 relative custom-scrollbar">
                             <div id="fileListContent" class="flex flex-col gap-2"></div>
                             <div id="emptyFileTip" class="absolute inset-0 flex items-center justify-center text-xs text-gray-600 pointer-events-none">
-                                No files yet
+                                暂无文件
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Input Area -->
+                <!-- 右侧输入区域 -->
                 <div class="lg:col-span-3 flex flex-col h-full">
-                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Markdown Content Input</label>
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Markdown 内容输入</label>
                     <textarea id="markdownInput" 
                         class="flex-1 w-full p-4 bg-gray-900 border border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none font-mono text-sm leading-relaxed mb-4 text-gray-300 placeholder-gray-600 custom-scrollbar"
-                        placeholder="Enter Markdown content here..."></textarea>
+                        placeholder="在此输入 Markdown 内容..."></textarea>
                     
-                    <!-- Bottom Action Bar -->
+                    <!-- 底部操作栏 -->
                     <div class="flex items-center justify-between bg-gray-900/50 p-4 rounded-xl border border-gray-700">
                         <div class="text-xs text-gray-500 font-medium">
-                            Word Count: <span id="charCount" class="text-indigo-400 font-mono ml-1">0</span>
+                            字数统计: <span id="charCount" class="text-indigo-400 font-mono ml-1">0</span>
                         </div>
                         <div class="flex gap-3">
                             <button id="clearBtn" class="px-4 py-2 bg-gray-800 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white text-xs font-medium transition-all duration-200">
-                                Clear
+                                清空
                             </button>
                             <button id="splitBtn" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg hover:from-indigo-500 hover:to-blue-500 text-xs font-bold shadow-lg shadow-indigo-500/30 transition-all duration-200 flex items-center transform hover:-translate-y-0.5">
                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                Split Content
+                                拆分内容
                             </button>
                         </div>
                     </div>
@@ -216,7 +216,7 @@
             </div>
         </div>
 
-        <!-- Result Area -->
+        <!-- 结果区域 -->
         <div id="resultArea" class="hidden">
             <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-4 mb-6 backdrop-blur-sm bg-opacity-80">
                 <div class="flex items-center justify-between mb-4">
@@ -226,21 +226,21 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </div>
-                        <h2 class="text-lg font-semibold text-gray-200">Split Results</h2>
+                        <h2 class="text-lg font-semibold text-gray-200">拆分结果</h2>
                     </div>
                     <button id="downloadAllBtn" class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 border border-gray-600 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md flex items-center group">
                         <svg class="w-4 h-4 mr-2 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
-                        Download All (ZIP)
+                        下载全部 (ZIP)
                     </button>
                 </div>
 
-                <!-- Category Statistics -->
+                <!-- 分类统计 -->
                 <div id="categoryStats" class="flex flex-wrap gap-2"></div>
             </div>
             
-            <!-- Split Result Cards -->
+            <!-- 拆分结果卡片 -->
             <div id="splitResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
     </div>
@@ -266,12 +266,12 @@
         let splitFiles = [];
         let uploadedFiles = [];
 
-        // Word Count
+        // 字数统计
         markdownInput.addEventListener('input', () => {
             charCount.textContent = markdownInput.value.length;
         });
 
-        // Clear Button
+        // 清空按钮
         clearBtn.addEventListener('click', () => {
             markdownInput.value = '';
             charCount.textContent = '0';
@@ -282,7 +282,7 @@
             splitFiles = [];
         });
 
-        // Clear File List
+        // 清除文件列表
         clearFiles.addEventListener('click', () => {
             uploadedFiles = [];
             fileInput.value = '';
@@ -291,7 +291,7 @@
             charCount.textContent = '0';
         });
 
-        // Display File List
+        // 显示文件列表
         function displayFileList() {
             const emptyTip = document.getElementById('emptyFileTip');
             
@@ -322,14 +322,14 @@
             `).join('');
         }
 
-        // Remove Single File
+        // 移除单个文件
         window.removeFile = (index) => {
             uploadedFiles.splice(index, 1);
             displayFileList();
             loadFilesToTextarea();
         };
 
-        // Load all file contents into textarea
+        // 加载所有文件内容到输入框
         function loadFilesToTextarea() {
             if (uploadedFiles.length === 0) {
                 markdownInput.value = '';
@@ -338,14 +338,14 @@
             }
 
             const allContent = uploadedFiles.map(file => {
-                return `<!-- File: ${file.name} -->\n\n${file.content}`;
+                return `<!-- 文件: ${file.name} -->\n\n${file.content}`;
             }).join('\n\n---\n\n');
 
             markdownInput.value = allContent;
             charCount.textContent = allContent.length;
         }
 
-        // File Upload Handling
+        // 文件上传处理
         fileInput.addEventListener('change', async (e) => {
             const files = Array.from(e.target.files);
             
@@ -358,7 +358,7 @@
             loadFilesToTextarea();
         });
 
-        // Drag and Drop Upload
+        // 拖拽上传
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             uploadArea.addEventListener(eventName, (e) => {
                 e.preventDefault();
@@ -373,11 +373,13 @@
 
         uploadArea.addEventListener('dragover', (e) => {
             e.dataTransfer.dropEffect = 'copy';
+            // 确保在拖拽过程中始终保持高亮状态
             uploadArea.classList.add('border-indigo-500', 'bg-gray-700/50');
             uploadArea.classList.remove('border-gray-600', 'bg-gray-700/30');
         });
 
         uploadArea.addEventListener('dragleave', (e) => {
+            // 增加判断，防止子元素触发 dragleave
             if (e.currentTarget === uploadArea && !uploadArea.contains(e.relatedTarget)) {
                 uploadArea.classList.remove('border-indigo-500', 'bg-gray-700/50');
                 uploadArea.classList.add('border-gray-600', 'bg-gray-700/30');
@@ -403,7 +405,7 @@
             }
         });
 
-        // Extract content from category symbols
+        // 提取分类符号中的内容
         function extractCategory(line, left, right) {
             const leftEscaped = left.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const rightEscaped = right.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -412,7 +414,7 @@
             return match ? match[1].trim() : null;
         }
 
-        // Split Markdown Content
+        // 拆分 Markdown 内容
         function splitMarkdown(content, level, left, right) {
             const lines = content.split('\n');
             const categories = {};
@@ -428,7 +430,7 @@
                     const category = extractCategory(line, left, right);
                     
                     if (category) {
-                        // Save previous content
+                        // 保存之前的内容
                         if (currentCategory && currentContent.length > 0) {
                             if (!categories[currentCategory]) {
                                 categories[currentCategory] = [];
@@ -436,7 +438,7 @@
                             categories[currentCategory].push(...currentContent);
                         }
 
-                        // Start new category
+                        // 开始新分类
                         currentCategory = category;
                         currentContent = [line];
                     } else if (currentCategory) {
@@ -447,7 +449,7 @@
                 }
             }
 
-            // Save last category
+            // 保存最后一个分类
             if (currentCategory && currentContent.length > 0) {
                 if (!categories[currentCategory]) {
                     categories[currentCategory] = [];
@@ -455,7 +457,7 @@
                 categories[currentCategory].push(...currentContent);
             }
 
-            // Convert to array format
+            // 转换为数组格式
             return Object.entries(categories).map(([category, lines]) => ({
                 category,
                 content: lines.join('\n').trim(),
@@ -463,7 +465,7 @@
             }));
         }
 
-        // Create Category Statistics Labels
+        // 创建分类统计标签
         function createCategoryStats(files) {
             const totalCategories = new Set(files.map(f => f.category)).size;
             
@@ -472,7 +474,7 @@
                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                     </svg>
-                    Total ${totalCategories} Categories
+                    共 ${totalCategories} 个分类
                 </span>
             `;
 
@@ -506,7 +508,7 @@
             return html;
         }
 
-        // Create Result Card
+        // 创建结果卡片
         function createResultCard(file, index) {
             const card = document.createElement('div');
             card.className = 'bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden flex flex-col transition-transform hover:scale-[1.02] duration-200';
@@ -534,7 +536,7 @@
                         </div>
                         <h3 class="text-white font-medium truncate text-sm tracking-wide">${file.category}</h3>
                     </div>
-                    <button class="download-single px-2.5 py-1.5 bg-white/20 text-white rounded-md hover:bg-white/30 transition-all duration-200 text-xs flex items-center flex-shrink-0 backdrop-blur-sm" data-index="${index}" title="Download this file">
+                    <button class="download-single px-2.5 py-1.5 bg-white/20 text-white rounded-md hover:bg-white/30 transition-all duration-200 text-xs flex items-center flex-shrink-0 backdrop-blur-sm" data-index="${index}" title="下载此文件">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
@@ -543,7 +545,7 @@
                 <div class="p-4 flex flex-col bg-gray-800" style="height: 280px;">
                     <textarea class="w-full flex-1 px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none font-mono text-xs leading-relaxed text-gray-300 custom-scrollbar" readonly>${file.content}</textarea>
                     <div class="text-xs text-gray-500 mt-2 flex items-center justify-end">
-                        <span class="bg-gray-700 px-2 py-0.5 rounded text-gray-400">Items: ${file.count}</span>
+                        <span class="bg-gray-700 px-2 py-0.5 rounded text-gray-400">内容数: ${file.count}</span>
                     </div>
                 </div>
             `;
@@ -551,7 +553,7 @@
             return card;
         }
 
-        // Download Single File
+        // 下载单个文件
         function downloadSingle(index) {
             const file = splitFiles[index];
             const blob = new Blob([file.content], { type: 'text/markdown' });
@@ -563,7 +565,7 @@
             URL.revokeObjectURL(url);
         }
 
-        // Download All Files as ZIP
+        // 下载全部文件为 ZIP
         async function downloadAll() {
             const zip = new JSZip();
             
@@ -580,12 +582,13 @@
             URL.revokeObjectURL(url);
         }
 
-        // Split Button Click Event
+        // 拆分按钮点击事件
         splitBtn.addEventListener('click', () => {
+            // 直接使用文本框内容（已经包含了上传文件的内容）
             const textContent = markdownInput.value.trim();
             
             if (!textContent) {
-                alert('Please upload a file or enter Markdown content first.');
+                alert('请先上传文件或输入 Markdown 内容');
                 return;
             }
 
@@ -594,38 +597,38 @@
             const right = rightSymbol.value.trim();
 
             if (!left || !right) {
-                alert('Please enter valid left and right symbols.');
+                alert('请输入有效的左右符号');
                 return;
             }
 
-            // Process content
+            // 处理内容
             splitFiles = splitMarkdown(textContent, level, left, right);
             
             if (splitFiles.length === 0) {
-                alert(`No recognizable category tags found (using Level ${level} headings and ${left}${right} symbols).`);
+                alert(`未找到可识别的分类标签（使用 ${'#'.repeat(level)} 级标题和 ${left}${right} 符号）`);
                 return;
             }
 
-            // Clear previous results
+            // 清空之前的结果
             splitResults.innerHTML = '';
             
-            // Create category statistics
+            // 创建分类统计
             categoryStats.innerHTML = createCategoryStats(splitFiles);
             
-            // Create result cards
+            // 创建结果卡片
             splitFiles.forEach((file, index) => {
                 const card = createResultCard(file, index);
                 splitResults.appendChild(card);
             });
 
-            // Show result area
+            // 显示结果区域
             resultArea.classList.remove('hidden');
             
-            // Scroll to result area
+            // 滚动到结果区域
             resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
-        // Event delegation for download buttons
+        // 事件委托处理下载按钮
         splitResults.addEventListener('click', (e) => {
             const btn = e.target.closest('.download-single');
             if (btn) {
@@ -634,7 +637,7 @@
             }
         });
 
-        // Download All Button
+        // 下载全部按钮
         downloadAllBtn.addEventListener('click', downloadAll);
     </script>
 </body>
