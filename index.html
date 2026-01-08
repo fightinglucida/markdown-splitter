@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown2Card - 专业卡片生成工具</title>
+    <title>林书卡片 - 自媒体博主必备的知识分享工具</title>
+    <meta name="description" content="林书卡片是一款专为自媒体博主设计的 Markdown 转卡片工具。支持智能分页、多种精美主题、自定义水印，帮助博主快速生成适合小红书、知乎、微博等平台的知识分享图片。">
+    <meta name="keywords" content="林书卡片,自媒体工具,知识分享,Markdown转图片,小红书配图,干货分享,博主排版工具">
+    <meta name="author" content="林书">
     <!-- 本地依赖文件 -->
     <script src="./js/tailwind.js"></script>
     <script src="./js/vue.global.prod.min.js"></script>
@@ -164,7 +167,7 @@
                 <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center">
                     <i data-lucide="layers" class="w-5 h-5 text-white"></i>
                 </div>
-                <span class="font-bold text-lg tracking-tight"></span>
+                <span class="font-bold text-lg tracking-tight">林书卡片</span>
             </div>
             <div class="flex items-center gap-2">
                 <a href="/index_zh.html" class="flex items-center gap-1 px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-white/5 rounded-md transition mr-2">
@@ -651,31 +654,31 @@
         createApp({
             setup() {
                 const leftTab = ref('content');
-                const markdownInput = ref(`# 探索流光卡片 Pro
+                const markdownInput = ref(`# 探索林书卡片
 
-这是一款专为内容创作者设计的卡片生成工具。
+这是一款专为自媒体内容创作者设计的卡片生成工具。
 
 ## 核心优势
-- **固定画布**：严格遵循比例，不随内容伸缩
-- **三列布局**：沉浸式编辑体验
-- **自动分页**：长文智能切割，风格高度统一
+- **固定画布**：严格遵循比例，不随内容伸缩，适配各大平台
+- **三列布局**：沉浸式编辑体验，左侧修改右侧实时预览
+- **自动分页**：长文智能切割，多页卡片风格高度统一
 
 ### 快速开始
 1. 在左侧输入您的 Markdown 文本
-2. 在右侧调整比例和背景
-3. 点击右上角导出精美图片
+2. 在右侧“模板”栏切换主题
+3. 点击右上角“导出”按钮，一键打包下载
 
 ---
-这是第二页的内容，演示自动分页效果。`);
+这是第二页的内容，演示自动分页效果。您可以继续在这里书写您的干货内容。`);
 
                 const config = ref({
                     // Content
-                    title: '探索流光卡片 Pro',
+                    title: '探索林书卡片',
                     
                     // Author Badge
                     showAuthor: true,
-                    authorNickname: '林书lucida',
-                    authorUsername: '@fightingLucida',
+                    authorNickname: '林书',
+                    authorUsername: '@LinshuTech',
                     authorAvatar: '', // DataURL or empty
                     socialIcon: '', // Selected social media icon
                     
@@ -687,7 +690,7 @@
                     
                     // Watermark
                     showWatermark: true,
-                    watermarkText: 'Markdown2Card',
+                    watermarkText: '林书卡片',
 
                     // Style
                     ratio: '1:1',
@@ -768,7 +771,7 @@
                 "show": true,
                 "editable": true,
                 "position": "bottom-right",
-                "text": "Markdown2Card",
+                "text": "林书卡片",
                 "fontSize": "10px",
                 "color": "#64748b",
                 "opacity": 0.5
@@ -928,7 +931,7 @@
                 "show": true,
                 "editable": true,
                 "position": "bottom-right",
-                "text": "Markdown2Card",
+                "text": "林书卡片",
                 "fontSize": "10px",
                 "color": "#94a3b8",
                 "opacity": 0.5
@@ -1120,7 +1123,7 @@
                 "show": true,
                 "editable": true,
                 "position": "bottom-left",
-                "text": "Markdown2Card",
+                "text": "林书卡片",
                 "fontSize": "9px",
                 "color": "#94a3b8",
                 "opacity": 0.5
@@ -1242,7 +1245,7 @@
         }
     },
     "vibrant": {
-        "name": "流光溢彩",
+        "name": "缤纷创意",
         "preview": {
             "description": "彩色渐变，适合创意展示",
             "features": [
@@ -1308,7 +1311,7 @@
                 "show": true,
                 "editable": true,
                 "position": "bottom-right",
-                "text": "Markdown2Card",
+                "text": "林书卡片",
                 "fontSize": "10px",
                 "color": "rgba(255,255,255,0.5)",
                 "opacity": 0.5
@@ -1707,7 +1710,7 @@
                             zip.file(`card-${i + 1}.png`, base64Data, { base64: true });
                         }
                         const content = await zip.generateAsync({ type: "blob" });
-                        saveAs(content, "cards_pro.zip");
+                        saveAs(content, "linshu_cards.zip");
                     } catch (error) {
                         console.error('批量导出失败', error);
                     } finally {

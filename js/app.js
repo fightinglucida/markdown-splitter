@@ -11,32 +11,32 @@ createApp({
             });
         }
         const leftTab = ref('content');
-        const markdownInput = ref(`# 探索流光卡片 Pro
+        const markdownInput = ref(`# 探索林书卡片
 
-这是一款专为内容创作者设计的卡片生成工具。
+这是一款专为自媒体内容创作者设计的卡片生成工具。
 
 ## 核心优势
-- **固定画布**：严格遵循比例，不随内容伸缩
-- **三列布局**：沉浸式编辑体验
-- **自动分页**：长文智能切割，风格高度统一
+- **固定画布**：严格遵循比例，不随内容伸缩，适配各大平台
+- **三列布局**：沉浸式编辑体验，左侧修改右侧实时预览
+- **自动分页**：长文智能切割，多页卡片风格高度统一
 
 ### 快速开始
 1. 在左侧输入您的 Markdown 文本
-2. 在右侧调整比例和背景
-3. 点击右上角导出精美图片
+2. 在右侧“模板”栏切换主题
+3. 点击右上角“导出”按钮，一键打包下载
 
 ---
-这是第二页的内容，演示自动分页效果。`);
+这是第二页的内容，演示自动分页效果。您可以继续在这里书写您的干货内容。`);
 
         const config = ref({
             // Content
-            title: '探索流光卡片 Pro',
+            title: '探索林书卡片',
             coverImage: '', // DataURL, only used by modern theme page 1
             
             // Author Badge
             showAuthor: true,
-            authorNickname: '林书lucida',
-            authorUsername: '@fightingLucida',
+            authorNickname: '林书',
+            authorUsername: '@LinshuTech',
             authorAvatar: '', // DataURL or empty
             socialIcon: '', // Selected social media icon
             
@@ -48,7 +48,7 @@ createApp({
             
             // Watermark
             showWatermark: true,
-            watermarkText: '林书知识库',
+            watermarkText: '林书卡片',
 
             // Style
             ratio: '1:1',
@@ -129,7 +129,7 @@ createApp({
                 "show": true,
                 "editable": true,
                 "position": "bottom-right",
-                "text": "林书知识库",
+                "text": "林书卡片",
                 "fontSize": "10px",
                 "color": "#64748b",
                 "opacity": 0.5
@@ -487,7 +487,7 @@ createApp({
                 "show": true,
                 "editable": true,
                 "position": "bottom-left",
-                "text": "林书知识库",
+                "text": "林书卡片",
                 "fontSize": "9px",
                 "color": "#94a3b8",
                 "opacity": 0.5
@@ -611,7 +611,7 @@ createApp({
         }
     },
     "vibrant": {
-        "name": "流光溢彩",
+        "name": "缤纷创意",
         "preview": {
             "description": "彩色渐变，适合创意展示",
             "features": [
@@ -677,7 +677,7 @@ createApp({
                 "show": true,
                 "editable": true,
                 "position": "bottom-right",
-                "text": "林书知识库",
+                "text": "林书卡片",
                 "fontSize": "10px",
                 "color": "rgba(255,255,255,0.5)",
                 "opacity": 0.5
@@ -1369,7 +1369,7 @@ createApp({
                 }
                 // PNG 本身已压缩，ZIP 再压缩只会更慢
                 const content = await zip.generateAsync({ type: "blob", compression: "STORE" });
-                saveAs(content, "cards_pro.zip");
+                saveAs(content, "linshu_cards.zip");
             } catch (error) {
                 console.error('批量导出失败', error);
             } finally {
