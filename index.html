@@ -83,15 +83,41 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%);
-            color: rgba(0, 0, 0, 0.2);
-            font-size: 16px;
-            font-weight: 500;
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            border-radius: 0;
+            margin: 0;
+            color: #ffffff;
             text-align: center;
-            padding: 40px;
-            white-space: pre-line;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .modern-knowledge__placeholder svg {
+            margin-bottom: 8px;
+            opacity: 0.9;
+            color: #ffffff;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .modern-knowledge__placeholder-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .modern-knowledge__placeholder-size {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #ffffff;
+            border: 0.5px solid rgba(255,255,255,0.4);
         }
         .modern-knowledge__body {
             flex: 1;
@@ -454,7 +480,11 @@
                                     <!-- Cover image: only page 1 -->
                                     <div v-if="index === 0" class="modern-knowledge__image">
                                         <img v-if="config.coverImage" :src="config.coverImage" class="w-full h-full object-cover" />
-                                        <div v-else class="modern-knowledge__placeholder">图片占位区域\n建议尺寸: 480×350px\n可替换为人物照片或相关插图</div>
+                                        <div v-else class="modern-knowledge__placeholder">
+                                            <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <div class="modern-knowledge__placeholder-title">图片占位区域</div>
+                                            <div class="modern-knowledge__placeholder-size">建议尺寸: 480 × 350 px</div>
+                                        </div>
                                     </div>
 
                                     <div class="modern-knowledge__body">
