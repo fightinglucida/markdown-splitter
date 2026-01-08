@@ -1,0 +1,74 @@
+{
+  "themeName": {
+    "name": "主题名称（显示在界面上）",
+    "config": {
+      "title": {
+        "show": true,
+        "editable": true,
+        "fontSize": "1.8rem",
+        "fontFamily": "Inter",
+        "fontWeight": "bold",
+        "color": "#1e293b",
+        "textAlign": "left",
+        "marginBottom": "2rem"
+      },
+      "content": {
+        "show": true,
+        "editable": true,
+        "fontSize": "18px",
+        "fontFamily": "Inter",
+        "color": "#1e293b",
+        "textAlign": "left",
+        "lineHeight": "1.7",
+        "maxCharsPerLine": 22,
+        "backgroundColor": "rgba(255,255,255,0.9)",
+        "backdropFilter": "blur(12px)",
+        "padding": "48px",
+        "borderRadius": "16px"
+      },
+      "author": {
+        "show": true,
+        "editable": true,
+        "position": "bottom-left",
+        "avatarSize": "40px",
+        "nicknameSize": "14px",
+        "nicknameColor": "#1e293b",
+        "usernameSize": "10px",
+        "usernameColor": "#64748b",
+        "allowCustomAvatar": true,
+        "allowSocialIcon": true
+      },
+      "time": {
+        "show": false,
+        "editable": true,
+        "position": "with-author",
+        "format": "YYYY-MM-DD",
+        "fontSize": "10px",
+        "color": "#94a3b8"
+      },
+      "pageNumber": {
+        "show": true,
+        "editable": true,
+        "position": "bottom-right",
+        "format": "number",
+        "fontSize": "10px",
+        "color": "#94a3b8"
+      },
+      "watermark": {
+        "show": true,
+        "editable": true,
+        "position": "bottom-right",
+        "text": "Markdown2Card",
+        "fontSize": "10px",
+        "color": "#94a3b8",
+        "opacity": 0.5
+      },
+      "canvas": {
+        "background": "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        "padding": 48,
+        "borderRadius": 24,
+        "bgType": "light"
+      }
+    }
+  }
+}

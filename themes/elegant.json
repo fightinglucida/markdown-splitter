@@ -1,0 +1,76 @@
+{
+  "name": "优雅衬线",
+  "preview": {
+    "description": "文学正式，适合长文阅读",
+    "features": ["白底黑字", "衬线字体", "标题居中"]
+  },
+  "config": {
+    "title": {
+      "show": true,
+      "editable": true,
+      "fontSize": "2rem",
+      "fontFamily": "serif",
+      "fontWeight": "bold",
+      "color": "#2d3436",
+      "textAlign": "center",
+      "marginBottom": "2.5rem"
+    },
+    "content": {
+      "show": true,
+      "editable": true,
+      "fontSize": "20px",
+      "fontFamily": "serif",
+      "color": "#2d3436",
+      "textAlign": "left",
+      "lineHeight": "1.8",
+      "maxCharsPerLine": 20,
+      "backgroundColor": "rgba(255,255,255,0.95)",
+      "backdropFilter": "blur(8px)",
+      "padding": "60px",
+      "borderRadius": "8px"
+    },
+    "author": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-center",
+      "avatarSize": "36px",
+      "nicknameSize": "13px",
+      "nicknameColor": "#2d3436",
+      "usernameSize": "10px",
+      "usernameColor": "#636e72",
+      "allowCustomAvatar": true,
+      "allowSocialIcon": false
+    },
+    "time": {
+      "show": true,
+      "editable": true,
+      "position": "with-author",
+      "format": "YYYY-MM-DD",
+      "fontSize": "9px",
+      "color": "#636e72"
+    },
+    "pageNumber": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-right",
+      "format": "text",
+      "fontSize": "9px",
+      "color": "#636e72"
+    },
+    "watermark": {
+      "show": false,
+      "editable": false,
+      "position": "bottom-right",
+      "text": "",
+      "fontSize": "9px",
+      "color": "#636e72",
+      "opacity": 0.3
+    },
+    "canvas": {
+      "background": "#ffffff",
+      "padding": 60,
+      "borderRadius": 0,
+      "bgType": "light"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# 路由优化
+/splitter    /index_zh.html    200
+/splitter-en /index_en.html    200
+/card        /index.html       200

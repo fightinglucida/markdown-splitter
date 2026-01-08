@@ -1,0 +1,76 @@
+{
+  "name": "深邃黑",
+  "preview": {
+    "description": "神秘优雅，适合科技和设计",
+    "features": ["深色背景", "半透明", "高对比"]
+  },
+  "config": {
+    "title": {
+      "show": true,
+      "editable": true,
+      "fontSize": "1.8rem",
+      "fontFamily": "Inter",
+      "fontWeight": "bold",
+      "color": "#f8fafc",
+      "textAlign": "left",
+      "marginBottom": "2rem"
+    },
+    "content": {
+      "show": true,
+      "editable": true,
+      "fontSize": "18px",
+      "fontFamily": "Inter",
+      "color": "#f8fafc",
+      "textAlign": "left",
+      "lineHeight": "1.7",
+      "maxCharsPerLine": 22,
+      "backgroundColor": "rgba(0,0,0,0.6)",
+      "backdropFilter": "blur(12px)",
+      "padding": "48px",
+      "borderRadius": "16px"
+    },
+    "author": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-left",
+      "avatarSize": "40px",
+      "nicknameSize": "14px",
+      "nicknameColor": "#f8fafc",
+      "usernameSize": "10px",
+      "usernameColor": "#94a3b8",
+      "allowCustomAvatar": true,
+      "allowSocialIcon": true
+    },
+    "time": {
+      "show": false,
+      "editable": true,
+      "position": "with-author",
+      "format": "YYYY-MM-DD",
+      "fontSize": "10px",
+      "color": "#64748b"
+    },
+    "pageNumber": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-right",
+      "format": "number",
+      "fontSize": "10px",
+      "color": "#64748b"
+    },
+    "watermark": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-right",
+      "text": "Markdown2Card",
+      "fontSize": "10px",
+      "color": "#64748b",
+      "opacity": 0.5
+    },
+    "canvas": {
+      "background": "#1e1e1e",
+      "padding": 48,
+      "borderRadius": 24,
+      "bgType": "dark"
+    }
+  }
+}

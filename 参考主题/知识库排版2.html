@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财富增长知识卡片</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: #f5f5f5;
+            padding: 30px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-container {
+            width: 480px;
+            height: 640px;
+            background: linear-gradient(135deg, #f8956f 0%, #ec6d47 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 图片占位区域 - 上半部分 */
+        .image-section {
+            position: relative;
+            height: 55%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%);
+            color: rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        /* 内容区域 - 下半部分 */
+        .card-body {
+            position: relative;
+            padding: 40px 35px 35px;
+            background: linear-gradient(135deg, #f8956f 0%, #ec6d47 100%);
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        /* 主标题 */
+        .main-title {
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.3;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 英文说明 */
+        .description {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: #2c2c2c;
+            margin-bottom: 25px;
+            letter-spacing: 0.3px;
+        }
+        
+        /* 分隔线 */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.15);
+            margin: 20px 0;
+        }
+        
+        /* 底部签名 */
+        .footer-signature {
+            font-size: 12px;
+            color: #3a3a3a;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .card-container {
+                box-shadow: none;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <!-- 图片占位区域 -->
+        <div class="image-section">
+            <div class="image-placeholder">
+                图片占位区域<br/>
+                建议尺寸: 480×350px<br/>
+                可替换为人物照片或相关插图
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="card-body">
+            <h1 class="main-title">为什么有些人能在短期内实现财富跃迁?</h1>
+            
+            <p class="description">
+                财富积累从来不是线性的，而是脉冲式的跃迁。那些能够快速实现财富增长的人，往往是提前与时代大周期捆绑，把握住了关键机遇的人。
+            </p>
+            
+            <div class="divider"></div>
+            
+            <p class="footer-signature">
+                —— 赚钱就是把时代的杠杆拉满 ——
+            </p>
+        </div>
+    </div>
+</body>
+</html>

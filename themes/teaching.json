@@ -1,0 +1,191 @@
+{
+  "name": "教学卡片",
+  "preview": {
+    "description": "教学分享专用，头像强化",
+    "features": ["蓝色渐变", "头像突出", "水印左下"]
+  },
+  "config": {
+    "title": {
+      "show": true,
+      "editable": false,
+      "fontSize": "2rem",
+      "fontFamily": "AlibabaPuHuiTi, 'Noto Sans SC', sans-serif",
+      "fontWeight": "bold",
+      "color": "#2c3e50",
+      "textAlign": "left",
+      "marginBottom": "0",
+      "backgroundColor": "#e8eaf0",
+      "padding": "20px 24px",
+      "borderRadius": "16px 16px 0 0"
+    },
+    "content": {
+      "show": true,
+      "editable": false,
+      "fontSize": "18px",
+      "fontFamily": "MapleMono-NF-CN-Light, 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+      "fontWeight": "300",
+      "color": "#2d3436",
+      "textAlign": "left",
+      "lineHeight": "1.7",
+      "maxCharsPerLine": 26,
+      "backgroundColor": "#ffffff",
+      "backdropFilter": "none",
+      "padding": "32px",
+      "borderRadius": "16px",
+      "marginTop": "-12px"
+    },
+    "author": {
+      "show": true,
+      "editable": true,
+      "position": "top-left",
+      "avatarSize": "70px",
+      "nicknameSize": "0",
+      "nicknameColor": "transparent",
+      "usernameSize": "0",
+      "usernameColor": "transparent",
+      "allowCustomAvatar": true,
+      "allowSocialIcon": true
+    },
+    "time": {
+      "show": false,
+      "editable": false,
+      "position": "with-author",
+      "format": "YYYY-MM-DD",
+      "fontSize": "10px",
+      "color": "#94a3b8"
+    },
+    "pageNumber": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-right",
+      "format": "number",
+      "fontSize": "11px",
+      "color": "#5a6c7d"
+    },
+    "watermark": {
+      "show": true,
+      "editable": true,
+      "position": "bottom-left",
+      "text": "Markdown2Card",
+      "fontSize": "9px",
+      "color": "#94a3b8",
+      "opacity": 0.5
+    },
+    "canvas": {
+      "ratio": "3:4",
+      "outerBackground": "linear-gradient(135deg, #4a90e2 0%, #357abd 100%)",
+      "background": "#3C67B0",
+      "padding": 36,
+      "borderRadius": 32,
+      "canvasScale": 80,
+      "bgType": "light",
+      "backgroundTarget": "inner",
+      "innerPadding": 24,
+        "innerRadius": 20,
+        "footerPadding": 16,
+        "footerSpacing": 12
+    }
+  },
+  "layout": {
+    "type": "layered",
+    "structure": [
+      {
+        "layer": "outer",
+        "element": "background",
+        "editable": true,
+        "description": "外层蓝色渐变边框"
+      },
+      {
+        "layer": "inner",
+        "element": "container",
+        "editable": false,
+        "description": "浅灰色内部容器"
+      },
+      {
+        "layer": "title",
+        "element": "header",
+        "editable": false,
+        "description": "标题层（浅灰背景+头像+标题）"
+      },
+      {
+        "layer": "content",
+        "element": "main",
+        "editable": false,
+        "description": "正文层（白色卡片，向上覆盖）"
+      },
+      {
+        "layer": "footer",
+        "element": "meta",
+        "editable": true,
+        "description": "底部元信息（水印左+页码右）"
+      }
+    ]
+  },
+  "permissions": {
+    "title": {
+      "toggle": false,
+      "edit": false,
+      "style": false
+    },
+    "content": {
+      "toggle": false,
+      "edit": false,
+      "style": false
+    },
+    "author": {
+      "toggle": true,
+      "uploadAvatar": true,
+      "selectIcon": true,
+      "showName": false
+    },
+    "time": {
+      "toggle": false,
+      "format": false
+    },
+    "pageNumber": {
+      "toggle": true,
+      "format": true
+    },
+    "watermark": {
+      "toggle": true,
+      "editText": true
+    },
+    "canvas": {
+      "background": true,
+      "padding": true,
+      "borderRadius": true,
+      "ratio": true
+    }
+  },
+  "design": {
+    "colorScheme": {
+      "primary": "#4a90e2",
+      "secondary": "#357abd",
+      "background": "#3C67B0",
+      "titleBg": "#e8eaf0",
+      "contentBg": "#ffffff",
+      "text": "#2c3e50",
+      "textSecondary": "#5a6c7d",
+      "border": "#ffffff"
+    },
+    "typography": {
+        "titleFont": "AlibabaPuHuiTi",
+        "contentFont": "MapleMono-Light",
+      "titleSize": "2rem",
+      "contentSize": "15px",
+      "lineHeight": "1.7"
+    },
+    "spacing": {
+      "outerPadding": 36,
+      "innerPadding": 24,
+      "contentPadding": 32,
+      "titlePadding": "20px 24px"
+    },
+    "effects": {
+      "avatarBorder": "3px solid #ffffff",
+      "avatarShadow": "0 4px 6px rgba(0,0,0,0.1)",
+      "contentShadow": "0 2px 8px rgba(0,0,0,0.08)",
+      "contentOverlap": "-12px"
+    }
+  }
+}
