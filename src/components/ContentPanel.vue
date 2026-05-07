@@ -33,7 +33,17 @@
     <div class="flex-1 flex flex-col min-h-[200px] pb-3">
       <div class="flex items-center justify-between mb-2">
         <label class="text-[10px] text-slate-500 uppercase font-bold">正文内容</label>
-        <span class="text-[9px] text-slate-600">支持粘贴 / 拖入本地图片</span>
+        <!-- 图片工具栏 -->
+        <div class="flex items-center gap-1.5">
+          <span class="text-[9px] text-slate-600">粘贴 / 拖入 / </span>
+          <label class="cursor-pointer flex items-center gap-1 text-[9px] text-indigo-400 hover:text-indigo-300 transition" title="从本地选择图片插入">
+            <input type="file" accept="image/*" multiple class="hidden" @change="handleFilePickerInsert" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+            </svg>
+            选择图片
+          </label>
+        </div>
       </div>
       <textarea
         ref="textareaRef"
@@ -45,7 +55,7 @@
         @drop.prevent="handleImageDrop"
         :class="['flex-1 w-full bg-black/20 border rounded-lg p-4 text-sm font-mono focus:ring-1 focus:ring-indigo-500 outline-none resize-none text-slate-300 min-h-[200px] transition-colors',
           isDragging ? 'border-indigo-500 bg-indigo-500/10' : 'border-color']"
-        placeholder="在此输入 Markdown...&#10;&#10;插入本地图片：直接粘贴或拖入图片文件"
+        placeholder="在此输入 Markdown...&#10;&#10;插入本地图片：粘贴 / 拖入 / 点击「选择图片」"
       ></textarea>
     </div>
 
@@ -224,5 +234,13 @@ const handleImageDrop = async (e) => {
   const imgFile = files.find(f => f.type.startsWith('image/'))
   if (!imgFile) return
   await insertImageAtCursor(imgFile)
+}
+
+const handleFilePickerInsert = async (e) => {
+  const files = Array.from(e.target.files || []).filter(f => f.type.startsWith('image/'))
+  for (const file of files) {
+    await insertImageAtCursor(file)
+  }
+  e.target.value = '' // 允许重复选择同一文件
 }
 </script>
