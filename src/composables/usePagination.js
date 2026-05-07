@@ -123,12 +123,78 @@ export function usePagination(config, currentThemeConfig) {
     cardChunks.value = result.length ? result : ['']
   }
 
+  const paginateTeaching = async (raw, token) => {
+    await nextTick()
+    if (token !== paginationToken) return
+
+    // 第1页：含头像+标题栏，可用高度较小
+    const m1 = prepareMetrics('.markdown-body', null)
+    if (!m1) { cardChunks.value = [raw]; teardown(); return }
+
+    const sections = splitByManual(raw)
+    const result = []
+
+    const firstNonEmptyIdx = sections.findIndex(s => s?.trim())
+    if (firstNonEmptyIdx === -1) {
+      result.push('')
+      teardown()
+      cardChunks.value = result
+      return
+    }
+
+    for (let i = 0; i < firstNonEmptyIdx; i++) result.push('')
+
+    // 第1页只取能放下的内容
+    const { first, rest } = takeFirst(sections[firstNonEmptyIdx], m1.tester, m1.pageHeight)
+    result.push(first)
+    teardown()
+
+    // 收集剩余内容
+    const remaining = []
+    if (rest?.trim()) remaining.push(rest)
+    if (firstNonEmptyIdx + 1 < sections.length) remaining.push(...sections.slice(firstNonEmptyIdx + 1))
+
+    if (!remaining.length || !remaining.some(s => s?.trim())) {
+      if (token !== paginationToken) return
+      cardChunks.value = result.length ? result : ['']
+      return
+    }
+
+    // 第2页起：隐藏头像+标题栏，可用高度更大
+    const m2 = prepareMetrics('.markdown-body', card => {
+      const mb = card.querySelector('.markdown-body')
+      // 隐藏头部（.markdown-body 的前一个兄弟元素即为头像+标题行）
+      if (mb?.previousElementSibling) {
+        mb.previousElementSibling.style.display = 'none'
+      }
+      // 去掉头部重叠的负 marginTop
+      if (mb) mb.style.marginTop = '0'
+    })
+
+    if (!m2) {
+      if (token !== paginationToken) return
+      cardChunks.value = result.length ? result : ['']
+      return
+    }
+
+    try {
+      remaining.forEach(sec => {
+        if (!sec.trim()) { result.push(''); return }
+        result.push(...splitSection(sec, m2.tester, m2.pageHeight))
+      })
+    } finally { teardown() }
+
+    if (token !== paginationToken) return
+    cardChunks.value = result.length ? result : ['']
+  }
+
   const paginate = async () => {
     if (!appMounted) return
     const token = ++paginationToken
     const raw = config.value.markdownInput || ''
     if (!raw.trim()) { cardChunks.value = ['']; teardown(); return }
     if (config.value.theme === 'modern') { await paginateModern(raw, token); return }
+    if (config.value.theme === 'teaching') { await paginateTeaching(raw, token); return }
     await nextTick()
     if (token !== paginationToken) return
     const m = prepareMetrics('.markdown-body', null)
