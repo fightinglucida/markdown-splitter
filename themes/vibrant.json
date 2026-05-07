@@ -1,5 +1,5 @@
 {
-  "name": "缤纷创意",
+  "name": "流光溢彩",
   "preview": {
     "description": "彩色渐变，适合创意展示",
     "features": ["渐变背景", "毛玻璃", "高饱和"]
@@ -61,7 +61,7 @@
       "show": true,
       "editable": true,
       "position": "bottom-right",
-      "text": "林书卡片",
+      "text": "Markdown2Card",
       "fontSize": "10px",
       "color": "rgba(255,255,255,0.5)",
       "opacity": 0.5

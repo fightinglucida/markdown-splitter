@@ -1,0 +1,173 @@
+/* 字体引入 — 必须在 @tailwind 之前 */
+@import url('https://fonts.loli.net/css2?family=Inter:wght@400;600&family=JetBrains+Mono&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+/* 全局样式 + Tailwind 指令 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MapleMono NF CN 本地字体 */
+@font-face {
+  font-family: 'MapleMono-NF-CN-Light';
+  src: url('/assets/font/MapleMono-TTF/MapleMono-NF-CN-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MapleMono-NF-CN-Regular';
+  src: url('/assets/font/MapleMono-TTF/MapleMono-NF-CN-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MapleMono-NF-CN-Medium';
+  src: url('/assets/font/MapleMono-TTF/MapleMono-NF-CN-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* 基础样式 */
+body {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  background-color: #121212;
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+/* 滚动条隐藏 */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 侧边栏 / 主区域 */
+.sidebar-bg { background-color: #1e1e1e; }
+.main-bg { background-color: #0f0f0f; }
+.border-color { border-color: #2d2d2d; }
+.tab-active { color: #6366f1; border-bottom: 2px solid #6366f1; }
+
+/* 卡片容器 */
+.card-fixed-container {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+/* ===================== */
+/* Markdown 内容渲染样式   */
+/* ===================== */
+.markdown-body h1 { font-size: 1.8em; font-weight: bold; margin-bottom: 0.6em; font-family: inherit; }
+.markdown-body h2 { font-size: 1.4em; font-weight: bold; margin-bottom: 0.5em; font-family: inherit; }
+.markdown-body p { margin-bottom: 1em; line-height: 1.7; font-family: inherit; }
+.markdown-body ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; font-family: inherit; }
+.markdown-body ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; font-family: inherit; }
+.markdown-body ul ul, .markdown-body ul ol,
+.markdown-body ol ul, .markdown-body ol ol { margin-top: 0.5em; margin-bottom: 0.5em; }
+.markdown-body li { font-family: inherit; }
+.markdown-body strong, .markdown-body b { font-weight: bold; font-family: inherit; }
+.markdown-body em, .markdown-body i { font-style: italic; font-family: inherit; }
+.markdown-body code {
+  background: rgba(0,0,0,0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.markdown-body table { width: 100%; border-collapse: collapse; margin: 1em 0; font-family: inherit; }
+.markdown-body th, .markdown-body td {
+  border: 1px solid rgba(0,0,0,0.7);
+  padding: 0.45em 0.7em;
+  vertical-align: top;
+}
+.markdown-body thead th { background: rgba(0,0,0,0.06); font-weight: 600; }
+.markdown-body tbody tr:nth-child(even) td { background: rgba(0,0,0,0.03); }
+.markdown-body blockquote {
+  border-left: 4px solid rgba(0,0,0,0.2);
+  padding-left: 1em;
+  margin: 1em 0;
+  opacity: 0.8;
+}
+
+/* ========================== */
+/* Modern (知识库排版) 主题专属  */
+/* ========================== */
+.modern-knowledge {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modern-knowledge__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+.modern-knowledge__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%);
+  color: rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  padding: 40px;
+  white-space: pre-line;
+}
+.modern-knowledge__body {
+  flex: 1;
+  position: relative;
+  padding: 32px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.modern-knowledge__title {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.modern-knowledge__desc {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #2c2c2c;
+  letter-spacing: 0.3px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.modern-knowledge__desc p { margin-bottom: 20px; }
+.modern-knowledge__desc p:last-child { margin-bottom: 0; }
+.modern-knowledge__divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.15);
+  margin: 16px 0;
+}
+.modern-knowledge__signature {
+  font-size: 12px;
+  color: #3a3a3a;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.modern-knowledge__footer {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* Toggle 开关 */
+.toggle-checkbox:checked + .toggle-label { background-color: #4f46e5; }
