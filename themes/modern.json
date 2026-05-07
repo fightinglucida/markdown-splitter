@@ -20,7 +20,7 @@
     "content": {
       "show": true,
       "editable": true,
-      "fontSize": "15px",
+      "fontSize": "18px",
       "fontFamily": "'Noto Sans SC', sans-serif",
       "fontWeight": "400",
       "color": "#2c2c2c",

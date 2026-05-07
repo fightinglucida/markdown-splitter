@@ -100,7 +100,7 @@ export const builtInThemes = {
       },
       content: {
         show: true, editable: true,
-        fontSize: '15px', fontFamily: "'Noto Sans SC', sans-serif",
+        fontSize: '18px', fontFamily: "'Noto Sans SC', sans-serif",
         fontWeight: '400', color: '#2c2c2c', textAlign: 'left',
         lineHeight: '1.7', maxCharsPerLine: 22,
         backgroundColor: 'transparent', backdropFilter: 'none',
