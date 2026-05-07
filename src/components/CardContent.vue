@@ -9,8 +9,9 @@
       borderRadius: (config.borderRadius > 0 ? Math.max(0, config.borderRadius - 10) : 0) + 'px'
     }"
   >
-    <!-- 标题行（头像 + 标题） -->
+    <!-- 标题行（头像 + 标题），仅第一页显示 -->
     <div
+      v-if="isFirstPage"
       :style="{
         backgroundColor: themeConfig.title.backgroundColor || 'transparent',
         padding: themeConfig.title.padding || '18px 22px',
@@ -30,7 +31,7 @@
         <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-xl">{{ config.authorNickname?.charAt(0) }}</span>
       </div>
       <h1
-        v-if="themeConfig.title.show && config.title && isFirstPage"
+        v-if="themeConfig.title.show && config.title"
         :style="titleStyle"
         class="leading-tight tracking-tight flex-1"
       >{{ config.title }}</h1>
@@ -39,7 +40,7 @@
     <!-- 内容区 -->
     <div
       class="markdown-body flex-1 overflow-hidden shadow-md"
-      :style="{ ...contentStyle, marginTop: themeConfig.content.marginTop || '0', position: 'relative', zIndex: 20 }"
+      :style="teachingContentStyle"
       v-html="html"
     ></div>
 
@@ -219,5 +220,17 @@ const contentStyle = computed(() => {
     boxShadow: c.backgroundColor && c.backgroundColor !== 'transparent' ? '0 8px 24px rgba(0,0,0,0.08)' : 'none',
     border: c.backgroundColor && c.backgroundColor !== 'transparent' ? '1px solid rgba(255,255,255,0.08)' : 'none'
   }
+})
+
+// Teaching 主题内容区样式：非首页时充满整个内层，去掉 marginTop，圆角变为全圆角
+const teachingContentStyle = computed(() => {
+  const base = { ...contentStyle.value, position: 'relative', zIndex: 20 }
+  if (props.isFirstPage) {
+    base.marginTop = props.themeConfig.content.marginTop || '0'
+  } else {
+    base.marginTop = '0'
+    base.borderRadius = props.themeConfig.content.borderRadius?.replace('0 0', '16px 16px') || '16px'
+  }
+  return base
 })
 </script>
