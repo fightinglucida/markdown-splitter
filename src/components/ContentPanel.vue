@@ -31,12 +31,21 @@
 
     <!-- 正文 Markdown -->
     <div class="flex-1 flex flex-col min-h-[200px] pb-3">
-      <label class="text-[10px] text-slate-500 uppercase font-bold block mb-2">正文内容</label>
+      <div class="flex items-center justify-between mb-2">
+        <label class="text-[10px] text-slate-500 uppercase font-bold">正文内容</label>
+        <span class="text-[9px] text-slate-600">支持粘贴 / 拖入本地图片</span>
+      </div>
       <textarea
+        ref="textareaRef"
         :value="config.markdownInput"
         @input="$emit('update:config', { ...config, markdownInput: $event.target.value })"
-        class="flex-1 w-full bg-black/20 border border-color rounded-lg p-4 text-sm font-mono focus:ring-1 focus:ring-indigo-500 outline-none resize-none text-slate-300 min-h-[200px]"
-        placeholder="在此输入 Markdown..."
+        @paste="handleImagePaste"
+        @dragover.prevent="isDragging = true"
+        @dragleave="isDragging = false"
+        @drop.prevent="handleImageDrop"
+        :class="['flex-1 w-full bg-black/20 border rounded-lg p-4 text-sm font-mono focus:ring-1 focus:ring-indigo-500 outline-none resize-none text-slate-300 min-h-[200px] transition-colors',
+          isDragging ? 'border-indigo-500 bg-indigo-500/10' : 'border-color']"
+        placeholder="在此输入 Markdown...&#10;&#10;插入本地图片：直接粘贴或拖入图片文件"
       ></textarea>
     </div>
 
@@ -115,6 +124,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { socialIcons } from '@/data/socialIcons'
 import ToggleSwitch from './ToggleSwitch.vue'
 
@@ -123,6 +133,9 @@ const props = defineProps({
   themeConfig: Object
 })
 const emit = defineEmits(['update:config', 'clear-cover'])
+
+const textareaRef = ref(null)
+const isDragging = ref(false)
 
 const patch = (key, val) => emit('update:config', { ...props.config, [key]: val })
 
@@ -170,5 +183,46 @@ const handleCoverUpload = (e) => {
 const selectSocial = (icon) => {
   patch('socialIcon', icon)
   patch('authorAvatar', '')
+}
+
+// 图片文件 → data URL，插入 markdown 语法到光标位置
+const fileToDataUrl = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader()
+  reader.onload = (e) => resolve(e.target.result)
+  reader.onerror = reject
+  reader.readAsDataURL(file)
+})
+
+const insertImageAtCursor = async (file) => {
+  if (!file || !file.type.startsWith('image/')) return
+  const dataUrl = await fileToDataUrl(file)
+  const el = textareaRef.value
+  if (!el) return
+  const start = el.selectionStart ?? el.value.length
+  const end = el.selectionEnd ?? el.value.length
+  const md = `![图片](${dataUrl})`
+  const newVal = el.value.slice(0, start) + md + el.value.slice(end)
+  patch('markdownInput', newVal)
+  // 恢复光标到插入内容之后
+  setTimeout(() => {
+    el.focus()
+    el.setSelectionRange(start + md.length, start + md.length)
+  }, 0)
+}
+
+const handleImagePaste = async (e) => {
+  const items = Array.from(e.clipboardData?.items || [])
+  const imgItem = items.find(i => i.type.startsWith('image/'))
+  if (!imgItem) return
+  e.preventDefault()
+  await insertImageAtCursor(imgItem.getAsFile())
+}
+
+const handleImageDrop = async (e) => {
+  isDragging.value = false
+  const files = Array.from(e.dataTransfer?.files || [])
+  const imgFile = files.find(f => f.type.startsWith('image/'))
+  if (!imgFile) return
+  await insertImageAtCursor(imgFile)
 }
 </script>
