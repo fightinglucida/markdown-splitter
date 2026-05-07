@@ -1,9 +1,24 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
+import { copyFileSync, mkdirSync, readdirSync } from 'fs'
+import { join } from 'path'
+
+// 构建后将 themes/*.json 复制到 dist/themes/
+const copyThemesPlugin = {
+  name: 'copy-themes',
+  closeBundle() {
+    const src = resolve(__dirname, 'themes')
+    const dest = resolve(__dirname, 'dist/themes')
+    mkdirSync(dest, { recursive: true })
+    readdirSync(src)
+      .filter(f => f.endsWith('.json'))
+      .forEach(f => copyFileSync(join(src, f), join(dest, f)))
+  }
+}
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), copyThemesPlugin],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
