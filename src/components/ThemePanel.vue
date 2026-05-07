@@ -36,12 +36,8 @@
         </div>
       </div>
       <!-- 文字信息 -->
-      <div class="space-y-1">
+      <div>
         <div class="text-[11px] text-center font-medium text-slate-200">{{ t.name }}</div>
-        <div class="text-[9px] text-center text-slate-400">{{ t.preview.description }}</div>
-        <div class="flex flex-wrap gap-1 justify-center">
-          <span v-for="f in t.preview.features" :key="f" class="text-[8px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">{{ f }}</span>
-        </div>
       </div>
     </div>
   </div>

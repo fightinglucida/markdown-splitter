@@ -21,6 +21,7 @@
     "content": {
       "show": true,
       "editable": false,
+      "fontEditable": true,
       "fontSize": "18px",
       "fontFamily": "MapleMono-NF-CN-Light, 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
       "fontWeight": "300",

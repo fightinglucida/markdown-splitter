@@ -52,6 +52,45 @@
         <SliderRow label="缩放比例" :value="canvasScale" :min="30" :max="100" unit="%" @input="$emit('update:canvasScale', +$event)" />
       </div>
 
+      <!-- 字体设置（主题开启 fontEditable 时显示，仅字体和颜色） -->
+      <div v-if="!themeConfig.content?.editable && themeConfig.content?.fontEditable" class="space-y-3">
+        <label class="text-[10px] text-slate-500 uppercase font-bold block">字体设置</label>
+
+        <!-- 字体 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">字体</span>
+          <select
+            :value="config.fontFamily"
+            @change="patch('fontFamily', $event.target.value)"
+            class="bg-black/40 border border-color rounded px-2 py-1 text-xs text-slate-300 outline-none focus:border-indigo-500 max-w-[160px]"
+          >
+            <option v-for="f in fonts" :key="f.value" :value="f.value">{{ f.label }}</option>
+          </select>
+        </div>
+
+        <!-- 字体颜色 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">字体颜色</span>
+          <div class="flex items-center gap-2">
+            <div class="relative w-7 h-7 rounded border border-color overflow-hidden cursor-pointer hover:border-indigo-400 transition">
+              <input
+                type="color"
+                :value="currentTextColor"
+                @input="patchColor($event.target.value)"
+                class="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer border-none bg-transparent"
+              />
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono uppercase">{{ currentTextColor }}</span>
+            <button
+              v-if="config._overrideColor"
+              @click="patchColor(null)"
+              class="text-[10px] text-slate-500 hover:text-indigo-400 transition"
+              title="重置为主题默认"
+            >↺</button>
+          </div>
+        </div>
+      </div>
+
       <!-- 排版设置（主题允许编辑时才显示） -->
       <div v-if="themeConfig.content?.editable" class="space-y-3">
         <label class="text-[10px] text-slate-500 uppercase font-bold block">排版设置</label>

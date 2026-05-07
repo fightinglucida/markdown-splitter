@@ -30,7 +30,7 @@
         <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-xl">{{ config.authorNickname?.charAt(0) }}</span>
       </div>
       <h1
-        v-if="themeConfig.title.show && config.title"
+        v-if="themeConfig.title.show && config.title && isFirstPage"
         :style="titleStyle"
         class="leading-tight tracking-tight flex-1"
       >{{ config.title }}</h1>
@@ -92,7 +92,7 @@
   <!-- ===== 通用主题（dark/elegant/scholarly/vibrant） ===== -->
   <div v-else class="relative z-10 flex-1 flex flex-col" :style="{ padding: config.padding + 'px' }">
     <h1
-      v-if="themeConfig.title.show && config.title"
+      v-if="themeConfig.title.show && config.title && isFirstPage"
       :style="titleStyle"
       class="leading-tight tracking-tight"
     >{{ config.title }}</h1>
