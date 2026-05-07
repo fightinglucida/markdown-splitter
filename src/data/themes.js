@@ -37,7 +37,7 @@ export const builtInThemes = {
         text: '林书知识库', fontSize: '10px', color: '#64748b', opacity: 0.5
       },
       canvas: {
-        background: '#1e1e1e', padding: 32, borderRadius: 20, bgType: 'dark'
+        background: '#1e1e1e', padding: 25, borderRadius: 20, bgType: 'dark'
       }
     }
   },
@@ -80,7 +80,7 @@ export const builtInThemes = {
         text: '', fontSize: '9px', color: '#636e72', opacity: 0.3
       },
       canvas: {
-        background: '#ffffff', padding: 36, borderRadius: 0, bgType: 'light'
+        background: '#ffffff', padding: 32, borderRadius: 0, bgType: 'light'
       }
     }
   },
@@ -174,7 +174,7 @@ export const builtInThemes = {
         text: '书香墨韵', fontSize: '10px', color: '#999', opacity: 0.5
       },
       canvas: {
-        background: '#ffffff', padding: 32, borderRadius: 0, bgType: 'light'
+        background: '#ffffff', padding: 25, borderRadius: 0, bgType: 'light'
       },
       markdown: {
         h2: { fontSize: '18px', padding: '0.3em 1em', borderRadius: '30px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' },
@@ -228,7 +228,7 @@ export const builtInThemes = {
       canvas: {
         ratio: '3:4',
         outerBackground: 'linear-gradient(135deg, #4a90e2 0%, #357abd 100%)',
-        background: '#3C67B0', padding: 16, borderRadius: 16,
+        background: '#3C67B0', padding: 18, borderRadius: 16,
         canvasScale: 80, bgType: 'light',
         backgroundTarget: 'inner', innerPadding: 20, innerRadius: 18,
         footerPadding: 14, footerSpacing: 10
@@ -275,7 +275,7 @@ export const builtInThemes = {
       },
       canvas: {
         background: 'linear-gradient(to right, #4facfe 0%, #00f2fe 100%)',
-        padding: 32, borderRadius: 28, bgType: 'dark'
+        padding: 25, borderRadius: 28, bgType: 'dark'
       }
     }
   }

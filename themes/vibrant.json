@@ -68,7 +68,7 @@
     },
     "canvas": {
       "background": "linear-gradient(to right, #4facfe 0%, #00f2fe 100%)",
-      "padding": 40,
+      "padding": 25,
       "borderRadius": 32,
       "bgType": "dark"
     }

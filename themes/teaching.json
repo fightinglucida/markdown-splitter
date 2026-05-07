@@ -76,7 +76,7 @@
       "ratio": "3:4",
       "outerBackground": "linear-gradient(135deg, #4a90e2 0%, #357abd 100%)",
       "background": "#3C67B0",
-      "padding": 16,
+      "padding": 18,
       "borderRadius": 16,
       "canvasScale": 80,
       "bgType": "light",

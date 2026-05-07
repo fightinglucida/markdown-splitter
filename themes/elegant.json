@@ -68,7 +68,7 @@
     },
     "canvas": {
       "background": "#ffffff",
-      "padding": 60,
+      "padding": 32,
       "borderRadius": 0,
       "bgType": "light"
     }
