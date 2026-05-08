@@ -150,6 +150,109 @@
         </div>
       </div>
 
+      <!-- 封面设置（每天学习主题） -->
+      <div v-if="config.theme === 'elegant'" class="space-y-3">
+        <label class="text-[10px] text-slate-500 uppercase font-bold block">标语设置</label>
+
+        <!-- 标语字号 -->
+        <SliderRow label="标语字号" :value="elegantSloganSize" :min="15" :max="72" unit="px" @input="patch('sloganFontSize', $event + 'px')" />
+
+        <!-- 标语颜色 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">标语颜色</span>
+          <div class="flex items-center gap-2">
+            <div class="relative w-7 h-7 rounded border border-color overflow-hidden cursor-pointer hover:border-indigo-400 transition">
+              <input type="color" :value="config.sloganColor || '#1f1f1f'" @input="patch('sloganColor', $event.target.value)"
+                class="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer border-none bg-transparent" />
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono uppercase">{{ config.sloganColor || '#1f1f1f' }}</span>
+          </div>
+        </div>
+
+        <!-- 标语上边距 -->
+        <SliderRow label="标语上边距" :value="elegantSloganMTop" :min="0" :max="40" unit="px" @input="patch('sloganMarginTop', $event + 'px')" />
+
+        <!-- 标语下边距 -->
+        <SliderRow label="标语下边距" :value="elegantSloganMBottom" :min="0" :max="40" unit="px" @input="patch('sloganMarginBottom', $event + 'px')" />
+
+        <label class="text-[10px] text-slate-500 uppercase font-bold block pt-1">标题设置</label>
+
+        <!-- 标题字号 -->
+        <SliderRow label="标题字号" :value="elegantTitleSize" :min="20" :max="72" unit="px" @input="patch('titleFontSize', $event + 'px')" />
+
+        <!-- 标题颜色 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">标题颜色</span>
+          <div class="flex items-center gap-2">
+            <div class="relative w-7 h-7 rounded border border-color overflow-hidden cursor-pointer hover:border-indigo-400 transition">
+              <input type="color" :value="config.titleColor || '#000000'" @input="patch('titleColor', $event.target.value)"
+                class="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer border-none bg-transparent" />
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono uppercase">{{ config.titleColor || '#000000' }}</span>
+          </div>
+        </div>
+
+        <!-- 标题上边距 -->
+        <SliderRow label="标题上边距" :value="elegantTitleMTop" :min="0" :max="60" unit="px" @input="patch('titleMarginTop', $event + 'px')" />
+
+        <!-- 标题下边距 -->
+        <SliderRow label="标题下边距" :value="elegantTitleMBottom" :min="0" :max="40" unit="px" @input="patch('titleMarginBottom', $event + 'px')" />
+
+        <label class="text-[10px] text-slate-500 uppercase font-bold block pt-1">封面图边框</label>
+
+        <!-- 边框宽度 -->
+        <SliderRow label="边框粗细" :value="elegantImgBorderWidth" :min="0" :max="20" unit="px" @input="patch('imgBorderWidth', $event + '')" />
+
+        <!-- 边框样式 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">边框样式</span>
+          <div class="flex gap-1">
+            <button v-for="s in imgBorderStyles" :key="s.value"
+              @click="patch('imgBorderStyle', s.value)"
+              :class="['px-2 py-1 text-[10px] rounded border transition',
+                (config.imgBorderStyle || 'dashed') === s.value
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'border-color text-slate-400 hover:border-indigo-500']"
+            >{{ s.label }}</button>
+          </div>
+        </div>
+
+        <!-- 边框颜色 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">边框颜色</span>
+          <div class="flex items-center gap-2">
+            <div class="relative w-7 h-7 rounded border border-color overflow-hidden cursor-pointer hover:border-indigo-400 transition">
+              <input type="color" :value="config.imgBorderColor || '#d0d0d0'" @input="patch('imgBorderColor', $event.target.value)"
+                class="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer border-none bg-transparent" />
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono uppercase">{{ config.imgBorderColor || '#d0d0d0' }}</span>
+          </div>
+        </div>
+
+        <!-- 边框圆角 -->
+        <SliderRow label="边框圆角" :value="elegantImgBorderRadius" :min="0" :max="40" unit="px" @input="patch('imgBorderRadius', $event + '')" />
+
+        <label class="text-[10px] text-slate-500 uppercase font-bold block pt-1">副标题设置</label>
+
+        <!-- 副标题字号 -->
+        <SliderRow label="副标题字号" :value="elegantSubtitleSize" :min="10" :max="40" unit="px" @input="patch('subtitleFontSize', $event + 'px')" />
+
+        <!-- 副标题颜色 -->
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">副标题颜色</span>
+          <div class="flex items-center gap-2">
+            <div class="relative w-7 h-7 rounded border border-color overflow-hidden cursor-pointer hover:border-indigo-400 transition">
+              <input type="color" :value="config.subtitleColor || '#1f1f1f'" @input="patch('subtitleColor', $event.target.value)"
+                class="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer border-none bg-transparent" />
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono uppercase">{{ config.subtitleColor || '#1f1f1f' }}</span>
+          </div>
+        </div>
+
+        <!-- 副标题上边距 -->
+        <SliderRow label="副标题上边距" :value="elegantSubtitleMTop" :min="0" :max="60" unit="px" @input="patch('subtitleMarginTop', $event + 'px')" />
+      </div>
+
       <!-- 导出设置 -->
       <div class="space-y-3">
         <label class="text-[10px] text-slate-500 uppercase font-bold block">导出画质</label>
@@ -224,4 +327,22 @@ const patchColor = (val) => {
   }
   emit('update:config', updated)
 }
+
+// 每天学习主题封面控件的 computed helpers
+const elegantSloganSize = computed(() => parseInt(props.config.sloganFontSize || '50') || 50)
+const elegantSloganMTop = computed(() => parseInt(props.config.sloganMarginTop || '4') || 4)
+const elegantSloganMBottom = computed(() => parseInt(props.config.sloganMarginBottom || '20') || 20)
+const elegantTitleSize = computed(() => parseInt(props.config.titleFontSize || '43') || 43)
+const elegantTitleMTop = computed(() => parseInt(props.config.titleMarginTop || '30') || 30)
+const elegantTitleMBottom = computed(() => parseInt(props.config.titleMarginBottom || '4') || 4)
+const elegantSubtitleSize = computed(() => parseInt(props.config.subtitleFontSize || '26') || 26)
+const elegantSubtitleMTop = computed(() => parseInt(props.config.subtitleMarginTop || '30') || 30)
+const elegantImgBorderWidth = computed(() => parseInt(props.config.imgBorderWidth || '4') || 4)
+const elegantImgBorderRadius = computed(() => parseInt(props.config.imgBorderRadius || '0') || 0)
+const imgBorderStyles = [
+  { value: 'dashed', label: '虚线' },
+  { value: 'solid',  label: '实线' },
+  { value: 'dotted', label: '点线' },
+  { value: 'double', label: '双线' },
+]
 </script>

@@ -171,3 +171,55 @@ body {
 
 /* Toggle 开关 */
 .toggle-checkbox:checked + .toggle-label { background-color: #4f46e5; }
+
+/* ========================== */
+/* DailyLearn (每天学习) 主题   */
+/* ========================== */
+.dailylearn-cover {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.dailylearn-cover__slogan {
+  text-align: center;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+.dailylearn-cover__image {
+  flex: 0 0 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 18px;
+  /* 无背景、无圆角，仅显示图片本身 */
+}
+.dailylearn-cover__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 12px;
+  text-align: center;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+}
+.dailylearn-cover__title {
+  flex-shrink: 0;
+  text-align: center;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.dailylearn-cover__subtitle {
+  flex-shrink: 0;
+  text-align: center;
+  letter-spacing: 0.06em;
+}

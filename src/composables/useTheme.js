@@ -52,6 +52,30 @@ export function useTheme(config, canvasScale) {
     config.value.timeFormat = tc.time.format
     config.value.pageNumberFormat = tc.pageNumber.format
     config.value.watermarkText = tc.watermark.text
+
+    // 封面图仅 modern / elegant 主题保留；副标题、封面标题样式仅 elegant 主题保留
+    if (key !== 'modern' && key !== 'elegant') config.value.coverImage = ''
+    if (key !== 'elegant') {
+      config.value.subtitle = ''
+      config.value.titleFontSize = ''
+      config.value.titleColor = ''
+      config.value.titleMarginTop = ''
+      config.value.titleMarginBottom = ''
+      config.value.subtitleFontSize = ''
+      config.value.subtitleColor = ''
+      config.value.subtitleMarginTop = ''
+      config.value.sloganFontSize = ''
+      config.value.sloganColor = ''
+      config.value.sloganMarginTop = ''
+      config.value.sloganMarginBottom = ''
+      config.value.imgBorderWidth = ''
+      config.value.imgBorderStyle = ''
+      config.value.imgBorderColor = ''
+      config.value.imgBorderRadius = ''
+    } else {
+      // 切换到每天学习主题时，若副标题为空则填入默认值
+      if (!config.value.subtitle) config.value.subtitle = 'Deepseek | 提效 | 知识卡片'
+    }
   }
 
   const outerBackground = computed(() => {

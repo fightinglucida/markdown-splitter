@@ -43,23 +43,23 @@ export const builtInThemes = {
   },
 
   elegant: {
-    name: '优雅衬线',
+    name: '每天学习',
     preview: {
-      description: '文学正式，适合长文阅读',
-      features: ['白底黑字', '衬线字体', '标题居中']
+      description: '封面图文卡片，适合知识分享',
+      features: ['封面插图', '标题突出', '副标题']
     },
     config: {
       title: {
         show: true, editable: true,
-        fontSize: '1.8rem', fontFamily: 'serif', fontWeight: 'bold',
-        color: '#2d3436', textAlign: 'center', marginBottom: '1.5rem'
+        fontSize: '2.2rem', fontFamily: "'Noto Sans SC', sans-serif", fontWeight: '900',
+        color: '#1a1a1a', textAlign: 'center', marginBottom: '0'
       },
       content: {
         show: true, editable: true,
-        fontSize: '17px', fontFamily: 'serif', color: '#2d3436',
-        textAlign: 'left', lineHeight: '1.8', maxCharsPerLine: 20,
-        backgroundColor: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)',
-        padding: '28px', borderRadius: '8px'
+        fontSize: '20px', fontFamily: "'Noto Sans SC', sans-serif", color: '#000000',
+        textAlign: 'left', lineHeight: '1.8', maxCharsPerLine: 22,
+        backgroundColor: 'transparent', backdropFilter: 'none',
+        padding: '0', borderRadius: '0'
       },
       author: {
         show: true, editable: true, position: 'bottom-center',
@@ -68,19 +68,19 @@ export const builtInThemes = {
         allowCustomAvatar: true, allowSocialIcon: false
       },
       time: {
-        show: true, editable: true, position: 'with-author',
+        show: false, editable: true, position: 'with-author',
         format: 'YYYY-MM-DD', fontSize: '9px', color: '#636e72'
       },
       pageNumber: {
         show: true, editable: true, position: 'bottom-right',
-        format: 'text', fontSize: '9px', color: '#636e72'
+        format: 'number', fontSize: '9px', color: '#9e9e9e'
       },
       watermark: {
-        show: false, editable: false, position: 'bottom-right',
-        text: '', fontSize: '9px', color: '#636e72', opacity: 0.3
+        show: true, editable: true, position: 'top-left',
+        text: '每天学习一个AI技巧', fontSize: '15px', color: '#9e9e9e', opacity: 1
       },
       canvas: {
-        background: '#ffffff', padding: 32, borderRadius: 0, bgType: 'light'
+        background: '#f5f5f5', padding: 32, borderRadius: 0, bgType: 'light', ratio: '3:4'
       }
     }
   },

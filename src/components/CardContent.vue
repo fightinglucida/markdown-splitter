@@ -90,7 +90,79 @@
     </div>
   </div>
 
-  <!-- ===== 通用主题（dark/elegant/scholarly/vibrant） ===== -->
+  <!-- ===== 每天学习 (elegant) 主题 ===== -->
+  <div v-else-if="config.theme === 'elegant'" class="relative z-10 flex-1 flex flex-col" :style="{ padding: config.padding + 'px' }">
+    <!-- 封面页 -->
+    <template v-if="isFirstPage">
+      <div class="dailylearn-cover">
+        <!-- 顶部标语 -->
+        <div
+          v-if="config.showWatermark && config.watermarkText"
+          class="dailylearn-cover__slogan"
+          :style="elegantSloganStyle"
+        >{{ config.watermarkText }}</div>
+
+        <!-- 封面图 -->
+        <div class="dailylearn-cover__image" :style="elegantImageWrapStyle">
+          <img v-if="config.coverImage" :src="config.coverImage" style="max-width:100%;max-height:100%;object-fit:contain;display:block" />
+          <div v-else class="dailylearn-cover__placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>在左侧上传封面插图</span>
+          </div>
+        </div>
+
+        <!-- 主标题 -->
+        <h1 class="dailylearn-cover__title" :style="elegantTitleStyle">{{ config.title }}</h1>
+
+        <!-- 副标题 -->
+        <p v-if="config.subtitle" class="dailylearn-cover__subtitle" :style="elegantSubtitleStyle">{{ config.subtitle }}</p>
+      </div>
+    </template>
+
+    <!-- 正文页（第2页起） -->
+    <template v-else>
+      <div
+        class="markdown-body flex-1 overflow-hidden"
+        :style="contentStyle"
+        v-html="html"
+      ></div>
+
+      <!-- 页脚 -->
+      <div class="mt-auto pt-5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div v-if="config.showAuthor" class="flex items-center gap-3">
+            <div
+              :style="{ width: themeConfig.author.avatarSize, height: themeConfig.author.avatarSize }"
+              class="rounded-full border-2 border-white shadow-sm bg-indigo-50 flex items-center justify-center overflow-hidden flex-shrink-0"
+            >
+              <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
+              <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
+                <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
+              </div>
+              <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-sm">{{ config.authorNickname?.charAt(0) }}</span>
+            </div>
+            <div class="flex flex-col">
+              <span :style="{ fontSize: themeConfig.author.nicknameSize, color: themeConfig.author.nicknameColor }" class="font-bold leading-none mb-1">{{ config.authorNickname }}</span>
+              <div class="flex items-center gap-2">
+                <span :style="{ fontSize: themeConfig.author.usernameSize, color: themeConfig.author.usernameColor }" class="font-medium">{{ config.authorUsername }}</span>
+                <template v-if="config.showTime">
+                  <span :style="{ fontSize: themeConfig.time.fontSize, color: themeConfig.time.color }">•</span>
+                  <span :style="{ fontSize: themeConfig.time.fontSize, color: themeConfig.time.color }" class="font-medium">{{ currentTime }}</span>
+                </template>
+              </div>
+            </div>
+          </div>
+          <span v-if="!config.showAuthor && config.showTime" :style="{ fontSize: themeConfig.time.fontSize, color: themeConfig.time.color }" class="font-medium">{{ currentTime }}</span>
+        </div>
+
+        <div class="flex flex-col items-end gap-1">
+          <span v-if="config.showPageNumber" :style="{ fontSize: themeConfig.pageNumber.fontSize, color: themeConfig.pageNumber.color }" class="font-mono font-medium bg-slate-100/50 px-2 py-0.5 rounded-full">{{ pageLabel }}</span>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <!-- ===== 通用主题（dark/scholarly/vibrant） ===== -->
   <div v-else class="relative z-10 flex-1 flex flex-col" :style="{ padding: config.padding + 'px' }">
     <h1
       v-if="themeConfig.title.show && config.title && isFirstPage"
@@ -233,4 +305,41 @@ const teachingContentStyle = computed(() => {
   }
   return base
 })
+
+// 每天学习主题封面图片外框样式
+const elegantImageWrapStyle = computed(() => ({
+  border: `${props.config.imgBorderWidth || '4'}px ${props.config.imgBorderStyle || 'dashed'} ${props.config.imgBorderColor || '#d0d0d0'}`,
+  borderRadius: (props.config.imgBorderRadius || '0') + 'px',
+  padding: '4px'
+}))
+
+// 每天学习主题标语样式
+const elegantSloganStyle = computed(() => ({  fontSize: props.config.sloganFontSize || '50px',
+  color: props.config.sloganColor || '#1f1f1f',
+  marginTop: props.config.sloganMarginTop || '4px',
+  marginBottom: props.config.sloganMarginBottom || '20px'
+}))
+
+// 每天学习主题封面标题样式
+const elegantTitleStyle = computed(() => {
+  const t = props.themeConfig.title
+  return {
+    fontSize: props.config.titleFontSize || '43px',
+    fontFamily: props.config.fontFamily || t.fontFamily,
+    fontWeight: t.fontWeight || '900',
+    color: props.config.titleColor || '#000000',
+    textAlign: 'center',
+    marginTop: props.config.titleMarginTop || '30px',
+    marginBottom: props.config.titleMarginBottom || '4px',
+    lineHeight: '1.15',
+    letterSpacing: '-0.01em'
+  }
+})
+
+// 每天学习主题封面副标题样式
+const elegantSubtitleStyle = computed(() => ({
+  fontSize: props.config.subtitleFontSize || '26px',
+  color: props.config.subtitleColor || '#1f1f1f',
+  marginTop: props.config.subtitleMarginTop || '30px'
+}))
 </script>

@@ -188,6 +188,54 @@ export function usePagination(config, currentThemeConfig) {
     cardChunks.value = result.length ? result : ['']
   }
 
+  const paginateElegant = async (raw, token) => {
+    // 第1页始终为封面（空内容）
+    if (!raw.trim()) {
+      if (token !== paginationToken) return
+      cardChunks.value = ['']
+      return
+    }
+
+    // 临时设为 [封面, 全部内容]，让第2张卡片渲染出 .markdown-body 以便量测
+    cardChunks.value = ['', raw]
+    await nextTick()
+    if (token !== paginationToken) return
+
+    // 克隆第2张卡片来量测内容区高度
+    const allCards = document.querySelectorAll('.card-fixed-container')
+    const sourceCard = allCards[1] || allCards[0]
+    if (!sourceCard) { cardChunks.value = ['', raw]; return }
+
+    teardown()
+    measurementCard = sourceCard.cloneNode(true)
+    Object.assign(measurementCard.style, {
+      position: 'absolute', visibility: 'hidden', pointerEvents: 'none',
+      left: '-99999px', top: '0', transform: 'none', margin: '0', zIndex: '-1'
+    })
+    measurementCard.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'))
+    document.body.appendChild(measurementCard)
+
+    const tester = measurementCard.querySelector('.markdown-body')
+    const live = sourceCard.querySelector('.markdown-body')
+    if (!tester || !live) { teardown(); cardChunks.value = ['', raw]; return }
+
+    tester.innerHTML = '&nbsp;'
+    tester.style.width = `${live.clientWidth}px`
+    const pageHeight = tester.clientHeight
+
+    const sections = splitByManual(raw)
+    const result = [''] // 第1页始终为封面
+    try {
+      sections.forEach(sec => {
+        if (!sec.trim()) { result.push(''); return }
+        result.push(...splitSection(sec, tester, pageHeight))
+      })
+    } finally { teardown() }
+
+    if (token !== paginationToken) return
+    cardChunks.value = result.length ? result : ['']
+  }
+
   const paginate = async () => {
     if (!appMounted) return
     const token = ++paginationToken
@@ -195,6 +243,7 @@ export function usePagination(config, currentThemeConfig) {
     if (!raw.trim()) { cardChunks.value = ['']; teardown(); return }
     if (config.value.theme === 'modern') { await paginateModern(raw, token); return }
     if (config.value.theme === 'teaching') { await paginateTeaching(raw, token); return }
+    if (config.value.theme === 'elegant') { await paginateElegant(raw, token); return }
     await nextTick()
     if (token !== paginationToken) return
     const m = prepareMetrics('.markdown-body', null)

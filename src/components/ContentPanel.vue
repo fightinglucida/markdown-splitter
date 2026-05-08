@@ -13,9 +13,21 @@
       />
     </div>
 
-    <!-- 封面图（仅 modern 主题） -->
-    <div v-if="config.theme === 'modern'" class="pb-3">
-      <label class="text-[10px] text-slate-500 uppercase font-bold block mb-2">封面图片 (仅第一页, 4:3)</label>
+    <!-- 副标题（仅 elegant 每天学习 主题） -->
+    <div v-if="config.theme === 'elegant'" class="pb-3">
+      <label class="text-[10px] text-slate-500 uppercase font-bold block mb-2">副标题</label>
+      <input
+        :value="config.subtitle"
+        @input="patch('subtitle', $event.target.value)"
+        type="text"
+        class="w-full bg-black/20 border border-color rounded-lg px-3 py-2 text-sm text-slate-300 focus:ring-1 focus:ring-indigo-500 outline-none"
+        placeholder="输入副标题，如：Deepseek | 提效 | 知识卡片"
+      />
+    </div>
+
+    <!-- 封面图（modern / elegant 主题） -->
+    <div v-if="config.theme === 'modern' || config.theme === 'elegant'" class="pb-3">
+      <label class="text-[10px] text-slate-500 uppercase font-bold block mb-2">封面图片 (仅第一页)</label>
       <div class="flex items-center gap-3">
         <label class="cursor-pointer shrink-0">
           <input type="file" accept="image/*" @change="handleCoverUpload" class="hidden" />
