@@ -169,6 +169,64 @@ body {
   flex-shrink: 0;
 }
 
+/* ========================== */
+/* 书香墨韵长文主题             */
+/* ========================== */
+.scholarly-post {
+  background: #fbfbf7;
+  color: #121212;
+}
+.scholarly-post__author {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-shrink: 0;
+  margin-bottom: 46px;
+}
+.scholarly-post__author-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  line-height: 1;
+}
+.scholarly-post__nickname {
+  font-weight: 800;
+}
+.scholarly-post__date {
+  position: absolute;
+  left: 34px;
+  bottom: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+.scholarly-post__meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.scholarly-post__username {
+  font-weight: 400;
+}
+.scholarly-post__content {
+  min-height: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+.scholarly-post__content p {
+  margin-bottom: 1.62em;
+  line-height: inherit;
+}
+.scholarly-post__content p:last-child {
+  margin-bottom: 0;
+}
+.scholarly-post__page {
+  position: absolute;
+  right: 34px;
+  bottom: 24px;
+  line-height: 1;
+}
+
 /* Toggle 开关 */
 .toggle-checkbox:checked + .toggle-label { background-color: #4f46e5; }
 

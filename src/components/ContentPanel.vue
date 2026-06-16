@@ -124,6 +124,7 @@
         <ToggleSwitch :modelValue="config.showTime" @update:modelValue="patch('showTime', $event)" />
       </div>
       <div v-if="config.showTime" class="flex gap-2 mt-2">
+        <button @click="patch('timeFormat','MM/DD')" :class="btnCls(config.timeFormat==='MM/DD')">MM/DD</button>
         <button @click="patch('timeFormat','YYYY-MM-DD')" :class="btnCls(config.timeFormat==='YYYY-MM-DD')">YYYY-MM-DD</button>
         <button @click="patch('timeFormat','datetime')" :class="btnCls(config.timeFormat==='datetime')">YYYY-MM-DD HH:MM</button>
       </div>

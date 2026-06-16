@@ -236,6 +236,62 @@ export function usePagination(config, currentThemeConfig) {
     cardChunks.value = result.length ? result : ['']
   }
 
+  const paginateScholarly = async (raw, token) => {
+    await nextTick()
+    if (token !== paginationToken) return
+
+    const m1 = prepareMetrics('.scholarly-post__content', null)
+    if (!m1) { cardChunks.value = [raw]; teardown(); return }
+
+    const sections = splitByManual(raw)
+    const result = []
+    const firstNonEmptyIdx = sections.findIndex(s => s?.trim())
+
+    if (firstNonEmptyIdx === -1) {
+      result.push('')
+      teardown()
+      cardChunks.value = result
+      return
+    }
+
+    for (let i = 0; i < firstNonEmptyIdx; i++) result.push('')
+
+    const { first, rest } = takeFirst(sections[firstNonEmptyIdx], m1.tester, m1.pageHeight)
+    result.push(first)
+    teardown()
+
+    const remaining = []
+    if (rest?.trim()) remaining.push(rest)
+    if (firstNonEmptyIdx + 1 < sections.length) remaining.push(...sections.slice(firstNonEmptyIdx + 1))
+
+    if (!remaining.length || !remaining.some(s => s?.trim())) {
+      if (token !== paginationToken) return
+      cardChunks.value = result.length ? result : ['']
+      return
+    }
+
+    const m2 = prepareMetrics('.scholarly-post__content', card => {
+      const author = card.querySelector('.scholarly-post__author')
+      if (author) author.style.display = 'none'
+    })
+
+    if (!m2) {
+      if (token !== paginationToken) return
+      cardChunks.value = result.length ? result : ['']
+      return
+    }
+
+    try {
+      remaining.forEach(sec => {
+        if (!sec.trim()) { result.push(''); return }
+        result.push(...splitSection(sec, m2.tester, m2.pageHeight))
+      })
+    } finally { teardown() }
+
+    if (token !== paginationToken) return
+    cardChunks.value = result.length ? result : ['']
+  }
+
   const paginate = async () => {
     if (!appMounted) return
     const token = ++paginationToken
@@ -244,6 +300,7 @@ export function usePagination(config, currentThemeConfig) {
     if (config.value.theme === 'modern') { await paginateModern(raw, token); return }
     if (config.value.theme === 'teaching') { await paginateTeaching(raw, token); return }
     if (config.value.theme === 'elegant') { await paginateElegant(raw, token); return }
+    if (config.value.theme === 'scholarly') { await paginateScholarly(raw, token); return }
     await nextTick()
     if (token !== paginationToken) return
     const m = prepareMetrics('.markdown-body', null)

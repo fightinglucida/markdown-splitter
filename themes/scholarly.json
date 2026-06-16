@@ -1,79 +1,77 @@
 {
   "name": "书香墨韵",
   "preview": {
-    "description": "经典阅读体验，适合长文深度阅读",
-    "features": ["黑白简约", "大字号", "荧光强调"]
+    "description": "作者开场的极简长文多图",
+    "features": ["头像作者", "大字号正文", "右下页码"]
   },
   "config": {
     "title": {
-      "show": true,
-      "editable": true,
-      "fontSize": "26px",
+      "show": false,
+      "editable": false,
+      "fontSize": "0",
       "fontFamily": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
       "fontWeight": "800",
       "color": "#1a1a1a",
-      "textAlign": "center",
-      "marginBottom": "2rem",
-      "borderTop": "3px solid #1a1a1a",
-      "borderBottom": "3px solid #1a1a1a",
-      "padding": "18px 0",
-      "letterSpacing": "3px"
+      "textAlign": "left",
+      "marginBottom": "0"
     },
     "content": {
       "show": true,
       "editable": true,
-      "fontSize": "18px",
-      "fontFamily": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif",
-      "color": "#2a2a2a",
-      "textAlign": "justify",
-      "lineHeight": "1.95",
+      "fontSize": "20px",
+      "fontFamily": "JetBrains Mono",
+      "color": "#000000",
+      "textAlign": "left",
+      "lineHeight": "1.48",
       "maxCharsPerLine": 22,
-      "backgroundColor": "#f8f8f8",
+      "backgroundColor": "transparent",
       "backdropFilter": "none",
-      "padding": "48px",
-      "borderRadius": "6px"
+      "padding": "0 0 34px",
+      "borderRadius": "0"
     },
     "author": {
       "show": true,
       "editable": true,
-      "position": "bottom-left",
-      "avatarSize": "40px",
-      "nicknameSize": "14px",
+      "position": "top-left",
+      "avatarSize": "58px",
+      "nicknameSize": "21px",
       "nicknameColor": "#1a1a1a",
-      "usernameSize": "10px",
-      "usernameColor": "#404040",
+      "usernameSize": "14px",
+      "usernameColor": "#555555",
       "allowCustomAvatar": true,
       "allowSocialIcon": true
     },
     "time": {
       "show": true,
       "editable": true,
-      "position": "with-author",
-      "format": "YYYY-MM-DD",
-      "fontSize": "10px",
-      "color": "#888"
+      "position": "bottom-left",
+      "format": "MM/DD",
+      "fontSize": "18px",
+      "color": "#111111"
     },
     "pageNumber": {
       "show": true,
       "editable": true,
       "position": "bottom-right",
-      "format": "number",
-      "fontSize": "10px",
-      "color": "#1a1a1a"
+      "format": "single",
+      "fontSize": "18px",
+      "color": "#111111"
     },
     "watermark": {
-      "show": true,
-      "editable": true,
-      "position": "bottom-right",
-      "text": "书香墨韵",
-      "fontSize": "10px",
-      "color": "#999",
-      "opacity": 0.5
+      "show": false,
+      "editable": false,
+      "position": "none",
+      "text": "",
+      "fontSize": "0",
+      "color": "transparent",
+      "opacity": 0
     },
     "canvas": {
-      "background": "#ffffff",
-      "padding": 25,
+      "ratio": "3:4",
+      "background": "#fbfbf7",
+      "padding": 48,
       "borderRadius": 0,
+      "canvasScale": 80,
       "bgType": "light"
     },
     "markdown": {
