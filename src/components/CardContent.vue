@@ -26,7 +26,11 @@
       >
         <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
         <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-          <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
+          <img
+            :src="getSocialImgUrl(config.socialIcon)"
+            :alt="config.socialIcon"
+            :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
+          />
         </div>
         <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-xl">{{ config.authorNickname?.charAt(0) }}</span>
       </div>
@@ -137,7 +141,11 @@
             >
               <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
               <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-                <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
+                <img
+                  :src="getSocialImgUrl(config.socialIcon)"
+                  :alt="config.socialIcon"
+                  :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
+                />
               </div>
               <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-sm">{{ config.authorNickname?.charAt(0) }}</span>
             </div>
@@ -187,7 +195,11 @@
           >
             <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
             <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-              <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
+              <img
+                :src="getSocialImgUrl(config.socialIcon)"
+                :alt="config.socialIcon"
+                :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
+              />
             </div>
             <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-sm">{{ config.authorNickname?.charAt(0) }}</span>
           </div>
@@ -240,6 +252,7 @@ const props = defineProps({
 
 const getSocialColor = (icon) => socialIcons.find(s => s.icon === icon)?.color || '#fff'
 const getSocialImgUrl = (icon) => socialIcons.find(s => s.icon === icon)?.imgUrl || ''
+const getSocialIsAvatar = (icon) => !!socialIcons.find(s => s.icon === icon)?.isAvatar
 
 const currentTime = computed(() => {
   const now = new Date()

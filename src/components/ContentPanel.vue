@@ -84,7 +84,11 @@
             <div class="w-14 h-14 rounded-full border-2 border-color bg-black/40 flex items-center justify-center overflow-hidden hover:border-indigo-500 transition">
               <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
               <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-                <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
+                <img
+                  :src="getSocialImgUrl(config.socialIcon)"
+                  :alt="config.socialIcon"
+                  :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
+                />
               </div>
               <span v-else class="text-lg">👤</span>
             </div>
@@ -103,7 +107,11 @@
             :style="{ backgroundColor: s.color }"
             :title="s.name"
           >
-            <img :src="s.imgUrl" :alt="s.name" class="w-5 h-5 object-contain" />
+            <img
+              :src="s.imgUrl"
+              :alt="s.name"
+              :class="s.isAvatar ? 'w-5 h-5 rounded-full object-cover' : 'w-5 h-5 object-contain'"
+            />
           </button>
         </div>
       </div>
@@ -168,6 +176,7 @@ const btnCls = (active) =>
 
 const getSocialColor = (icon) => socialIcons.find(s => s.icon === icon)?.color || '#fff'
 const getSocialImgUrl = (icon) => socialIcons.find(s => s.icon === icon)?.imgUrl || ''
+const getSocialIsAvatar = (icon) => !!socialIcons.find(s => s.icon === icon)?.isAvatar
 
 const cropToSquare = (file) => new Promise((resolve) => {
   const reader = new FileReader()
