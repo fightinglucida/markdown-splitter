@@ -303,7 +303,7 @@ const currentTime = computed(() => {
   const y = now.getFullYear()
   const m = String(now.getMonth() + 1).padStart(2, '0')
   const d = String(now.getDate()).padStart(2, '0')
-  if (props.config.timeFormat === 'MM/DD') return `${m}/${d}`
+  if (props.config.timeFormat === 'MM/DD') return `${m}月${d}日`
   if (props.config.timeFormat === 'YYYY-MM-DD') return `${y}-${m}-${d}`
   const hh = String(now.getHours()).padStart(2, '0')
   const mm = String(now.getMinutes()).padStart(2, '0')
