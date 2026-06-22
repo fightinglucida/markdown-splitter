@@ -1,7 +1,7 @@
 <template>
   <!-- ===== Teaching / layered 主题 ===== -->
   <div
-    v-if="config.theme === 'teaching'"
+    v-if="themeConfig.author?.position === 'top-left'"
     class="relative z-10 flex-1 flex flex-col"
     :style="{
       padding: config.padding + 'px',
@@ -26,11 +26,7 @@
       >
         <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
         <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-          <img
-            :src="getSocialImgUrl(config.socialIcon)"
-            :alt="config.socialIcon"
-            :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
-          />
+          <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
         </div>
         <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-xl">{{ config.authorNickname?.charAt(0) }}</span>
       </div>
@@ -141,11 +137,7 @@
             >
               <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
               <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-                <img
-                  :src="getSocialImgUrl(config.socialIcon)"
-                  :alt="config.socialIcon"
-                  :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
-                />
+                <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
               </div>
               <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-sm">{{ config.authorNickname?.charAt(0) }}</span>
             </div>
@@ -168,50 +160,6 @@
         </div>
       </div>
     </template>
-  </div>
-
-  <!-- ===== 书香墨韵：参考长文多图主题 ===== -->
-  <div v-else-if="config.theme === 'scholarly'" class="scholarly-post relative z-10 flex-1 flex flex-col" :style="{ padding: config.padding + 'px' }">
-    <div v-if="isFirstPage && config.showAuthor" class="scholarly-post__author">
-      <div
-        :style="{ width: themeConfig.author.avatarSize, height: themeConfig.author.avatarSize }"
-        class="rounded-full bg-white flex items-center justify-center overflow-hidden flex-shrink-0"
-      >
-        <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
-        <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-          <img
-            :src="getSocialImgUrl(config.socialIcon)"
-            :alt="config.socialIcon"
-            :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
-          />
-        </div>
-        <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold">{{ config.authorNickname?.charAt(0) }}</span>
-      </div>
-      <div class="scholarly-post__author-text">
-        <span :style="{ fontSize: themeConfig.author.nicknameSize, color: themeConfig.author.nicknameColor }" class="scholarly-post__nickname">{{ config.authorNickname }}</span>
-        <div class="scholarly-post__meta">
-          <span v-if="config.authorUsername" :style="{ fontSize: themeConfig.author.usernameSize, color: themeConfig.author.usernameColor }" class="scholarly-post__username">{{ config.authorUsername }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="scholarly-post__content markdown-body flex-1 overflow-hidden"
-      :style="contentStyle"
-      v-html="html"
-    ></div>
-
-    <span
-      v-if="config.showTime"
-      class="scholarly-post__date"
-      :style="{ fontSize: themeConfig.time.fontSize, color: themeConfig.time.color }"
-    >{{ currentTime }}</span>
-
-    <span
-      v-if="config.showPageNumber"
-      class="scholarly-post__page"
-      :style="{ fontSize: themeConfig.pageNumber.fontSize, color: themeConfig.pageNumber.color }"
-    >{{ pageLabel }}</span>
   </div>
 
   <!-- ===== 通用主题（dark/scholarly/vibrant） ===== -->
@@ -239,11 +187,7 @@
           >
             <img v-if="config.authorAvatar" :src="config.authorAvatar" class="w-full h-full object-cover" />
             <div v-else-if="config.socialIcon" class="w-full h-full flex items-center justify-center" :style="{ backgroundColor: getSocialColor(config.socialIcon) }">
-              <img
-                :src="getSocialImgUrl(config.socialIcon)"
-                :alt="config.socialIcon"
-                :class="getSocialIsAvatar(config.socialIcon) ? 'w-full h-full object-cover' : 'w-4/5 h-4/5 object-contain'"
-              />
+              <img :src="getSocialImgUrl(config.socialIcon)" :alt="config.socialIcon" class="w-4/5 h-4/5 object-contain" />
             </div>
             <span v-else :style="{ color: themeConfig.author.nicknameColor }" class="font-bold text-sm">{{ config.authorNickname?.charAt(0) }}</span>
           </div>
@@ -296,14 +240,12 @@ const props = defineProps({
 
 const getSocialColor = (icon) => socialIcons.find(s => s.icon === icon)?.color || '#fff'
 const getSocialImgUrl = (icon) => socialIcons.find(s => s.icon === icon)?.imgUrl || ''
-const getSocialIsAvatar = (icon) => !!socialIcons.find(s => s.icon === icon)?.isAvatar
 
 const currentTime = computed(() => {
   const now = new Date()
   const y = now.getFullYear()
   const m = String(now.getMonth() + 1).padStart(2, '0')
   const d = String(now.getDate()).padStart(2, '0')
-  if (props.config.timeFormat === 'MM/DD') return `${m}月${d}日`
   if (props.config.timeFormat === 'YYYY-MM-DD') return `${y}-${m}-${d}`
   const hh = String(now.getHours()).padStart(2, '0')
   const mm = String(now.getMinutes()).padStart(2, '0')
@@ -311,7 +253,6 @@ const currentTime = computed(() => {
 })
 
 const pageLabel = computed(() => {
-  if (props.config.pageNumberFormat === 'single') return `${props.pageIndex + 1}`
   return props.config.pageNumberFormat === 'number'
     ? `${props.pageIndex + 1} / ${props.totalPages}`
     : `Page ${props.pageIndex + 1}`

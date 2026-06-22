@@ -52,14 +52,6 @@ export function useTheme(config, canvasScale) {
     config.value.timeFormat = tc.time.format
     config.value.pageNumberFormat = tc.pageNumber.format
     config.value.watermarkText = tc.watermark.text
-    if (key === 'scholarly') {
-      config.value._overrideFontSize = null
-      config.value._overrideLineHeight = null
-      delete config.value._overrideColor
-    }
-    if (tc.author.show && !config.value.authorAvatar && !config.value.socialIcon) {
-      config.value.socialIcon = 'avatar-2'
-    }
 
     // 封面图仅 modern / elegant 主题保留；副标题、封面标题样式仅 elegant 主题保留
     if (key !== 'modern' && key !== 'elegant') config.value.coverImage = ''

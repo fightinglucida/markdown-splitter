@@ -1,47 +1,4 @@
 export const builtInThemes = {
-  dark: {
-    name: '深邃黑',
-    preview: {
-      description: '神秘优雅，适合科技和设计',
-      features: ['深色背景', '毛玻璃', '高对比']
-    },
-    config: {
-      title: {
-        show: true, editable: true,
-        fontSize: '1.8rem', fontFamily: 'Inter', fontWeight: 'bold',
-        color: '#f8fafc', textAlign: 'left', marginBottom: '1.2rem'
-      },
-      content: {
-        show: true, editable: true,
-        fontSize: '16px', fontFamily: 'Inter', color: '#f8fafc',
-        textAlign: 'left', lineHeight: '1.7', maxCharsPerLine: 22,
-        backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(12px)',
-        padding: '28px', borderRadius: '14px'
-      },
-      author: {
-        show: true, editable: true, position: 'bottom-left',
-        avatarSize: '40px', nicknameSize: '14px', nicknameColor: '#f8fafc',
-        usernameSize: '10px', usernameColor: '#94a3b8',
-        allowCustomAvatar: true, allowSocialIcon: true
-      },
-      time: {
-        show: false, editable: true, position: 'with-author',
-        format: 'YYYY-MM-DD', fontSize: '10px', color: '#64748b'
-      },
-      pageNumber: {
-        show: true, editable: true, position: 'bottom-right',
-        format: 'number', fontSize: '10px', color: '#64748b'
-      },
-      watermark: {
-        show: true, editable: true, position: 'bottom-right',
-        text: '林书知识库', fontSize: '10px', color: '#64748b', opacity: 0.5
-      },
-      canvas: {
-        background: '#1e1e1e', padding: 25, borderRadius: 20, bgType: 'dark'
-      }
-    }
-  },
-
   elegant: {
     name: '每天学习',
     preview: {
@@ -232,50 +189,6 @@ export const builtInThemes = {
         canvasScale: 80, bgType: 'light',
         backgroundTarget: 'inner', innerPadding: 20, innerRadius: 18,
         footerPadding: 14, footerSpacing: 10
-      }
-    }
-  },
-
-  vibrant: {
-    name: '流光溢彩',
-    preview: {
-      description: '彩色渐变，适合创意展示',
-      features: ['渐变背景', '毛玻璃', '高饱和']
-    },
-    config: {
-      title: {
-        show: true, editable: true,
-        fontSize: '1.8rem', fontFamily: 'Inter', fontWeight: 'bold',
-        color: '#ffffff', textAlign: 'left', marginBottom: '1.2rem'
-      },
-      content: {
-        show: true, editable: true,
-        fontSize: '16px', fontFamily: 'Inter', color: '#ffffff',
-        textAlign: 'left', lineHeight: '1.7', maxCharsPerLine: 22,
-        backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(20px)',
-        padding: '28px', borderRadius: '20px'
-      },
-      author: {
-        show: true, editable: true, position: 'bottom-left',
-        avatarSize: '40px', nicknameSize: '14px', nicknameColor: '#ffffff',
-        usernameSize: '10px', usernameColor: 'rgba(255,255,255,0.7)',
-        allowCustomAvatar: true, allowSocialIcon: true
-      },
-      time: {
-        show: false, editable: true, position: 'with-author',
-        format: 'YYYY-MM-DD', fontSize: '10px', color: 'rgba(255,255,255,0.6)'
-      },
-      pageNumber: {
-        show: true, editable: true, position: 'bottom-right',
-        format: 'number', fontSize: '10px', color: 'rgba(255,255,255,0.6)'
-      },
-      watermark: {
-        show: true, editable: true, position: 'bottom-right',
-        text: '林书知识库', fontSize: '10px', color: 'rgba(255,255,255,0.5)', opacity: 0.5
-      },
-      canvas: {
-        background: 'linear-gradient(to right, #4facfe 0%, #00f2fe 100%)',
-        padding: 25, borderRadius: 28, bgType: 'dark'
       }
     }
   }
