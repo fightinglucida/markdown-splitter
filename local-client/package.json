@@ -3,22 +3,66 @@
   "version": "0.1.0",
   "private": true,
   "description": "Local desktop client for batch rendering Markdown files into card images.",
+  "author": "LinshuTech",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "concurrently \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5188 && electron .\"",
     "build": "vite build",
-    "start": "electron ."
+    "start": "electron .",
+    "dist:win": "node scripts/package-win.cjs",
+    "dist:installer": "node scripts/build-installer.cjs"
+  },
+  "build": {
+    "appId": "com.linshutech.markdown2card",
+    "productName": "Markdown2Card",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Markdown2Card"
+    }
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^5.0.0",
-    "concurrently": "^8.2.2",
-    "electron": "^30.0.0",
     "html-to-image": "^1.11.11",
     "jszip": "^3.10.1",
     "marked": "^12.0.0",
-    "vite": "^5.0.0",
-    "vue": "^3.4.0",
-    "wait-on": "^7.2.0"
+    "vue": "^3.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "concurrently": "^8.2.2",
+    "electron": "^30.0.0",
+    "electron-builder": "^26.15.3",
+    "png-to-ico": "^3.0.1",
+    "vite": "^5.0.0",
+    "wait-on": "^7.2.0"
+  }
 }

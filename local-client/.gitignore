@@ -1,3 +1,10 @@
 node_modules/
 dist/
+fonts/
+font/
+release/
+release-current/
+release-fixed/
+release-list-fix/
+release-manual/
 *.log

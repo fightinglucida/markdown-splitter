@@ -55,8 +55,23 @@ export const templates = {
     titleColor: '#111111',
     author: { show: true, avatarSize: 58, nicknameColor: '#111111', usernameColor: '#555555' },
     watermark: { show: false, text: '', position: 'none' },
-    pageNumber: { show: true, format: 'single' },
-    time: { show: true, format: 'MM/DD' }
+    pageNumber: { show: true, format: 'single' }
+  },
+  layeredNote: {
+    name: '层叠笔记',
+    className: 'template-layered-note',
+    defaultRatio: '3:4',
+    padding: 0,
+    contentFontSize: 24,
+    lineHeight: 1.58,
+    background: '#f52245',
+    cardBackground: 'rgba(255, 250, 251, 0.94)',
+    textColor: '#382d30',
+    accentColor: '#f52245',
+    titleColor: '#33282b',
+    author: { show: true, avatarSize: 54, nicknameColor: '#382d30', usernameColor: '#6f6266' },
+    watermark: { show: false, text: '', position: 'none' },
+    pageNumber: { show: true, format: 'number' }
   },
   teaching: {
     name: '教学卡片',
@@ -73,6 +88,79 @@ export const templates = {
     author: { show: true, avatarSize: 64, nicknameColor: 'transparent', usernameColor: 'transparent' },
     watermark: { show: true, text: '林书知识库', position: 'bottom-left' },
     pageNumber: { show: true, format: 'number' }
+  }
+}
+
+export const templateCapabilities = {
+  modern: {
+    title: { input: true, render: true, label: '标题' },
+    subtitle: false,
+    coverImage: true,
+    author: { enabled: false },
+    time: false,
+    pageNumber: false,
+    watermark: { enabled: true, label: '底部签名' },
+    background: true,
+    padding: false,
+    titleFont: true,
+    contentFont: true,
+    textColor: true
+  },
+  elegant: {
+    title: { input: true, render: true, label: '标题' },
+    subtitle: { label: '副标题', editable: false },
+    coverImage: true,
+    author: { enabled: true, avatar: true, nickname: true, username: true, social: true },
+    time: false,
+    pageNumber: true,
+    watermark: { enabled: true, label: '封面标语' },
+    background: true,
+    padding: true,
+    titleFont: true,
+    contentFont: true,
+    textColor: true
+  },
+  scholarly: {
+    title: { input: true, render: false, label: '导出名称' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: true, avatar: true, nickname: true, username: true, social: true },
+    time: false,
+    pageNumber: true,
+    watermark: { enabled: false },
+    background: false,
+    padding: true,
+    titleFont: false,
+    contentFont: true,
+    textColor: false
+  },
+  layeredNote: {
+    title: { input: true, render: true, label: '每页标题' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: true, avatar: true, nickname: true, username: true, social: true, toggle: false, label: '每页作者信息' },
+    time: false,
+    pageNumber: true,
+    watermark: { enabled: false },
+    background: true,
+    padding: false,
+    titleFont: true,
+    contentFont: true,
+    textColor: true
+  },
+  teaching: {
+    title: { input: true, render: true, label: '标题' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: true, avatar: true, nickname: false, username: false, social: true, toggle: false, label: '头像设置' },
+    time: false,
+    pageNumber: true,
+    watermark: { enabled: true, label: '底部水印' },
+    background: true,
+    padding: true,
+    titleFont: true,
+    contentFont: true,
+    textColor: true
   }
 }
 
@@ -126,6 +214,7 @@ function splitBlocks(section) {
   let buffer = []
   let inFence = false
   let paragraphId = 0
+  const topLevelListItem = /^\s{0,3}(?:\d+[.)]|[-*+])\s+/
 
   const flush = () => {
     const text = buffer.join('\n').trim()
@@ -142,6 +231,12 @@ function splitBlocks(section) {
       buffer.push(line)
       inFence = !inFence
       if (!inFence) flush()
+      continue
+    }
+
+    if (!inFence && topLevelListItem.test(line)) {
+      flush()
+      buffer.push(line)
       continue
     }
 
@@ -244,31 +339,39 @@ export function createMeasurer(config) {
   card.className = `export-card ${template.className}`
   card.style.width = `${ratio.width}px`
   card.style.height = `${ratio.height}px`
+  card.style.setProperty('--card-height', `${ratio.height}px`)
   card.style.setProperty('--card-padding', `${config.padding}px`)
   card.style.setProperty('--content-size', `${config.contentFontSize}px`)
   card.style.setProperty('--line-height', String(config.lineHeight))
+  card.style.setProperty('--image-max-height-ratio', String((config.imageMaxHeight ?? 42) / 100))
   card.style.setProperty('--outer-bg', config.background)
   card.style.setProperty('--card-bg', template.cardBackground)
   card.style.setProperty('--text-color', config.textColor)
   card.style.setProperty('--accent-color', template.accentColor)
+  if (config.titleFontFamily) card.style.setProperty('--title-font-family', config.titleFontFamily)
+  if (config.contentFontFamily) card.style.setProperty('--content-font-family', config.contentFontFamily)
   card.style.position = 'fixed'
   card.style.left = '-10000px'
   card.style.top = '0'
   card.style.visibility = 'hidden'
-  card.innerHTML = measurementMarkup(config.template)
+  card.innerHTML = measurementMarkup(config)
   document.body.appendChild(card)
 
   const titleEl = card.querySelector('[data-title]')
   const contentEl = card.querySelector('.card-content')
   const watermarkEl = card.querySelector('[data-watermark]')
   const pageEl = card.querySelector('[data-page]')
+  const authorNameEls = card.querySelectorAll('[data-author-name]')
+  const authorUserEls = card.querySelectorAll('[data-author-user]')
 
   return {
     fits(blocks, pageIndex, totalHint = 1) {
-      if (titleEl) titleEl.textContent = pageIndex === 0 ? config.title : ''
+      if (titleEl) titleEl.textContent = config.template === 'layeredNote' || pageIndex === 0 ? config.title : ''
       card.classList.toggle('is-continuation', pageIndex > 0)
+      authorNameEls.forEach(el => { el.textContent = config.authorNickname || '' })
+      authorUserEls.forEach(el => { el.textContent = config.authorUsername || '' })
       if (watermarkEl) watermarkEl.textContent = config.watermark || ''
-      if (pageEl) pageEl.textContent = config.showPageNumber ? `${pageIndex + 1} / ${totalHint}` : ''
+      if (pageEl) pageEl.textContent = config.showPageNumber ? measurementPageLabel(config, pageIndex, totalHint) : ''
       contentEl.innerHTML = markdownToHtml(renderUnits(blocks) || '&nbsp;')
       return contentEl.scrollHeight <= contentEl.clientHeight
     },
@@ -278,7 +381,18 @@ export function createMeasurer(config) {
   }
 }
 
-function measurementMarkup(templateKey) {
+function measurementPageLabel(config, pageIndex, totalHint) {
+  if (config.template === 'elegant') {
+    return `${Math.max(1, pageIndex)} / ${Math.max(1, totalHint - 1)}`
+  }
+  const template = templates[config.template] || templates.modern
+  if (template.pageNumber?.format === 'single') return `${pageIndex + 1}`
+  return `${pageIndex + 1} / ${totalHint}`
+}
+
+function measurementMarkup(config) {
+  const templateKey = config.template
+  const capabilities = templateCapabilities[templateKey] || templateCapabilities.modern
   if (templateKey === 'modern') {
     return `
       <div class="modern-knowledge">
@@ -286,8 +400,20 @@ function measurementMarkup(templateKey) {
         <div class="modern-knowledge__body">
           <h1 class="modern-knowledge__title" data-title></h1>
           <main class="modern-knowledge__desc markdown-body card-content"></main>
-          <div class="modern-knowledge__footer"><div class="modern-knowledge__divider"></div><p class="modern-knowledge__signature">-- <span data-watermark></span> --</p></div>
+          ${config.showWatermark && config.watermark ? '<div class="modern-knowledge__footer"><div class="modern-knowledge__divider"></div><p class="modern-knowledge__signature">-- <span data-watermark></span> --</p></div>' : ''}
         </div>
+      </div>
+    `
+  }
+  if (templateKey === 'elegant') {
+    return `
+      <div class="elegant-content-page">
+        <main class="elegant-content markdown-body card-content"></main>
+        <footer class="elegant-footer">
+          ${config.showAuthor ? '<span class="author-inline"><span class="author-avatar small"></span><span class="author-stack"><strong data-author-name></strong><em data-author-user></em></span></span>' : ''}
+          ${!config.showAuthor && config.showWatermark ? '<span data-watermark></span>' : ''}
+          ${config.showPageNumber ? '<span data-page></span>' : ''}
+        </footer>
       </div>
     `
   }
@@ -296,17 +422,40 @@ function measurementMarkup(templateKey) {
       <div class="teaching-layer">
         <header class="teaching-titlebar"><div class="teaching-avatar">M</div><h1 data-title></h1></header>
         <main class="teaching-content markdown-body card-content"></main>
-        <footer class="teaching-footer"><span data-watermark></span><span data-page></span></footer>
+        <footer class="teaching-footer">
+          ${config.showWatermark ? '<span data-watermark></span>' : '<span></span>'}
+          ${config.showPageNumber ? '<span data-page></span>' : '<span></span>'}
+        </footer>
       </div>
     `
   }
   if (templateKey === 'scholarly') {
     return `
       <div class="scholarly-post">
-        <header class="scholarly-author"><div class="author-avatar"></div><div><div data-author-name></div><div data-author-user></div></div></header>
+        ${config.showAuthor ? '<header class="scholarly-author"><div class="author-avatar scholarly-avatar"></div><div class="scholarly-author-text"><span class="scholarly-nickname" data-author-name></span><span class="scholarly-username" data-author-user></span></div></header>' : ''}
         <main class="scholarly-content markdown-body card-content"></main>
-        <span class="scholarly-date"></span>
-        <span class="scholarly-page" data-page></span>
+        ${capabilities.time && config.showTime ? '<span class="scholarly-date"></span>' : ''}
+        ${config.showPageNumber ? '<span class="scholarly-page" data-page></span>' : ''}
+      </div>
+    `
+  }
+  if (templateKey === 'layeredNote') {
+    return `
+      <div class="layered-note-stack">
+        <div class="layered-note-sheet">
+          <header class="layered-note-header">
+            <h1 class="layered-note-title" data-title></h1>
+            <div class="layered-note-author">
+              <div class="layered-note-avatar"></div>
+              <div class="layered-note-author-copy">
+                <strong data-author-name></strong>
+                <div class="layered-note-byline"><span data-author-user></span></div>
+              </div>
+            </div>
+          </header>
+          <main class="layered-note-content markdown-body card-content"></main>
+        </div>
+        ${config.showPageNumber ? '<span class="layered-note-page" data-page></span>' : ''}
       </div>
     `
   }
