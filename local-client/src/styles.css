@@ -1478,6 +1478,57 @@ button {
   min-height: 310px;
 }
 
+.markdown-section-head {
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.markdown-normalize-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.normalize-action {
+  min-height: 25px;
+  border: 1px solid rgba(36, 33, 31, 0.14);
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: rgba(255, 255, 255, 0.64);
+  color: #5f5a52;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.normalize-action:hover:not(:disabled) {
+  border-color: rgba(36, 33, 31, 0.36);
+  background: #fff;
+}
+
+.normalize-action.primary {
+  border-color: #24211f;
+  background: #24211f;
+  color: #fff;
+}
+
+.normalize-action.undo {
+  color: #a84b18;
+}
+
+.normalize-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.markdown-format-hint {
+  margin-bottom: 9px;
+  line-height: 1.4;
+}
+
 .file-list.compact {
   margin-top: 10px;
   max-height: 145px;

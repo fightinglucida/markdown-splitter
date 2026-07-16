@@ -60,10 +60,32 @@
         </section>
 
         <section class="control-section markdown-section">
-          <div class="section-head">
+          <div class="section-head markdown-section-head">
             <label class="label">正文内容</label>
-            <span class="hint">支持 Markdown / --- 手动分页</span>
+            <div class="markdown-normalize-actions">
+              <button
+                class="normalize-action primary"
+                :disabled="exporting || !draftMarkdown.trim()"
+                title="规范当前正文中的列表、标题、段落和空白"
+                @click="normalizeCurrentMarkdown"
+              >一键规范</button>
+              <button
+                v-if="files.length > 1"
+                class="normalize-action"
+                :disabled="exporting"
+                title="规范当前已导入的全部 Markdown 文件"
+                @click="normalizeAllMarkdownFiles"
+              >全部文件</button>
+              <button
+                v-if="normalizationBackup"
+                class="normalize-action undo"
+                :disabled="exporting"
+                title="撤销最近一次规范化操作"
+                @click="undoMarkdownNormalization"
+              >撤销</button>
+            </div>
           </div>
+          <div class="hint markdown-format-hint">支持 Markdown / --- 手动分页 · 富文本粘贴会自动转换</div>
           <textarea
             ref="markdownInput"
             v-model="draftMarkdown"
@@ -467,6 +489,13 @@ import {
   waitForAssets
 } from './cardEngine'
 import { getSocial, socialIcons } from './socialIcons'
+import {
+  createNormalizationStats,
+  formatNormalizationSummary,
+  htmlToMarkdown,
+  mergeNormalizationStats,
+  normalizeMarkdown
+} from './markdownNormalizer'
 
 const demoMarkdown = `# 本地批量生成卡片
 
@@ -542,6 +571,7 @@ const batchReport = ref(null)
 const markdownInput = ref(null)
 const appStateReady = ref(false)
 const now = ref(new Date())
+const normalizationBackup = ref(null)
 let appStateSaveTimer = 0
 let overflowCheckTimer = 0
 let markdownResolveRunId = 0
@@ -1279,6 +1309,76 @@ function selectSocialIcon(icon) {
   config.authorAvatar = ''
 }
 
+function normalizationContents() {
+  saveDraftToActiveFile()
+  return files.value.map(file => file.content)
+}
+
+async function normalizeCurrentMarkdown() {
+  if (!draftMarkdown.value.trim()) return
+  batchReport.value = null
+  const before = normalizationContents()
+  const result = normalizeMarkdown(draftMarkdown.value)
+  if (result.markdown === draftMarkdown.value) {
+    normalizationBackup.value = null
+    statusText.value = formatNormalizationSummary(result.changes)
+    return
+  }
+
+  draftMarkdown.value = result.markdown
+  saveDraftToActiveFile(result.markdown)
+  const after = files.value.map(file => file.content)
+  normalizationBackup.value = { before, after, activeIndex: activeIndex.value }
+  statusText.value = formatNormalizationSummary(result.changes)
+  await repaginate()
+}
+
+async function normalizeAllMarkdownFiles() {
+  if (!files.value.length) return
+  batchReport.value = null
+  const before = normalizationContents()
+  const totals = createNormalizationStats()
+
+  files.value = files.value.map(file => {
+    const result = normalizeMarkdown(file.content)
+    mergeNormalizationStats(totals, result.changes)
+    return { ...file, content: result.markdown }
+  })
+  draftMarkdown.value = files.value[activeIndex.value]?.content || ''
+  const after = files.value.map(file => file.content)
+
+  if (before.every((content, index) => content === after[index])) {
+    normalizationBackup.value = null
+    statusText.value = formatNormalizationSummary(totals, files.value.length)
+    return
+  }
+
+  normalizationBackup.value = { before, after, activeIndex: activeIndex.value }
+  statusText.value = formatNormalizationSummary(totals, files.value.length)
+  await repaginate()
+}
+
+async function undoMarkdownNormalization() {
+  const backup = normalizationBackup.value
+  if (!backup) return
+  saveDraftToActiveFile()
+  const contentsUnchanged = files.value.length === backup.after.length && files.value.every((file, index) => (
+    file.content === backup.after[index]
+  ))
+  if (!contentsUnchanged) {
+    normalizationBackup.value = null
+    statusText.value = '规范后正文又被修改，已取消撤销以避免覆盖新内容'
+    return
+  }
+
+  files.value = files.value.map((file, index) => ({ ...file, content: backup.before[index] ?? file.content }))
+  activeIndex.value = Math.min(backup.activeIndex, Math.max(0, files.value.length - 1))
+  draftMarkdown.value = files.value[activeIndex.value]?.content || ''
+  normalizationBackup.value = null
+  statusText.value = '已撤销最近一次 Markdown 规范化'
+  await repaginate()
+}
+
 function missingImageMessage(prefix = '') {
   if (!missingImages.value.length) return ''
   const samples = missingImages.value.slice(0, 3).join('、')
@@ -1317,10 +1417,30 @@ function insertMarkdownAtCursor(markdown) {
 }
 
 async function handleMarkdownPaste(event) {
-  if (!api?.saveTempImage) return
-
+  const clipboard = event.clipboardData
+  const richHtml = clipboard?.getData('text/html') || ''
+  const plainText = clipboard?.getData('text/plain') || ''
   const items = Array.from(event.clipboardData?.items || [])
   const imageItems = items.filter(item => item.kind === 'file' && item.type.startsWith('image/'))
+
+  if (richHtml && plainText.trim()) {
+    event.preventDefault()
+    batchReport.value = null
+    try {
+      const markdown = htmlToMarkdown(richHtml)
+      if (!markdown.trim()) throw new Error('富文本中没有可转换的正文')
+      insertMarkdownAtCursor(markdown)
+      statusText.value = '已将剪贴板富文本转换为规范 Markdown'
+      await repaginate()
+    } catch (error) {
+      insertMarkdownAtCursor(normalizeMarkdown(plainText).markdown)
+      statusText.value = `富文本结构转换失败，已按纯文本规范化：${error.message || error}`
+      await repaginate()
+    }
+    return
+  }
+
+  if (!api?.saveTempImage) return
   if (!imageItems.length) return
 
   event.preventDefault()

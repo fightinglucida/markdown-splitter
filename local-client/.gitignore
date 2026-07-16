@@ -7,4 +7,5 @@ release-current/
 release-fixed/
 release-list-fix/
 release-manual/
+release-normalizer/
 *.log
