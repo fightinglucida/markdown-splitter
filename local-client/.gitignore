@@ -8,4 +8,5 @@ release-fixed/
 release-list-fix/
 release-manual/
 release-normalizer/
+release-stack-order/
 *.log
