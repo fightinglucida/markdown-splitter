@@ -1004,6 +1004,134 @@ button {
   white-space: nowrap;
 }
 
+/* Stacked paper theme: three bordered cards on a flat color field. */
+.template-stacked-paper {
+  background: var(--outer-bg);
+  color: var(--text-color);
+}
+
+.stacked-paper-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.stacked-paper-stage::before,
+.stacked-paper-stage::after,
+.stacked-paper-sheet {
+  position: absolute;
+  border: 2px solid #292824;
+  background: var(--card-bg);
+  box-shadow: 0 5px 8px rgba(31, 41, 35, 0.12);
+}
+
+.stacked-paper-stage::before {
+  content: "";
+  z-index: 0;
+  inset: 4.8% 6% 5.5% 6%;
+}
+
+.stacked-paper-stage::after {
+  content: "";
+  z-index: 1;
+  inset: 6.2% 4.7% 4.2% 7.4%;
+}
+
+.stacked-paper-sheet {
+  z-index: 2;
+  inset: 3.3% 8% 7% 4.4%;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 38px 34px 30px;
+  overflow: hidden;
+}
+
+.stacked-paper-time {
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: 22px;
+  color: #8a877f;
+  font-family: var(--content-font-family, "Microsoft YaHei", "PingFang SC", sans-serif);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.stacked-paper-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--text-color);
+  font-family: var(--content-font-family, "Microsoft YaHei", "PingFang SC", sans-serif);
+  font-size: var(--content-size);
+  font-weight: 520;
+  letter-spacing: 0.025em;
+  line-height: var(--line-height);
+}
+
+.stacked-paper-content p,
+.stacked-paper-content ul,
+.stacked-paper-content ol {
+  margin-bottom: 0.62em;
+}
+
+.stacked-paper-footer {
+  flex: 0 0 auto;
+  margin-top: 22px;
+  font-family: var(--title-font-family, "Microsoft YaHei", "PingFang SC", sans-serif);
+}
+
+.stacked-paper-author {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.stacked-paper-avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #f2efe8;
+}
+
+.stacked-paper-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stacked-paper-author strong {
+  max-width: 58%;
+  overflow: hidden;
+  color: var(--author-name-color);
+  font-size: 21px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stacked-paper-title {
+  margin: 12px 0 0;
+  overflow: hidden;
+  color: var(--title-color);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .generic-card {
   width: 100%;
   height: 100%;
@@ -1593,6 +1721,72 @@ button {
   position: absolute;
   inset: 34% 12% 8%;
   background: repeating-linear-gradient(to bottom, rgba(56, 45, 48, 0.48) 0 3px, transparent 3px 10px);
+}
+
+.stacked-paper-theme-preview {
+  display: block;
+  padding: 0;
+}
+
+.stacked-paper-preview-sheet {
+  position: absolute;
+  border: 1px solid rgba(29, 28, 25, 0.88);
+  background: #fffefa;
+}
+
+.stacked-paper-preview-sheet.back {
+  inset: 8% 6% 5% 9%;
+}
+
+.stacked-paper-preview-sheet.middle {
+  inset: 6% 8% 7% 7%;
+}
+
+.stacked-paper-preview-sheet.front {
+  inset: 4% 10% 9% 5%;
+}
+
+.stacked-paper-preview-time,
+.stacked-paper-preview-name,
+.stacked-paper-preview-title {
+  position: absolute;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(40, 39, 34, 0.45);
+}
+
+.stacked-paper-preview-time {
+  top: 8%;
+  left: 8%;
+  width: 35%;
+}
+
+.stacked-paper-preview-text {
+  position: absolute;
+  inset: 19% 9% 29%;
+  background: repeating-linear-gradient(to bottom, rgba(40, 39, 34, 0.66) 0 3px, transparent 3px 10px);
+}
+
+.stacked-paper-preview-avatar {
+  position: absolute;
+  right: 30%;
+  bottom: 14%;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: #70de89;
+}
+
+.stacked-paper-preview-name {
+  right: 9%;
+  bottom: 16%;
+  width: 17%;
+}
+
+.stacked-paper-preview-title {
+  right: 9%;
+  bottom: 8%;
+  width: 44%;
 }
 
 .properties-title {

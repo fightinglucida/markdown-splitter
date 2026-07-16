@@ -131,7 +131,14 @@
           :class="['theme-card', config.template === key ? 'active' : '']"
           @click="applyTemplate(key)"
         >
-          <div :class="['theme-preview', key === 'layeredNote' ? 'layered-note-theme-preview' : '']" :style="{ background: item.background }">
+          <div
+            :class="[
+              'theme-preview',
+              key === 'layeredNote' ? 'layered-note-theme-preview' : '',
+              key === 'stackedPaper' ? 'stacked-paper-theme-preview' : ''
+            ]"
+            :style="{ background: item.background }"
+          >
             <template v-if="key === 'layeredNote'">
               <div class="layered-note-preview-sheet back"></div>
               <div class="layered-note-preview-sheet middle"></div>
@@ -139,6 +146,17 @@
                 <span class="layered-note-preview-title"></span>
                 <span class="layered-note-preview-avatar"></span>
                 <span class="layered-note-preview-copy"></span>
+              </div>
+            </template>
+            <template v-else-if="key === 'stackedPaper'">
+              <div class="stacked-paper-preview-sheet back"></div>
+              <div class="stacked-paper-preview-sheet middle"></div>
+              <div class="stacked-paper-preview-sheet front">
+                <span class="stacked-paper-preview-time"></span>
+                <span class="stacked-paper-preview-text"></span>
+                <span class="stacked-paper-preview-avatar"></span>
+                <span class="stacked-paper-preview-name"></span>
+                <span class="stacked-paper-preview-title"></span>
               </div>
             </template>
             <template v-else>
@@ -279,6 +297,22 @@
                   </div>
                 </template>
 
+                <template v-else-if="config.template === 'stackedPaper'">
+                  <div class="stacked-paper-stage">
+                    <div class="stacked-paper-sheet">
+                      <time v-if="config.showTime" class="stacked-paper-time">{{ currentTime }}</time>
+                      <main class="stacked-paper-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <footer class="stacked-paper-footer">
+                        <div class="stacked-paper-author">
+                          <div class="stacked-paper-avatar"><img :src="authorImage" /></div>
+                          <strong>{{ config.authorNickname }}</strong>
+                        </div>
+                        <h1 class="stacked-paper-title">{{ renderTitle }}</h1>
+                      </footer>
+                    </div>
+                  </div>
+                </template>
+
                 <template v-else>
                   <div class="generic-card">
                     <h1 v-if="index === 0" class="generic-title">{{ renderTitle }}</h1>
@@ -353,7 +387,7 @@
               :title="bg"
             ></button>
           </div>
-          <label v-if="config.template === 'layeredNote'" class="background-custom-row">
+          <label v-if="['layeredNote', 'stackedPaper'].includes(config.template)" class="background-custom-row">
             <span>自定义底色</span>
             <input v-model="customBackgroundColor" type="color" class="color-input" />
           </label>
@@ -507,9 +541,11 @@ const templateSettings = ref({})
 const batchReport = ref(null)
 const markdownInput = ref(null)
 const appStateReady = ref(false)
+const now = ref(new Date())
 let appStateSaveTimer = 0
 let overflowCheckTimer = 0
 let markdownResolveRunId = 0
+let clockTimer = 0
 const backgrounds = [
   'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
@@ -541,6 +577,28 @@ const layeredNoteBackgrounds = [
   '#168b82',
   '#2f7d55',
   '#27272a'
+]
+const stackedPaperBackgrounds = [
+  '#70de89',
+  '#4ecb71',
+  '#84cc16',
+  '#eab308',
+  '#f59e0b',
+  '#f97316',
+  '#ff6b57',
+  '#ef4444',
+  '#f52245',
+  '#ec4899',
+  '#d946ef',
+  '#8b5cf6',
+  '#6366f1',
+  '#3b82f6',
+  '#06b6d4',
+  '#14b8a6',
+  '#8b5e3c',
+  '#64748b',
+  '#27272a',
+  '#eee6d8'
 ]
 
 const config = reactive({
@@ -582,9 +640,13 @@ const titleInputPlaceholder = computed(() => capabilities.value.title?.render ==
 const canExport = computed(() => pages.value.length > 0 && outputDir.value)
 const selectedSocial = computed(() => getSocial(config.socialIcon))
 const authorImage = computed(() => config.authorAvatar || selectedSocial.value.imgUrl)
-const activeBackgrounds = computed(() => config.template === 'layeredNote' ? layeredNoteBackgrounds : backgrounds)
+const activeBackgrounds = computed(() => {
+  if (config.template === 'layeredNote') return layeredNoteBackgrounds
+  if (config.template === 'stackedPaper') return stackedPaperBackgrounds
+  return backgrounds
+})
 const customBackgroundColor = computed({
-  get: () => /^#[0-9a-f]{6}$/i.test(config.background) ? config.background : templates.layeredNote.background,
+  get: () => /^#[0-9a-f]{6}$/i.test(config.background) ? config.background : template.value.background,
   set: value => { config.background = value }
 })
 const fontOptions = computed(() => [
@@ -595,12 +657,15 @@ const fontOptions = computed(() => [
   }))
 ])
 const currentTime = computed(() => {
-  const now = new Date()
-  const y = now.getFullYear()
-  const m = String(now.getMonth() + 1).padStart(2, '0')
-  const d = String(now.getDate()).padStart(2, '0')
+  const current = now.value
+  const y = current.getFullYear()
+  const m = String(current.getMonth() + 1).padStart(2, '0')
+  const d = String(current.getDate()).padStart(2, '0')
+  const h = String(current.getHours()).padStart(2, '0')
+  const minute = String(current.getMinutes()).padStart(2, '0')
   if (config.timeFormat === 'MM/DD') return `${m}月${d}日`
   if (config.timeFormat === 'YYYY年MM月DD日') return `${y}年${m}月${d}日`
+  if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
   return `${y}-${m}-${d}`
 })
 const pageLabel = (index) => {
@@ -689,6 +754,7 @@ watch(
 )
 
 onMounted(async () => {
+  clockTimer = window.setInterval(() => { now.value = new Date() }, 30_000)
   await loadCustomFonts()
   await restoreAppState()
   appStateReady.value = true
@@ -701,6 +767,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', saveAppStateNow)
   window.clearTimeout(appStateSaveTimer)
   window.clearTimeout(overflowCheckTimer)
+  window.clearInterval(clockTimer)
   saveAppStateNow()
 })
 
@@ -1349,7 +1416,12 @@ async function exportBatch() {
     success: [],
     failed: []
   }
+  let batchSessionStarted = false
   try {
+    if (api.beginBatchExport) {
+      await api.beginBatchExport()
+      batchSessionStarted = true
+    }
     for (let i = 0; i < files.value.length; i += 1) {
       const file = files.value[i]
       try {
@@ -1401,6 +1473,13 @@ async function exportBatch() {
   } catch (error) {
     statusText.value = `批量导出失败：${error.message || error}`
   } finally {
+    if (batchSessionStarted && api.finishBatchExport) {
+      try {
+        await api.finishBatchExport({ report })
+      } catch (error) {
+        statusText.value = `批量文件下载失败：${error.message || error}`
+      }
+    }
     activeIndex.value = originalIndex
     draftMarkdown.value = files.value[originalIndex]?.content || ''
     exporting.value = false

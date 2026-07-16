@@ -73,6 +73,23 @@ export const templates = {
     watermark: { show: false, text: '', position: 'none' },
     pageNumber: { show: true, format: 'number' }
   },
+  stackedPaper: {
+    name: '叠页摘录',
+    className: 'template-stacked-paper',
+    defaultRatio: '3:4',
+    padding: 0,
+    contentFontSize: 28,
+    lineHeight: 1.52,
+    background: '#70de89',
+    cardBackground: '#fffefa',
+    textColor: '#282722',
+    accentColor: '#282722',
+    titleColor: '#4f4c45',
+    author: { show: true, avatarSize: 40, nicknameColor: '#282722', usernameColor: 'transparent' },
+    time: { show: true, format: 'YYYY年MM月DD日 HH:mm' },
+    watermark: { show: false, text: '', position: 'none' },
+    pageNumber: { show: false, format: 'number' }
+  },
   teaching: {
     name: '教学卡片',
     className: 'template-teaching',
@@ -141,6 +158,20 @@ export const templateCapabilities = {
     author: { enabled: true, avatar: true, nickname: true, username: true, social: true, toggle: false, label: '每页作者信息' },
     time: false,
     pageNumber: true,
+    watermark: { enabled: false },
+    background: true,
+    padding: false,
+    titleFont: true,
+    contentFont: true,
+    textColor: true
+  },
+  stackedPaper: {
+    title: { input: true, render: true, label: '底部标题' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: true, avatar: true, nickname: true, username: false, social: true, toggle: false, label: '右下角作者' },
+    time: true,
+    pageNumber: false,
     watermark: { enabled: false },
     background: true,
     padding: false,
@@ -363,13 +394,15 @@ export function createMeasurer(config) {
   const pageEl = card.querySelector('[data-page]')
   const authorNameEls = card.querySelectorAll('[data-author-name]')
   const authorUserEls = card.querySelectorAll('[data-author-user]')
+  const timeEls = card.querySelectorAll('[data-time]')
 
   return {
     fits(blocks, pageIndex, totalHint = 1) {
-      if (titleEl) titleEl.textContent = config.template === 'layeredNote' || pageIndex === 0 ? config.title : ''
+      if (titleEl) titleEl.textContent = ['layeredNote', 'stackedPaper'].includes(config.template) || pageIndex === 0 ? config.title : ''
       card.classList.toggle('is-continuation', pageIndex > 0)
       authorNameEls.forEach(el => { el.textContent = config.authorNickname || '' })
       authorUserEls.forEach(el => { el.textContent = config.authorUsername || '' })
+      timeEls.forEach(el => { el.textContent = config.showTime ? formatTimestamp(config) : '' })
       if (watermarkEl) watermarkEl.textContent = config.watermark || ''
       if (pageEl) pageEl.textContent = config.showPageNumber ? measurementPageLabel(config, pageIndex, totalHint) : ''
       contentEl.innerHTML = markdownToHtml(renderUnits(blocks) || '&nbsp;')
@@ -379,6 +412,18 @@ export function createMeasurer(config) {
       card.remove()
     }
   }
+}
+
+function formatTimestamp(config, date = new Date()) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  const h = String(date.getHours()).padStart(2, '0')
+  const minute = String(date.getMinutes()).padStart(2, '0')
+  if (config.timeFormat === 'MM/DD') return `${m}月${d}日`
+  if (config.timeFormat === 'YYYY年MM月DD日') return `${y}年${m}月${d}日`
+  if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
+  return `${y}-${m}-${d}`
 }
 
 function measurementPageLabel(config, pageIndex, totalHint) {
@@ -456,6 +501,23 @@ function measurementMarkup(config) {
           <main class="layered-note-content markdown-body card-content"></main>
         </div>
         ${config.showPageNumber ? '<span class="layered-note-page" data-page></span>' : ''}
+      </div>
+    `
+  }
+  if (templateKey === 'stackedPaper') {
+    return `
+      <div class="stacked-paper-stage">
+        <div class="stacked-paper-sheet">
+          ${config.showTime ? '<time class="stacked-paper-time" data-time></time>' : ''}
+          <main class="stacked-paper-content markdown-body card-content"></main>
+          <footer class="stacked-paper-footer">
+            <div class="stacked-paper-author">
+              <div class="stacked-paper-avatar"></div>
+              <strong data-author-name></strong>
+            </div>
+            <h1 class="stacked-paper-title" data-title></h1>
+          </footer>
+        </div>
       </div>
     `
   }
