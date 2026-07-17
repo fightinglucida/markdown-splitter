@@ -6,6 +6,50 @@ const IMAGE_EXTENSIONS = /\.(png|jpe?g|webp|gif|svg)$/i
 const FONT_EXTENSIONS = /\.(ttf|otf|woff2?)$/i
 const DATABASE_NAME = 'markdown2card-web-storage'
 const DATABASE_STORE = 'keyval'
+const BUNDLED_WEB_FONT_VERSION = '20260717'
+const BUNDLED_WEB_FONT_NAMES = [
+  '阿里钉钉进步体',
+  '阿里妈妈东方大楷-Regular',
+  '阿里妈妈方圆体',
+  '阿里妈妈数黑体',
+  '仓耳渔阳体W03',
+  '仓耳与墨W02',
+  '仓耳周珂正大榜书',
+  '创可贴金刚体',
+  '点字油漆体',
+  '斗鱼追光体2.0',
+  '方正超粗黑简体',
+  '汇文明朝体',
+  '江西拙楷2.0',
+  '金山云技术体',
+  '快看世界体',
+  '猫啃什锦黑',
+  '美呗嘿嘿体（全字库）',
+  '庞门正道真贵楷体',
+  '台北黑体-Bold',
+  '台北黑体-Light',
+  '台北黑体-Regular',
+  '霞鹜975-200W',
+  '霞鹜975-300W',
+  '霞鹜文楷',
+  '小赖字体SC-Regular',
+  '演示斜黑体',
+  '优设标题黑',
+  '优设鲨鱼菲特健康体',
+  '字魂扁桃体',
+  '字体传奇雪家黑',
+  '字体圈欣意冠黑体',
+  'jf-open粉圆',
+  'OPPOSans字体-Medium',
+  'OPPOSans字体-Regular'
+]
+const BUNDLED_WEB_FONTS = BUNDLED_WEB_FONT_NAMES.map((name, index) => ({
+  name,
+  family: `M2CWebFont-${index + 1}`,
+  sourceUrl: `${import.meta.env.BASE_URL}fonts/${encodeURIComponent(name)}.woff2?v=${BUNDLED_WEB_FONT_VERSION}`,
+  format: 'woff2',
+  bundled: true
+}))
 
 let outputDirectoryHandle = null
 let fontDirectoryName = ''
@@ -350,19 +394,24 @@ async function webListFonts() {
       fontDirectoryName = savedHandle.name
     }
   }
-  const fonts = []
+  const fonts = [...BUNDLED_WEB_FONTS]
+  const bundledNames = new Set(BUNDLED_WEB_FONT_NAMES.map(name => name.toLocaleLowerCase()))
   for (let i = 0; i < fontFiles.length; i += 1) {
     const file = fontFiles[i]
     const baseName = file.name.replace(/\.(ttf|otf|woff2?)$/i, '')
+    if (bundledNames.has(baseName.toLocaleLowerCase())) continue
     const raw = await readAsDataUrl(file)
     const dataUrl = raw.replace(/^data:[^;,]+/, `data:${fontMime(file.name)}`)
     fonts.push({
       name: baseName,
-      family: `WebCustomFont_${i}_${baseName.replace(/[^a-zA-Z0-9_-]/g, '_')}`,
+      family: `WebCustomFont_${BUNDLED_WEB_FONTS.length + i}_${baseName.replace(/[^a-zA-Z0-9_-]/g, '_')}`,
       dataUrl
     })
   }
-  return { dir: fontDirectoryName || '浏览器字体目录', dirs: fontDirectoryName ? [fontDirectoryName] : [], fonts }
+  const dir = fontDirectoryName
+    ? `Web 内置字体（${BUNDLED_WEB_FONTS.length} 个）；${fontDirectoryName}`
+    : `Web 内置字体（${BUNDLED_WEB_FONTS.length} 个）`
+  return { dir, dirs: fontDirectoryName ? [fontDirectoryName] : [], fonts }
 }
 
 async function webSelectOutputFolder() {

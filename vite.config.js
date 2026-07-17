@@ -14,6 +14,10 @@ const copyThemesPlugin = {
     readdirSync(src)
       .filter(f => f.endsWith('.json'))
       .forEach(f => copyFileSync(join(src, f), join(dest, f)))
+
+    for (const fileName of ['_headers', '_redirects']) {
+      copyFileSync(resolve(__dirname, fileName), resolve(__dirname, 'dist', fileName))
+    }
   }
 }
 

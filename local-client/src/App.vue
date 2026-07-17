@@ -803,6 +803,7 @@ onBeforeUnmount(() => {
 
 async function repaginate() {
   await nextTick()
+  await ensureExportFontsReady(selectedCustomFonts())
   const title = renderTitle.value
   const markdown = await prepareMarkdownForRender()
   if (markdown === null) return
@@ -1148,12 +1149,13 @@ function deletePreset(id) {
 }
 
 async function registerCustomFont(font) {
-  if (!font?.family || !font?.dataUrl || loadedFontFamilies.has(font.family)) return true
+  const source = font?.dataUrl || font?.sourceUrl
+  if (!font?.family || !source || loadedFontFamilies.has(font.family)) return true
   if (typeof FontFace === 'undefined' || !document.fonts) return false
-  const face = new FontFace(font.family, `url(${font.dataUrl})`)
-  await face.load()
+  const face = new FontFace(font.family, `url(${source})`, { display: 'swap' })
   document.fonts.add(face)
   loadedFontFamilies.add(font.family)
+  if (font.dataUrl) await face.load()
   return true
 }
 
@@ -1200,8 +1202,18 @@ function fontFormatFromDataUrl(dataUrl) {
 function selectedCustomFonts() {
   const selectedFamilies = `${config.titleFontFamily}\n${config.contentFontFamily}`
   return customFonts.value.filter(font => (
-    font?.family && font?.dataUrl && selectedFamilies.includes(font.family)
+    font?.family && (font?.dataUrl || font?.sourceUrl) && selectedFamilies.includes(font.family)
   ))
+}
+
+async function hydrateSelectedFontData(fonts = selectedCustomFonts()) {
+  await Promise.all(fonts.map(async font => {
+    if (font.dataUrl || !font.sourceUrl) return
+    const response = await fetch(font.sourceUrl, { cache: 'force-cache' })
+    if (!response.ok) throw new Error(`字体资源加载失败：${font.name || font.family}`)
+    font.dataUrl = await readBlobAsDataUrl(await response.blob())
+  }))
+  return fonts
 }
 
 let exportFontCssCacheKey = ''
@@ -1469,6 +1481,7 @@ async function handleMarkdownPaste(event) {
 async function captureImages() {
   await nextTick()
   const exportFonts = selectedCustomFonts()
+  await hydrateSelectedFontData(exportFonts)
   await ensureExportFontsReady(exportFonts)
   await waitForAssets(document)
   const fontEmbedCSS = buildCustomFontEmbedCss(exportFonts)
