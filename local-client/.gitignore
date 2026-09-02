@@ -9,4 +9,6 @@ release-list-fix/
 release-manual/
 release-normalizer/
 release-stack-order/
+release-stable-config/
+release-output-folder-toolbar/
 *.log

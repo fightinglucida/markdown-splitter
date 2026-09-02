@@ -90,6 +90,23 @@ export const templates = {
     watermark: { show: false, text: '', position: 'none' },
     pageNumber: { show: false, format: 'number' }
   },
+  stickyNote: {
+    name: '便签正文',
+    className: 'template-sticky-note',
+    defaultRatio: '3:4',
+    padding: 0,
+    contentFontSize: 30,
+    lineHeight: 1.72,
+    background: '#ffdf78',
+    cardBackground: '#fffdfb',
+    textColor: '#26221f',
+    accentColor: '#8a6b22',
+    titleColor: '#26221f',
+    author: { show: false },
+    time: { show: true, format: 'MMM DD YYYY' },
+    watermark: { show: false, text: '', position: 'none' },
+    pageNumber: { show: false, format: 'number' }
+  },
   teaching: {
     name: '教学卡片',
     className: 'template-teaching',
@@ -179,6 +196,20 @@ export const templateCapabilities = {
     contentFont: true,
     textColor: true
   },
+  stickyNote: {
+    title: { input: true, render: false, label: '导出名称' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: false },
+    time: false,
+    pageNumber: false,
+    watermark: { enabled: false },
+    background: true,
+    padding: false,
+    titleFont: false,
+    contentFont: true,
+    textColor: true
+  },
   teaching: {
     title: { input: true, render: true, label: '标题' },
     subtitle: false,
@@ -218,10 +249,10 @@ export function markdownToHtml(markdown) {
   return marked.parse(markdown || '')
 }
 
-export function splitMarkdown(markdown) {
-  const clean = stripFrontmatter(markdown)
-    .replace(/^\s*#\s+.+$/m, '')
-    .trim()
+export function splitMarkdown(markdown, { preserveTitleHeading = false } = {}) {
+  let clean = stripFrontmatter(markdown)
+  if (!preserveTitleHeading) clean = clean.replace(/^\s*#\s+.+$/m, '')
+  clean = clean.trim()
 
   const pages = []
   let currentManual = []
@@ -374,6 +405,7 @@ export function createMeasurer(config) {
   card.style.setProperty('--card-padding', `${config.padding}px`)
   card.style.setProperty('--content-size', `${config.contentFontSize}px`)
   card.style.setProperty('--line-height', String(config.lineHeight))
+  card.style.setProperty('--content-line-step', `${Number(config.contentFontSize) * Number(config.lineHeight)}px`)
   card.style.setProperty('--image-max-height-ratio', String((config.imageMaxHeight ?? 42) / 100))
   card.style.setProperty('--outer-bg', config.background)
   card.style.setProperty('--card-bg', template.cardBackground)
@@ -402,7 +434,9 @@ export function createMeasurer(config) {
       card.classList.toggle('is-continuation', pageIndex > 0)
       authorNameEls.forEach(el => { el.textContent = config.authorNickname || '' })
       authorUserEls.forEach(el => { el.textContent = config.authorUsername || '' })
-      timeEls.forEach(el => { el.textContent = config.showTime ? formatTimestamp(config) : '' })
+      timeEls.forEach(el => {
+        el.textContent = (config.showTime || config.template === 'stickyNote') ? formatTimestamp(config) : ''
+      })
       if (watermarkEl) watermarkEl.textContent = config.watermark || ''
       if (pageEl) pageEl.textContent = config.showPageNumber ? measurementPageLabel(config, pageIndex, totalHint) : ''
       contentEl.innerHTML = markdownToHtml(renderUnits(blocks) || '&nbsp;')
@@ -414,12 +448,16 @@ export function createMeasurer(config) {
   }
 }
 
-function formatTimestamp(config, date = new Date()) {
+export function formatTimestamp(config, date = new Date()) {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
   const d = String(date.getDate()).padStart(2, '0')
   const h = String(date.getHours()).padStart(2, '0')
   const minute = String(date.getMinutes()).padStart(2, '0')
+  if (config.timeFormat === 'MMM DD YYYY') {
+    const month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][date.getMonth()]
+    return `${month} ${d} ${y}`
+  }
   if (config.timeFormat === 'MM/DD') return `${m}月${d}日`
   if (config.timeFormat === 'YYYY年MM月DD日') return `${y}年${m}月${d}日`
   if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
@@ -521,6 +559,20 @@ function measurementMarkup(config) {
       </div>
     `
   }
+  if (templateKey === 'stickyNote') {
+    return `
+      <div class="sticky-note-stage">
+        <header class="sticky-note-header">
+          <span class="sticky-note-brand">Sticky Notes</span>
+          <span class="sticky-note-dot" aria-hidden="true"></span>
+          <time class="sticky-note-date" data-time></time>
+        </header>
+        <div class="sticky-note-paper">
+          <main class="sticky-note-content markdown-body card-content"></main>
+        </div>
+      </div>
+    `
+  }
   return `
     <div class="generic-card">
       <h1 class="generic-title" data-title></h1>
@@ -531,7 +583,9 @@ function measurementMarkup(config) {
 }
 
 export function paginateMarkdown(markdown, config) {
-  const manualSections = splitMarkdown(markdown)
+  const manualSections = splitMarkdown(markdown, {
+    preserveTitleHeading: config.template === 'stickyNote'
+  })
   const measurer = createMeasurer(config)
   const pages = config.template === 'elegant' ? [''] : []
 

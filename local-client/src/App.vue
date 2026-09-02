@@ -64,6 +64,13 @@
             <label class="label">正文内容</label>
             <div class="markdown-normalize-actions">
               <button
+                v-if="config.template === 'stickyNote'"
+                class="normalize-action highlight"
+                :disabled="exporting"
+                title="将选中的文字设为加粗，并在便签模板中显示同色高亮"
+                @click="boldSelectedText"
+              >加粗/高亮</button>
+              <button
                 class="normalize-action primary"
                 :disabled="exporting || !draftMarkdown.trim()"
                 title="规范当前正文中的列表、标题、段落和空白"
@@ -157,7 +164,8 @@
             :class="[
               'theme-preview',
               key === 'layeredNote' ? 'layered-note-theme-preview' : '',
-              key === 'stackedPaper' ? 'stacked-paper-theme-preview' : ''
+              key === 'stackedPaper' ? 'stacked-paper-theme-preview' : '',
+              key === 'stickyNote' ? 'sticky-note-theme-preview' : ''
             ]"
             :style="{ background: item.background }"
           >
@@ -179,6 +187,16 @@
                 <span class="stacked-paper-preview-avatar"></span>
                 <span class="stacked-paper-preview-name"></span>
                 <span class="stacked-paper-preview-title"></span>
+              </div>
+            </template>
+            <template v-else-if="key === 'stickyNote'">
+              <div class="sticky-note-preview-header">
+                <span class="sticky-note-preview-brand">Sticky Notes</span>
+                <span class="sticky-note-preview-dot"></span>
+                <span class="sticky-note-preview-date">SEP 02 2026</span>
+              </div>
+              <div class="sticky-note-preview-paper">
+                <span></span><span class="highlighted"></span><span></span>
               </div>
             </template>
             <template v-else>
@@ -208,6 +226,14 @@
           </button>
           <button class="btn primary" :disabled="!files.length || !outputDir || exporting" @click="exportBatch">
             批量导出
+          </button>
+          <button
+            class="btn output-folder-button"
+            :title="outputDir || '尚未设置输出文件夹'"
+            @click="selectOutput"
+          >
+            <span class="output-folder-button__label">{{ outputDir ? '更改输出文件夹' : '设置输出文件夹' }}</span>
+            <span class="output-folder-button__path">{{ outputDirectorySummary }}</span>
           </button>
         </div>
       </header>
@@ -335,6 +361,19 @@
                   </div>
                 </template>
 
+                <template v-else-if="config.template === 'stickyNote'">
+                  <div class="sticky-note-stage">
+                    <header class="sticky-note-header">
+                      <span class="sticky-note-brand">Sticky Notes</span>
+                      <span class="sticky-note-dot" aria-hidden="true"></span>
+                      <time class="sticky-note-date">{{ currentTime }}</time>
+                    </header>
+                    <div class="sticky-note-paper">
+                      <main class="sticky-note-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                    </div>
+                  </div>
+                </template>
+
                 <template v-else>
                   <div class="generic-card">
                     <h1 v-if="index === 0" class="generic-title">{{ renderTitle }}</h1>
@@ -456,9 +495,7 @@
         </section>
 
         <section class="control-section">
-          <label class="label">输出文件夹</label>
-          <button class="btn" @click="selectOutput">选择输出位置</button>
-          <div class="status">{{ outputDir || '尚未选择' }}</div>
+          <label class="label">导出状态</label>
           <div class="status">{{ statusText }}</div>
           <div v-if="batchReport" class="batch-report">
             <div>本次批量：成功 {{ batchReport.success.length }} 个，失败 {{ batchReport.failed.length }} 个</div>
@@ -518,7 +555,7 @@ const demoMarkdown = `# 本地批量生成卡片
 
 const api = window.localCardApi
 const APP_STATE_KEY = 'markdown-card-app-state'
-const APP_STATE_VERSION = 3
+const APP_STATE_VERSION = 4
 const STARTUP_TEMPLATE = 'scholarly'
 const systemFontOptions = [
   { label: '默认 (跟随模板)', value: '' },
@@ -630,6 +667,18 @@ const stackedPaperBackgrounds = [
   '#27272a',
   '#eee6d8'
 ]
+const stickyNoteBackgrounds = [
+  '#ffdf78',
+  '#ffd166',
+  '#ffc8a2',
+  '#ffb4bd',
+  '#c9b8ff',
+  '#a9d7ff',
+  '#9fe0cc',
+  '#bade8f',
+  '#d8c7a5',
+  '#b9c0c9'
+]
 
 const config = reactive({
   template: STARTUP_TEMPLATE,
@@ -668,11 +717,18 @@ const renderTitle = computed(() => config.title.trim() || extractTitle(draftMark
 const titleInputLabel = computed(() => capabilities.value.title?.label || '标题')
 const titleInputPlaceholder = computed(() => capabilities.value.title?.render === false ? '输入导出文件名...' : '输入文章标题...')
 const canExport = computed(() => pages.value.length > 0 && outputDir.value)
+const outputDirectorySummary = computed(() => {
+  const value = String(outputDir.value || '').trim()
+  if (!value) return '尚未设置'
+  if (value.length <= 28) return value
+  return `…${value.slice(-27)}`
+})
 const selectedSocial = computed(() => getSocial(config.socialIcon))
 const authorImage = computed(() => config.authorAvatar || selectedSocial.value.imgUrl)
 const activeBackgrounds = computed(() => {
   if (config.template === 'layeredNote') return layeredNoteBackgrounds
   if (config.template === 'stackedPaper') return stackedPaperBackgrounds
+  if (config.template === 'stickyNote') return stickyNoteBackgrounds
   return backgrounds
 })
 const customBackgroundColor = computed({
@@ -693,6 +749,10 @@ const currentTime = computed(() => {
   const d = String(current.getDate()).padStart(2, '0')
   const h = String(current.getHours()).padStart(2, '0')
   const minute = String(current.getMinutes()).padStart(2, '0')
+  if (config.timeFormat === 'MMM DD YYYY') {
+    const month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][current.getMonth()]
+    return `${month} ${d} ${y}`
+  }
   if (config.timeFormat === 'MM/DD') return `${m}月${d}日`
   if (config.timeFormat === 'YYYY年MM月DD日') return `${y}年${m}月${d}日`
   if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
@@ -723,6 +783,7 @@ const cardStyle = computed(() => ({
   '--card-padding': `${config.padding}px`,
   '--content-size': `${config.contentFontSize}px`,
   '--line-height': String(config.lineHeight),
+  '--content-line-step': `${Number(config.contentFontSize) * Number(config.lineHeight)}px`,
   '--image-max-height-ratio': String(config.imageMaxHeight / 100),
   '--outer-bg': config.background,
   '--card-bg': template.value.cardBackground,
@@ -773,24 +834,16 @@ watch(
   { immediate: true }
 )
 
-watch(
-  () => ({
-    config: snapshotConfig(),
-    templateSettings: snapshotTemplateSettings(),
-    outputDir: outputDir.value
-  }),
-  () => scheduleSaveAppState(),
-  { deep: true }
-)
+watch(outputDir, () => scheduleSaveAppState())
 
 onMounted(async () => {
   clockTimer = window.setInterval(() => { now.value = new Date() }, 30_000)
-  await loadCustomFonts()
   await restoreAppState()
   appStateReady.value = true
-  await repaginate()
   await saveAppStateNow()
   window.addEventListener('beforeunload', saveAppStateNow)
+  await loadCustomFonts()
+  await repaginate()
 })
 
 onBeforeUnmount(() => {
@@ -875,6 +928,22 @@ function handlePreviewWheel(event) {
 function saveDraftToActiveFile(value = draftMarkdown.value) {
   const file = files.value[activeIndex.value]
   if (file) file.content = value
+}
+
+function boldSelectedText() {
+  const input = markdownInput.value
+  if (!input) return
+  const start = input.selectionStart ?? 0
+  const end = input.selectionEnd ?? start
+  const selected = draftMarkdown.value.slice(start, end)
+  const fallback = selected || '高亮文字'
+  const replacement = `**${fallback}**`
+  draftMarkdown.value = `${draftMarkdown.value.slice(0, start)}${replacement}${draftMarkdown.value.slice(end)}`
+  nextTick(() => {
+    input.focus()
+    const selectionStart = start + 2
+    input.setSelectionRange(selectionStart, selectionStart + fallback.length)
+  })
 }
 
 function selectFile(index) {
@@ -1021,26 +1090,9 @@ function enforceTemplateCapabilities(key = config.template) {
   if (!nextCapabilities.author?.enabled) config.showAuthor = false
 }
 
-function normalizeTemplateSettings(value) {
-  if (!value || typeof value !== 'object') return {}
-  const normalized = {}
-  for (const key of Object.keys(templates)) {
-    if (value[key] && typeof value[key] === 'object') {
-      normalized[key] = Object.fromEntries(
-        templateScopedKeys
-          .filter(settingKey => Object.prototype.hasOwnProperty.call(value[key], settingKey))
-          .map(settingKey => [settingKey, value[key][settingKey]])
-      )
-    }
-  }
-  return normalized
-}
-
 function snapshotAppState() {
   return {
     version: APP_STATE_VERSION,
-    config: snapshotConfig(),
-    templateSettings: snapshotTemplateSettings(),
     outputDir: outputDir.value
   }
 }
@@ -1059,15 +1111,6 @@ async function restoreAppState() {
   }
 
   if (!state || typeof state !== 'object') return
-  templateSettings.value = normalizeTemplateSettings(state.templateSettings)
-  if ((Number(state.version) || 0) < 3 && templateSettings.value.layeredNote) {
-    templateSettings.value.layeredNote.showPageNumber = true
-  }
-  const restoredConfig = { ...(state.config || {}) }
-  delete restoredConfig.template
-  applyConfigSnapshot(restoredConfig)
-  config.template = STARTUP_TEMPLATE
-  applyTemplateSettings(STARTUP_TEMPLATE)
   if (typeof state.outputDir === 'string') outputDir.value = state.outputDir
 }
 
