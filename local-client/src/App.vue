@@ -64,7 +64,7 @@
             <label class="label">正文内容</label>
             <div class="markdown-normalize-actions">
               <button
-                v-if="config.template === 'stickyNote'"
+                v-if="['stickyNote', 'greenNote', 'blueNote'].includes(config.template)"
                 class="normalize-action highlight"
                 :disabled="exporting"
                 title="将选中的文字设为加粗，并在便签模板中显示同色高亮"
@@ -165,7 +165,9 @@
               'theme-preview',
               key === 'layeredNote' ? 'layered-note-theme-preview' : '',
               key === 'stackedPaper' ? 'stacked-paper-theme-preview' : '',
-              key === 'stickyNote' ? 'sticky-note-theme-preview' : ''
+              key === 'stickyNote' ? 'sticky-note-theme-preview' : '',
+              key === 'greenNote' ? 'green-note-theme-preview' : '',
+              key === 'blueNote' ? 'blue-note-theme-preview' : ''
             ]"
             :style="{ background: item.background }"
           >
@@ -197,6 +199,21 @@
               </div>
               <div class="sticky-note-preview-paper">
                 <span></span><span class="highlighted"></span><span></span>
+              </div>
+            </template>
+            <template v-else-if="key === 'greenNote'">
+              <div class="green-note-preview-back"></div>
+              <div class="green-note-preview-paper">
+                <div class="green-note-preview-head"><span>•••</span><b>Text Note</b></div>
+                <div class="green-note-preview-copy"><i></i><i class="short"></i><i></i></div>
+                <span class="green-note-preview-rule"></span>
+              </div>
+            </template>
+            <template v-else-if="key === 'blueNote'">
+              <div class="blue-note-preview-paper">
+                <div class="blue-note-preview-copy"><i></i><i></i><i class="short"></i></div>
+                <span class="blue-note-preview-rule"></span>
+                <div class="blue-note-preview-foot"><span>Wednesday</span><b>Text Note</b></div>
               </div>
             </template>
             <template v-else>
@@ -370,6 +387,32 @@
                     </header>
                     <div class="sticky-note-paper">
                       <main class="sticky-note-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else-if="config.template === 'greenNote'">
+                  <div class="green-note-stage">
+                    <div class="green-note-paper">
+                      <header class="green-note-header">
+                        <span class="green-note-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                        <span class="green-note-label">Text Note</span>
+                      </header>
+                      <main class="green-note-content text-note-body markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <footer class="green-note-footer"><span></span></footer>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else-if="config.template === 'blueNote'">
+                  <div class="blue-note-stage">
+                    <div class="blue-note-paper">
+                      <main class="blue-note-content text-note-body markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <footer class="blue-note-footer">
+                        <span class="blue-note-rule"></span>
+                        <span class="blue-note-weekday">{{ currentWeekday }}</span>
+                        <span class="blue-note-label">Text Note</span>
+                      </footer>
                     </div>
                   </div>
                 </template>
@@ -633,7 +676,25 @@ const backgrounds = [
   '#f5f5f5',
   '#fbfbf7'
 ]
-const layeredNoteBackgrounds = [
+const freshColorBackgrounds = [
+  // 奶油与暖阳
+  '#ffdf78', '#ffd166', '#ffca80', '#ffe082', '#fff176', '#dce775',
+  // 蜜桃、珊瑚与樱花
+  '#ffb38a', '#ffab91', '#ff9f9a', '#ff8a80', '#f6a6b2', '#f48fb1',
+  // 紫藤与薰衣草
+  '#e1bee7', '#ce93d8', '#b39ddb', '#a99bea', '#9fa8da', '#7e8ed8',
+  // 天空、雾蓝与湖水
+  '#90caf9', '#78bce8', '#80deea', '#70c7d4', '#81d4c7', '#4db6ac',
+  // 薄荷、鼠尾草与青柠
+  '#8fd5b5', '#a5d6a7', '#b8d99a', '#c5e1a5', '#aed581', '#8fca78',
+  // 燕麦、奶咖与雾灰
+  '#e8cfa6', '#d7bd9b', '#bcaaa4', '#c8b9ad', '#b0bec5', '#9eabb8',
+  // 清透但更醒目的点缀色
+  '#ff9f68', '#ff7f90', '#e879b9', '#a477d4', '#6f86e8', '#58a9e1', '#43c5bd', '#55bd85'
+]
+const withFreshColors = (...featured) => [...new Set([...featured, ...freshColorBackgrounds])]
+
+const layeredNoteBackgrounds = withFreshColors(
   '#f52245',
   '#ff5a5f',
   '#e14b71',
@@ -644,8 +705,8 @@ const layeredNoteBackgrounds = [
   '#168b82',
   '#2f7d55',
   '#27272a'
-]
-const stackedPaperBackgrounds = [
+)
+const stackedPaperBackgrounds = withFreshColors(
   '#70de89',
   '#4ecb71',
   '#84cc16',
@@ -666,8 +727,8 @@ const stackedPaperBackgrounds = [
   '#64748b',
   '#27272a',
   '#eee6d8'
-]
-const stickyNoteBackgrounds = [
+)
+const stickyNoteBackgrounds = withFreshColors(
   '#ffdf78',
   '#ffd166',
   '#ffc8a2',
@@ -678,7 +739,9 @@ const stickyNoteBackgrounds = [
   '#bade8f',
   '#d8c7a5',
   '#b9c0c9'
-]
+)
+const greenNoteBackgrounds = withFreshColors('#2dbd83', '#25b979', '#38c99a', '#20a96f', '#3eb489', '#27ae60')
+const blueNoteBackgrounds = withFreshColors('#527cf4', '#4f75e8', '#6088ff', '#4567d4', '#5b6ee1', '#4776e6')
 
 const config = reactive({
   template: STARTUP_TEMPLATE,
@@ -729,6 +792,8 @@ const activeBackgrounds = computed(() => {
   if (config.template === 'layeredNote') return layeredNoteBackgrounds
   if (config.template === 'stackedPaper') return stackedPaperBackgrounds
   if (config.template === 'stickyNote') return stickyNoteBackgrounds
+  if (config.template === 'greenNote') return greenNoteBackgrounds
+  if (config.template === 'blueNote') return blueNoteBackgrounds
   return backgrounds
 })
 const customBackgroundColor = computed({
@@ -758,6 +823,9 @@ const currentTime = computed(() => {
   if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
   return `${y}-${m}-${d}`
 })
+const currentWeekday = computed(() => (
+  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][now.value.getDay()]
+))
 const pageLabel = (index) => {
   if (config.template === 'elegant') {
     return `${Math.max(1, index)} / ${Math.max(1, pages.value.length - 1)}`

@@ -1337,6 +1337,297 @@ button {
   background: linear-gradient(to right, rgba(38, 34, 31, 0.58) 0 64%, #ffdf78 64% 100%);
 }
 
+/* Green stacked Text Note theme. */
+.template-green-note,
+.template-blue-note {
+  background: var(--outer-bg);
+  color: var(--text-color);
+}
+
+.green-note-stage,
+.blue-note-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.green-note-stage::before {
+  position: absolute;
+  inset: 42px 24px 42px 48px;
+  z-index: 0;
+  border-radius: 42px;
+  background: rgba(218, 255, 239, 0.68);
+  box-shadow: 0 10px 24px rgba(12, 91, 61, 0.12);
+  content: "";
+  transform: rotate(3.4deg);
+}
+
+.green-note-paper {
+  position: absolute;
+  inset: 50px 36px 55px 38px;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 42px;
+  background: var(--card-bg);
+  box-shadow: 0 16px 30px rgba(12, 91, 61, 0.12);
+}
+
+.green-note-header {
+  display: flex;
+  min-height: 92px;
+  flex: 0 0 92px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 17px 47px 0;
+  color: var(--outer-bg);
+  font-family: Inter, Arial, sans-serif;
+}
+
+.green-note-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.green-note-dots i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.green-note-label,
+.blue-note-label,
+.blue-note-weekday {
+  font-family: Inter, Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.green-note-content,
+.blue-note-content {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-color);
+  font-family: var(--content-font-family, "Microsoft YaHei", "PingFang SC", "Segoe UI Emoji", "Apple Color Emoji", sans-serif);
+  font-size: var(--content-size);
+  letter-spacing: 0.025em;
+  line-height: var(--line-height);
+  text-align: justify;
+  text-justify: inter-ideograph;
+  overflow-wrap: anywhere;
+}
+
+.green-note-content {
+  padding: 13px 44px 17px;
+  font-weight: 650;
+}
+
+.text-note-body p,
+.text-note-body li,
+.text-note-body blockquote {
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+
+.text-note-body p,
+.text-note-body ul,
+.text-note-body ol {
+  margin-bottom: 0.54em;
+}
+
+.text-note-body strong,
+.text-note-body b {
+  padding: 0 0.06em;
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 64%,
+    var(--outer-bg) 64%,
+    var(--outer-bg) 94%,
+    transparent 94%,
+    transparent 100%
+  );
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: inherit;
+  font-weight: 800;
+}
+
+.text-note-body img {
+  border-radius: 10px;
+}
+
+.green-note-footer {
+  display: flex;
+  min-height: 68px;
+  flex: 0 0 68px;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 13px;
+}
+
+.green-note-footer span {
+  display: block;
+  width: calc(100% - 94px);
+  height: 1px;
+  background: var(--outer-bg);
+  opacity: 0.82;
+}
+
+/* Blue bordered Text Note theme. */
+.blue-note-stage::before {
+  position: absolute;
+  inset: 69px 21px 35px 54px;
+  z-index: 0;
+  border-radius: 38px;
+  background: #3657a8;
+  content: "";
+}
+
+.blue-note-paper {
+  position: absolute;
+  inset: 52px 38px 55px 34px;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 3px solid #35518e;
+  border-radius: 39px;
+  background: var(--card-bg);
+  box-shadow: 0 11px 20px rgba(31, 55, 114, 0.12);
+}
+
+.blue-note-content {
+  padding: 58px 45px 24px;
+  font-weight: 500;
+}
+
+.blue-note-footer {
+  display: grid;
+  min-height: 82px;
+  flex: 0 0 82px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1px 1fr;
+  align-items: center;
+  padding: 0 25px 15px;
+  color: #35559e;
+}
+
+.blue-note-rule {
+  width: 100%;
+  height: 1px;
+  grid-column: 1 / -1;
+  background: var(--outer-bg);
+  opacity: 0.9;
+}
+
+.blue-note-weekday { justify-self: start; }
+.blue-note-label { justify-self: end; }
+
+/* Mini previews for both Text Note themes. */
+.green-note-theme-preview,
+.blue-note-theme-preview {
+  display: block;
+  padding: 0;
+}
+
+.green-note-preview-back {
+  position: absolute;
+  inset: 8% 4% 5% 10%;
+  border-radius: 9px;
+  background: rgba(218, 255, 239, 0.68);
+  transform: rotate(4deg);
+}
+
+.green-note-preview-paper,
+.blue-note-preview-paper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fbfffd;
+}
+
+.green-note-preview-paper {
+  inset: 7% 6% 7% 6%;
+  border-radius: 9px;
+  padding: 10px 9px 7px;
+}
+
+.green-note-preview-head,
+.blue-note-preview-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #2dbd83;
+  font-size: 4px;
+  line-height: 1;
+}
+
+.green-note-preview-copy,
+.blue-note-preview-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 3px;
+}
+
+.green-note-preview-copy i,
+.blue-note-preview-copy i {
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(8, 11, 9, 0.68);
+}
+
+.green-note-preview-copy i.short,
+.blue-note-preview-copy i.short { width: 76%; }
+
+.green-note-preview-rule,
+.blue-note-preview-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: #2dbd83;
+}
+
+.blue-note-preview-paper {
+  inset: 7% 7% 8% 6%;
+  border: 1px solid #35518e;
+  border-radius: 9px;
+  padding: 14px 8px 8px;
+  box-shadow: 4px 5px 0 #3657a8;
+}
+
+.blue-note-preview-copy { padding: 2px 3px 5px; }
+.blue-note-preview-rule { background: #527cf4; }
+.blue-note-preview-foot {
+  padding-top: 6px;
+  color: #35559e;
+  font-size: 3.5px;
+  font-weight: 800;
+}
+
 .generic-card {
   width: 100%;
   height: 100%;

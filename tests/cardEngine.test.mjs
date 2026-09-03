@@ -1,11 +1,16 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { formatTimestamp, splitMarkdown } from '../local-client/src/cardEngine.js'
+import { formatTimestamp, formatWeekday, splitMarkdown } from '../local-client/src/cardEngine.js'
 
 test('formats the sticky-note date with an English month abbreviation', () => {
   const date = new Date(2026, 8, 2, 9, 30)
   assert.equal(formatTimestamp({ timeFormat: 'MMM DD YYYY' }, date), 'SEP 02 2026')
+})
+
+test('formats the blue-note weekday from the current date', () => {
+  const date = new Date(2026, 8, 2, 9, 30)
+  assert.equal(formatWeekday(date), 'Wednesday')
 })
 
 test('can preserve the first Markdown heading for body-only templates', () => {

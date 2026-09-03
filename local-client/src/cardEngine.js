@@ -107,6 +107,38 @@ export const templates = {
     watermark: { show: false, text: '', position: 'none' },
     pageNumber: { show: false, format: 'number' }
   },
+  greenNote: {
+    name: '绿意文本笺',
+    className: 'template-green-note',
+    defaultRatio: '3:4',
+    padding: 0,
+    contentFontSize: 30,
+    lineHeight: 1.58,
+    background: '#2dbd83',
+    cardBackground: '#fbfffd',
+    textColor: '#080b09',
+    accentColor: '#2dbd83',
+    titleColor: '#080b09',
+    author: { show: false },
+    watermark: { show: false, text: '', position: 'none' },
+    pageNumber: { show: false, format: 'number' }
+  },
+  blueNote: {
+    name: '蓝调文本笺',
+    className: 'template-blue-note',
+    defaultRatio: '3:4',
+    padding: 0,
+    contentFontSize: 30,
+    lineHeight: 1.56,
+    background: '#527cf4',
+    cardBackground: '#fbfbfb',
+    textColor: '#090b0f',
+    accentColor: '#35559e',
+    titleColor: '#090b0f',
+    author: { show: false },
+    watermark: { show: false, text: '', position: 'none' },
+    pageNumber: { show: false, format: 'number' }
+  },
   teaching: {
     name: '教学卡片',
     className: 'template-teaching',
@@ -197,6 +229,34 @@ export const templateCapabilities = {
     textColor: true
   },
   stickyNote: {
+    title: { input: true, render: false, label: '导出名称' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: false },
+    time: false,
+    pageNumber: false,
+    watermark: { enabled: false },
+    background: true,
+    padding: false,
+    titleFont: false,
+    contentFont: true,
+    textColor: true
+  },
+  greenNote: {
+    title: { input: true, render: false, label: '导出名称' },
+    subtitle: false,
+    coverImage: false,
+    author: { enabled: false },
+    time: false,
+    pageNumber: false,
+    watermark: { enabled: false },
+    background: true,
+    padding: false,
+    titleFont: false,
+    contentFont: true,
+    textColor: true
+  },
+  blueNote: {
     title: { input: true, render: false, label: '导出名称' },
     subtitle: false,
     coverImage: false,
@@ -427,6 +487,7 @@ export function createMeasurer(config) {
   const authorNameEls = card.querySelectorAll('[data-author-name]')
   const authorUserEls = card.querySelectorAll('[data-author-user]')
   const timeEls = card.querySelectorAll('[data-time]')
+  const weekdayEls = card.querySelectorAll('[data-weekday]')
 
   return {
     fits(blocks, pageIndex, totalHint = 1) {
@@ -437,6 +498,7 @@ export function createMeasurer(config) {
       timeEls.forEach(el => {
         el.textContent = (config.showTime || config.template === 'stickyNote') ? formatTimestamp(config) : ''
       })
+      weekdayEls.forEach(el => { el.textContent = formatWeekday() })
       if (watermarkEl) watermarkEl.textContent = config.watermark || ''
       if (pageEl) pageEl.textContent = config.showPageNumber ? measurementPageLabel(config, pageIndex, totalHint) : ''
       contentEl.innerHTML = markdownToHtml(renderUnits(blocks) || '&nbsp;')
@@ -462,6 +524,10 @@ export function formatTimestamp(config, date = new Date()) {
   if (config.timeFormat === 'YYYY年MM月DD日') return `${y}年${m}月${d}日`
   if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
   return `${y}-${m}-${d}`
+}
+
+export function formatWeekday(date = new Date()) {
+  return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()]
 }
 
 function measurementPageLabel(config, pageIndex, totalHint) {
@@ -573,6 +639,34 @@ function measurementMarkup(config) {
       </div>
     `
   }
+  if (templateKey === 'greenNote') {
+    return `
+      <div class="green-note-stage">
+        <div class="green-note-paper">
+          <header class="green-note-header">
+            <span class="green-note-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="green-note-label">Text Note</span>
+          </header>
+          <main class="green-note-content text-note-body markdown-body card-content"></main>
+          <footer class="green-note-footer"><span></span></footer>
+        </div>
+      </div>
+    `
+  }
+  if (templateKey === 'blueNote') {
+    return `
+      <div class="blue-note-stage">
+        <div class="blue-note-paper">
+          <main class="blue-note-content text-note-body markdown-body card-content"></main>
+          <footer class="blue-note-footer">
+            <span class="blue-note-rule"></span>
+            <span class="blue-note-weekday" data-weekday></span>
+            <span class="blue-note-label">Text Note</span>
+          </footer>
+        </div>
+      </div>
+    `
+  }
   return `
     <div class="generic-card">
       <h1 class="generic-title" data-title></h1>
@@ -584,7 +678,7 @@ function measurementMarkup(config) {
 
 export function paginateMarkdown(markdown, config) {
   const manualSections = splitMarkdown(markdown, {
-    preserveTitleHeading: config.template === 'stickyNote'
+    preserveTitleHeading: ['stickyNote', 'greenNote', 'blueNote'].includes(config.template)
   })
   const measurer = createMeasurer(config)
   const pages = config.template === 'elegant' ? [''] : []
