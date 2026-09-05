@@ -1495,7 +1495,7 @@ button {
   inset: 69px 21px 35px 54px;
   z-index: 0;
   border-radius: 38px;
-  background: #3657a8;
+  background: color-mix(in srgb, var(--outer-bg) 62%, #000 38%);
   content: "";
 }
 

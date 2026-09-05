@@ -740,8 +740,8 @@ const stickyNoteBackgrounds = withFreshColors(
   '#d8c7a5',
   '#b9c0c9'
 )
-const greenNoteBackgrounds = withFreshColors('#2dbd83', '#25b979', '#38c99a', '#20a96f', '#3eb489', '#27ae60')
-const blueNoteBackgrounds = withFreshColors('#527cf4', '#4f75e8', '#6088ff', '#4567d4', '#5b6ee1', '#4776e6')
+const greenNoteBackgrounds = withFreshColors('#2dbd83')
+const blueNoteBackgrounds = withFreshColors('#527cf4')
 
 const config = reactive({
   template: STARTUP_TEMPLATE,
