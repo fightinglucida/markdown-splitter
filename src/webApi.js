@@ -5,6 +5,7 @@ const MARKDOWN_EXTENSIONS = /\.(md|markdown|txt)$/i
 const IMAGE_EXTENSIONS = /\.(png|jpe?g|webp|gif|svg)$/i
 const FONT_EXTENSIONS = /\.(ttf|otf|woff2?)$/i
 const DATABASE_NAME = 'markdown2card-web-storage'
+const BATCH_ZIP_NAME = '快贴卡片-批量导出.zip'
 const DATABASE_STORE = 'keyval'
 const BUNDLED_WEB_FONT_VERSION = '20260717'
 const BUNDLED_WEB_FONT_NAMES = [
@@ -451,7 +452,7 @@ async function webSaveImages({ articleName, images, mode = 'folder' } = {}) {
   if (batchArchive) {
     const target = mode === 'folder' ? batchArchive.folder(article) : batchArchive
     for (const record of records) target.file(record.filename, record.blob)
-    const dir = mode === 'folder' ? `markdown2card-batch.zip/${article}` : 'markdown2card-batch.zip'
+    const dir = mode === 'folder' ? `${BATCH_ZIP_NAME}/${article}` : BATCH_ZIP_NAME
     return { dir, files: records.map(record => `${dir}/${record.filename}`) }
   }
 
@@ -469,7 +470,7 @@ async function webSaveBatchReport({ report } = {}) {
   const success = Array.isArray(report?.success) ? report.success : []
   const failed = Array.isArray(report?.failed) ? report.failed : []
   const text = [
-    'Markdown2Card 批量导出结果',
+    '快贴卡片批量导出结果',
     `时间：${now.toLocaleString('zh-CN')}`,
     `成功：${success.length}`,
     `失败：${failed.length}`,
@@ -532,8 +533,8 @@ export function createWebApi() {
       const archive = batchArchive
       batchArchive = null
       const blob = await archive.generateAsync({ type: 'blob', compression: 'STORE' })
-      downloadBlob(blob, 'markdown2card-batch.zip')
-      return { filePath: 'markdown2card-batch.zip' }
+      downloadBlob(blob, BATCH_ZIP_NAME)
+      return { filePath: BATCH_ZIP_NAME }
     },
     loadAppState: loadWebAppState,
     saveAppState: saveWebAppState,

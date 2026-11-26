@@ -1,7 +1,41 @@
 <template>
-  <div class="app-shell">
-    <aside class="panel left-panel">
-      <div class="brand-block">
+  <div class="app-shell" :class="{ 'quick-card': web }">
+    <header v-if="web" class="quick-card-topbar">
+      <div class="quick-card-brand">
+        <img :src="quickCardLogo" width="32" height="32" alt="" />
+        <div>
+          <h1>快贴卡片</h1>
+          <span>Markdown 卡片工作台</span>
+        </div>
+        <a href="https://kuaipintu.com/" target="_blank" rel="noopener noreferrer" class="quick-card-sister">快拼图 <span aria-hidden="true">↗</span></a>
+      </div>
+      <nav class="quick-card-modes" aria-label="卡片编辑">
+        <a href="#card-editor" :class="{ active: activeTab === 'content' }" :aria-current="activeTab === 'content' ? 'true' : undefined" @click="activeTab = 'content'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H5v18h14V8Zm0 0v5h5M8 12h8m-8 4h6"/></svg>
+          编辑内容
+        </a>
+        <a href="#card-editor" :class="{ active: activeTab === 'themes' }" :aria-current="activeTab === 'themes' ? 'true' : undefined" @click="activeTab = 'themes'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          卡片模板
+        </a>
+        <a class="quick-card-jump" href="#card-preview">预览</a>
+        <a class="quick-card-jump" href="#card-settings">设置</a>
+      </nav>
+      <div class="button-row quick-card-export">
+        <button class="btn output-folder-button" :title="outputDir || '默认下载 ZIP，可选择文件夹'" @click="selectOutput">
+          <span class="output-folder-button__label">导出位置</span>
+          <span class="output-folder-button__path">{{ outputDir ? outputDirectorySummary : '浏览器下载（ZIP）' }}</span>
+        </button>
+        <button class="btn" :disabled="!files.length || exporting" @click="exportBatch">批量导出</button>
+        <button class="btn primary" :disabled="!canExport || exporting" @click="exportCurrent">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>
+          {{ exporting ? '导出中…' : '导出卡片' }}
+        </button>
+      </div>
+    </header>
+
+    <aside id="card-editor" class="panel left-panel" :aria-label="web ? '卡片内容与模板' : undefined">
+      <div v-if="!web" class="brand-block">
         <div class="brand-mark">M2</div>
         <div>
           <h1 class="brand-title">Markdown2Card</h1>
@@ -9,14 +43,14 @@
         </div>
       </div>
 
-      <div class="tabs">
+      <div v-if="!web" class="tabs">
         <button :class="['tab-btn', activeTab === 'content' ? 'active' : '']" @click="activeTab = 'content'">内容</button>
         <button :class="['tab-btn', activeTab === 'themes' ? 'active' : '']" @click="activeTab = 'themes'">模板</button>
       </div>
 
       <div v-if="activeTab === 'content'" class="left-scroll">
         <section class="control-section">
-          <label class="label">文件</label>
+          <label class="label">{{ web ? '导入文稿' : '文件' }}</label>
           <div class="button-row">
             <button class="btn" @click="openFiles">选择文件</button>
             <button class="btn" @click="openFolder">选择文件夹</button>
@@ -92,12 +126,13 @@
               >撤销</button>
             </div>
           </div>
-          <div class="hint markdown-format-hint">支持 Markdown / --- 手动分页 · 富文本粘贴会自动转换</div>
+          <div class="hint markdown-format-hint">支持 Markdown、富文本粘贴和 --- 手动分页</div>
           <textarea
             ref="markdownInput"
             v-model="draftMarkdown"
             class="textarea"
-            placeholder="在此输入 Markdown..."
+            :placeholder="web ? '输入或粘贴 Markdown 正文…' : '在此输入 Markdown...'"
+            aria-label="卡片正文"
             @paste="handleMarkdownPaste"
           ></textarea>
         </section>
@@ -234,39 +269,35 @@
       </div>
     </aside>
 
-    <main class="workspace">
+    <main id="card-preview" class="workspace" :aria-label="web ? '卡片预览' : undefined">
       <header class="toolbar">
         <div>
           <div class="toolbar-title">{{ renderTitle }}</div>
-          <div class="brand-subtitle">共 {{ pages.length }} 张卡片</div>
+          <div class="brand-subtitle">
+            <template v-if="web">{{ template.name }} · {{ config.ratio }} · </template>共 {{ pages.length }} 张卡片
+          </div>
           <div v-if="overflowPages.length" class="overflow-alert">第 {{ overflowPages.join('、') }} 张内容超出画布</div>
           <div v-if="missingImages.length" class="overflow-alert">有 {{ missingImages.length }} 张正文图片未找到</div>
+          <div v-if="web && statusText !== '准备就绪'" class="quick-card-feedback" role="status">{{ statusText }}</div>
         </div>
-        <div class="button-row">
+        <button v-if="web" class="btn" @click="repaginate">重新分页</button>
+        <div v-else class="button-row">
           <button class="btn" @click="repaginate">重新分页</button>
-          <button class="btn primary" :disabled="!canExport || exporting" @click="exportCurrent">
-            导出当前文章
-          </button>
-          <button class="btn primary" :disabled="!files.length || !outputDir || exporting" @click="exportBatch">
-            批量导出
-          </button>
-          <button
-            class="btn output-folder-button"
-            :title="outputDir || '尚未设置输出文件夹'"
-            @click="selectOutput"
-          >
+          <button class="btn primary" :disabled="!canExport || exporting" @click="exportCurrent">导出当前文章</button>
+          <button class="btn primary" :disabled="!files.length || !outputDir || exporting" @click="exportBatch">批量导出</button>
+          <button class="btn output-folder-button" :title="outputDir || '尚未设置输出文件夹'" @click="selectOutput">
             <span class="output-folder-button__label">{{ outputDir ? '更改输出文件夹' : '设置输出文件夹' }}</span>
             <span class="output-folder-button__path">{{ outputDirectorySummary }}</span>
           </button>
         </div>
       </header>
 
-      <div class="canvas-scroll" @wheel.ctrl.prevent="handlePreviewWheel">
+      <div ref="canvasScroller" class="canvas-scroll" @wheel.ctrl.prevent="handlePreviewWheel">
         <article v-if="config.template === 'appleNotes'" ref="notesMeasureCard"
           class="notes-measure export-card template-apple-notes" :style="cardStyle" aria-hidden="true">
           <AppleNotesCard v-bind="notesProps" />
         </article>
-        <div class="cards-grid">
+        <div class="cards-grid" :style="web ? { '--preview-card-width': frameStyle.width } : undefined">
           <div
             v-for="(page, index) in pages"
             :key="`${activeIndex}-${index}-${config.template}-${config.ratio}`"
@@ -453,10 +484,15 @@
           </div>
         </div>
       </div>
+      <label v-if="web" class="quick-card-zoom">
+        <span>缩放</span>
+        <input :value="previewScale" @input="setPreviewZoom(Number($event.target.value))" type="range" min="25" max="120" class="range-input" />
+        <output>{{ previewScale }}%</output>
+      </label>
     </main>
 
-    <aside class="panel right-panel">
-      <div class="properties-title">属性设置</div>
+    <aside id="card-settings" class="panel right-panel">
+      <div class="properties-title">{{ web ? '卡片设置' : '属性设置' }}</div>
       <div class="properties-scroll">
         <section class="control-section preset-section">
           <label class="label">预设管理</label>
@@ -508,10 +544,10 @@
           </label>
         </section>
 
-        <section class="control-section setting-grid">
+        <section v-if="!web || capabilities.padding" class="control-section setting-grid">
           <label class="label">容器设置</label>
           <div v-if="capabilities.padding" class="range-row"><div class="range-line"><span>外层边距</span><span>{{ config.padding }}px</span></div><input v-model.number="config.padding" type="range" min="0" max="72" class="range-input" /></div>
-          <div class="range-row"><div class="range-line"><span>缩放比例</span><span>{{ config.previewScale }}%</span></div><input v-model.number="config.previewScale" type="range" min="25" max="120" class="range-input" /></div>
+          <div v-if="!web" class="range-row"><div class="range-line"><span>缩放比例</span><span>{{ config.previewScale }}%</span></div><input v-model.number="config.previewScale" type="range" min="25" max="120" class="range-input" /></div>
         </section>
 
         <section class="control-section setting-grid">
@@ -530,7 +566,7 @@
           </select>
           <div class="font-actions">
             <button class="btn ghost font-refresh" @click="loadCustomFonts(true)">刷新字体</button>
-            <button class="btn ghost font-refresh" @click="openFontDir">打开目录</button>
+            <button class="btn ghost font-refresh" @click="openFontDir">{{ web ? '导入本地字体' : '打开目录' }}</button>
           </div>
           <div class="range-row"><div class="range-line"><span>内容字号</span><span>{{ config.contentFontSize }}px</span></div><input v-model.number="config.contentFontSize" type="range" min="12" max="34" class="range-input" /></div>
           <div class="range-row"><div class="range-line"><span>行高</span><span>{{ config.lineHeight }}</span></div><input v-model.number="config.lineHeight" type="range" min="1.2" max="2.2" :step="config.template === 'appleNotes' ? 0.01 : 0.05" class="range-input" /></div>
@@ -591,7 +627,19 @@ import {
   normalizeMarkdown
 } from './markdownNormalizer'
 
-const demoMarkdown = `# 本地批量生成卡片
+const props = defineProps({ web: Boolean })
+const quickCardLogo = `${import.meta.env.BASE_URL}quick-card.svg`
+const demoMarkdown = props.web ? `# 用快贴卡片制作第一张卡片
+
+把文章、笔记或清单粘贴到正文框，预览区会实时显示排版结果。
+
+## 三步做成一组卡片
+
+1. 导入 Markdown 文件，或直接编辑正文。
+2. 选择卡片模板，调整画布、字体和行距。
+3. 导出 PNG 卡片，或选择指定的输出文件夹。
+
+每个空行都会保留。长文自动分页，也可以单独输入一行 \`---\` 指定分页位置。` : `# 本地批量生成卡片
 
 这个客户端会读取本地 Markdown 文件，并按照右侧设置的模板自动分页。
 
@@ -659,7 +707,7 @@ const exporting = ref(false)
 const statusText = ref('准备就绪')
 const draftMarkdown = ref(demoMarkdown)
 const resolvedMarkdown = ref(demoMarkdown)
-const activeTab = ref('themes')
+const activeTab = ref(props.web ? 'content' : 'themes')
 const presetName = ref('')
 const savedPresets = ref(loadSavedPresets())
 const customFonts = ref([])
@@ -804,7 +852,7 @@ const notesProps = computed(() => ({
 }))
 const titleInputLabel = computed(() => capabilities.value.title?.label || '标题')
 const titleInputPlaceholder = computed(() => capabilities.value.title?.render === false ? '输入导出文件名...' : '输入文章标题...')
-const canExport = computed(() => pages.value.length > 0 && outputDir.value)
+const canExport = computed(() => pages.value.length > 0 && (props.web || Boolean(outputDir.value)))
 const outputDirectorySummary = computed(() => {
   const value = String(outputDir.value || '').trim()
   if (!value) return '尚未设置'
@@ -845,13 +893,22 @@ const pageLabel = (index) => {
   return `${index + 1} / ${pages.value.length}`
 }
 
+const canvasScroller = ref(null)
+const canvasWidth = ref(Infinity)
+const fitPreview = ref(true)
+let canvasObserver
+const previewScale = computed(() => {
+  if (!props.web || !fitPreview.value) return config.previewScale
+  return Math.min(config.previewScale, Math.max(25, Math.floor(canvasWidth.value / ratio.value.width * 100)))
+})
+
 const frameStyle = computed(() => ({
-  width: `${Math.round(ratio.value.width * config.previewScale / 100)}px`,
-  height: `${Math.round(ratio.value.height * config.previewScale / 100)}px`
+  width: `${Math.round(ratio.value.width * previewScale.value / 100)}px`,
+  height: `${Math.round(ratio.value.height * previewScale.value / 100)}px`
 }))
 
 const previewCardStyle = computed(() => ({
-  transform: `scale(${config.previewScale / 100})`,
+  transform: `scale(${previewScale.value / 100})`,
   transformOrigin: 'top left'
 }))
 
@@ -916,6 +973,10 @@ watch(
 watch(outputDir, () => scheduleSaveAppState())
 
 onMounted(async () => {
+  if (props.web && canvasScroller.value && typeof ResizeObserver !== 'undefined') {
+    canvasObserver = new ResizeObserver(([entry]) => { canvasWidth.value = entry.contentRect.width })
+    canvasObserver.observe(canvasScroller.value)
+  }
   clockTimer = window.setInterval(() => { now.value = new Date() }, 30_000)
   await restoreAppState()
   appStateReady.value = true
@@ -926,6 +987,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  canvasObserver?.disconnect()
   window.removeEventListener('beforeunload', saveAppStateNow)
   window.clearTimeout(appStateSaveTimer)
   window.clearTimeout(overflowCheckTimer)
@@ -1006,8 +1068,12 @@ async function checkOverflow() {
 }
 
 function handlePreviewWheel(event) {
-  const next = config.previewScale + (event.deltaY < 0 ? 5 : -5)
-  config.previewScale = Math.min(120, Math.max(25, next))
+  setPreviewZoom(previewScale.value + (event.deltaY < 0 ? 5 : -5))
+}
+
+function setPreviewZoom(scale) {
+  fitPreview.value = false
+  config.previewScale = Math.min(120, Math.max(25, scale))
 }
 
 function saveDraftToActiveFile(value = draftMarkdown.value) {
@@ -1122,6 +1188,7 @@ function applyTemplateSettings(key, reset = false) {
 }
 
 function resetCurrentTemplate() {
+  fitPreview.value = true
   const nextSettings = { ...templateSettings.value }
   delete nextSettings[config.template]
   templateSettings.value = nextSettings
@@ -1438,8 +1505,12 @@ async function openFolder() {
 
 async function selectOutput() {
   if (!api) return
-  const dir = await api.selectOutputFolder()
-  if (dir) outputDir.value = dir
+  try {
+    const dir = await api.selectOutputFolder()
+    if (dir) outputDir.value = dir
+  } catch (error) {
+    statusText.value = `无法设置导出位置：${error.message || error}`
+  }
 }
 
 async function selectCover() {
@@ -1649,7 +1720,7 @@ async function captureImages() {
 }
 
 async function exportCurrent() {
-  if (!api || !outputDir.value) return
+  if (!api || !canExport.value) return
   exporting.value = true
   batchReport.value = null
   statusText.value = '正在导出当前文章...'
@@ -1678,7 +1749,7 @@ async function exportCurrent() {
 }
 
 async function exportBatch() {
-  if (!api || !outputDir.value || !files.value.length) return
+  if (!api || (!props.web && !outputDir.value) || !files.value.length) return
   exporting.value = true
   batchReport.value = null
   saveDraftToActiveFile()

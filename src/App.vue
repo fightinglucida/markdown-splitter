@@ -1,5 +1,5 @@
 <template>
-  <LocalClientApp />
+  <LocalClientApp web />
 </template>
 
 <script setup>
