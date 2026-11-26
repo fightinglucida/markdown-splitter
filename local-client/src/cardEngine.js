@@ -3,12 +3,29 @@ import { marked } from 'marked'
 export const ratios = {
   '1:1': { label: '1:1', width: 800, height: 800 },
   '3:4': { label: '3:4', width: 600, height: 800 },
+  '3:5': { label: '3:5', width: 600, height: 1000 },
   '4:3': { label: '4:3', width: 800, height: 600 },
   '9:16': { label: '9:16', width: 562, height: 1000 },
   '16:9': { label: '16:9', width: 1000, height: 562 }
 }
 
 export const templates = {
+  appleNotes: {
+    name: '苹果备忘录',
+    className: 'template-apple-notes',
+    defaultRatio: '3:4',
+    ratios: ['1:1', '3:4', '3:5', '9:16'],
+    padding: 0,
+    contentFontSize: 24,
+    lineHeight: 1.77,
+    background: '#ffffff',
+    cardBackground: '#ffffff',
+    textColor: '#000000',
+    titleColor: '#000000',
+    accentColor: '#e5a500',
+    author: { show: true },
+    time: { format: 'YYYY年MM月DD日 HH:mm:ss' }
+  },
   modern: {
     name: '现代简约',
     className: 'template-modern',
@@ -158,6 +175,14 @@ export const templates = {
 }
 
 export const templateCapabilities = {
+  appleNotes: {
+    title: { input: true, render: true, label: '首页标题' },
+    author: { enabled: true, username: true, toggle: false },
+    titleFont: true,
+    contentFont: true,
+    background: false,
+    textColor: false
+  },
   modern: {
     title: { input: true, render: true, label: '标题' },
     subtitle: false,
@@ -312,13 +337,21 @@ export function markdownToHtml(markdown) {
 export function splitMarkdown(markdown, { preserveTitleHeading = false } = {}) {
   let clean = stripFrontmatter(markdown)
   if (!preserveTitleHeading) clean = clean.replace(/^\s*#\s+.+$/m, '')
-  clean = clean.trim()
+  return splitManualSections(clean).map(splitBlocks).filter(section => section.length > 0)
+}
 
+export function splitManualSections(markdown) {
   const pages = []
   let currentManual = []
+  let fence = ''
 
-  for (const line of clean.split(/\r?\n/)) {
-    if (line.trim() === '---') {
+  for (const line of markdown.trim().split(/\r?\n/)) {
+    const marker = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
+    if (marker) {
+      if (!fence) fence = marker[1]
+      else if (marker[1].startsWith(fence) && !marker[2].trim()) fence = ''
+    }
+    if (!fence && line.trim() === '---') {
       pages.push(currentManual.join('\n').trim())
       currentManual = []
     } else {
@@ -327,7 +360,7 @@ export function splitMarkdown(markdown, { preserveTitleHeading = false } = {}) {
   }
   pages.push(currentManual.join('\n').trim())
 
-  return pages.map(section => splitBlocks(section)).filter(section => section.length > 0)
+  return pages
 }
 
 function splitBlocks(section) {
@@ -448,8 +481,13 @@ export async function waitForAssets(root = document) {
   await Promise.all(images.map(img => {
     if (img.complete) return undefined
     return new Promise(resolve => {
-      img.onload = resolve
-      img.onerror = resolve
+      const done = () => {
+        img.removeEventListener('load', done)
+        img.removeEventListener('error', done)
+        resolve()
+      }
+      img.addEventListener('load', done)
+      img.addEventListener('error', done)
     })
   }))
 }
@@ -516,6 +554,10 @@ export function formatTimestamp(config, date = new Date()) {
   const d = String(date.getDate()).padStart(2, '0')
   const h = String(date.getHours()).padStart(2, '0')
   const minute = String(date.getMinutes()).padStart(2, '0')
+  if (config.timeFormat === 'YYYY年MM月DD日 HH:mm:ss') {
+    const second = String(date.getSeconds()).padStart(2, '0')
+    return `${y}年${m}月${d}日 ${h}:${minute}:${second}`
+  }
   if (config.timeFormat === 'MMM DD YYYY') {
     const month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][date.getMonth()]
     return `${month} ${d} ${y}`

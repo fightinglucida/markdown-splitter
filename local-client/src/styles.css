@@ -409,6 +409,129 @@ button {
   border-radius: 14px;
 }
 
+.notes-measure {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@font-face {
+  font-family: "Notes MiSans";
+  src: url("./assets/MiSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Notes MiSans";
+  src: url("./assets/MiSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+}
+
+.notes-page {
+  --notes-font: "Notes MiSans", "PingFang SC", "Microsoft YaHei", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 32px 9% 34px;
+  background: #fff;
+  color: #000;
+  font-family: var(--notes-font);
+}
+
+.notes-toolbar, .notes-back {
+  display: flex;
+  align-items: center;
+}
+
+.notes-toolbar {
+  flex: none;
+  gap: 1.05em;
+  color: #e5a500;
+  font-size: 25px;
+  line-height: 1.35;
+}
+
+.notes-back {
+  gap: 0.32em;
+  margin-right: auto;
+}
+
+.notes-toolbar svg {
+  width: 1.2em;
+  height: 1.2em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notes-back svg { width: 0.6em; stroke-width: 2.8; }
+
+/* Align the icons' optical center with the MiSans label. */
+.notes-toolbar .notes-action-icon {
+  width: 1.18em;
+  height: 1.18em;
+  transform: translateY(-0.025em);
+}
+
+.notes-time {
+  margin: 16px 0 14px;
+  color: #9097a2;
+  text-align: center;
+  font: 16px/1.4 var(--notes-font);
+  font-variant-numeric: tabular-nums;
+}
+
+.notes-title {
+  margin: 0 0 10px;
+  font: 700 39px/1.25 var(--title-font-family, var(--notes-font));
+  overflow-wrap: anywhere;
+}
+
+.template-apple-notes.is-continuation .notes-title {
+  display: none;
+}
+
+.notes-body {
+  flex: 1 1 0;
+  container-type: size;
+  font-family: var(--content-font-family, var(--notes-font));
+  letter-spacing: -0.006em;
+  overflow-wrap: anywhere;
+}
+
+.notes-body p, .notes-body ul, .notes-body.markdown-body ol, .notes-body li { margin-block: 0; }
+.notes-body blockquote, .notes-body a { color: inherit; }
+.notes-body pre { white-space: pre-wrap; }
+.notes-body table { table-layout: fixed; }
+.notes-body img {
+  width: auto;
+  height: auto;
+  max-height: min(calc(var(--card-height) * var(--image-max-height-ratio)), 100cqh);
+  margin: 0 auto;
+}
+
+.notes-footer {
+  display: flex;
+  flex: none;
+  justify-content: space-between;
+  gap: 1em;
+  margin-top: 18px;
+  color: #a6a6a6;
+  font: 16px/1.4 var(--notes-font);
+}
+
+.notes-footer span:first-child { overflow-wrap: anywhere; }
+.notes-footer span:last-child { white-space: nowrap; }
+
+.notes-thumbnail .notes-toolbar { margin: 0; font-size: 9px; }
+.notes-thumbnail .preview-line.title { background: #333; }
+.notes-thumbnail .preview-body { padding: 0; }
+.notes-thumbnail .preview-body span { background: #b6b6b6; }
+
 .setting-grid {
   display: grid;
   gap: 14px;

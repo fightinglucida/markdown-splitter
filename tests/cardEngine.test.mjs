@@ -1,7 +1,17 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { formatTimestamp, formatWeekday, splitMarkdown } from '../local-client/src/cardEngine.js'
+import { formatTimestamp, formatWeekday, splitManualSections, splitMarkdown, templates } from '../local-client/src/cardEngine.js'
+
+test('includes local time down to seconds on Notes cards', () => {
+  const date = new Date(2026, 3, 7, 8, 4, 2)
+  assert.equal(formatTimestamp({ timeFormat: templates.appleNotes.time.format }, date), '2026年04月07日 08:04:02')
+})
+
+test('preserves separators inside fenced code while splitting explicit page breaks', () => {
+  const first = '第一段\n\n~~~~md\n---\n~~~~'
+  assert.deepEqual(splitManualSections(first + '\n---\n第二段'), [first, '第二段'])
+})
 
 test('formats the sticky-note date with an English month abbreviation', () => {
   const date = new Date(2026, 8, 2, 9, 30)

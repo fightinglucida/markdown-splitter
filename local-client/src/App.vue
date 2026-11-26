@@ -163,6 +163,7 @@
           <div
             :class="[
               'theme-preview',
+              key === 'appleNotes' ? 'notes-thumbnail' : '',
               key === 'layeredNote' ? 'layered-note-theme-preview' : '',
               key === 'stackedPaper' ? 'stacked-paper-theme-preview' : '',
               key === 'stickyNote' ? 'sticky-note-theme-preview' : '',
@@ -171,7 +172,12 @@
             ]"
             :style="{ background: item.background }"
           >
-            <template v-if="key === 'layeredNote'">
+            <template v-if="key === 'appleNotes'">
+              <NotesToolbar />
+              <div class="preview-line title"></div>
+              <div class="preview-body"><span></span><span></span><span></span></div>
+            </template>
+            <template v-else-if="key === 'layeredNote'">
               <div class="layered-note-preview-sheet back"></div>
               <div class="layered-note-preview-sheet middle"></div>
               <div class="layered-note-preview-sheet front">
@@ -256,6 +262,10 @@
       </header>
 
       <div class="canvas-scroll" @wheel.ctrl.prevent="handlePreviewWheel">
+        <article v-if="config.template === 'appleNotes'" ref="notesMeasureCard"
+          class="notes-measure export-card template-apple-notes" :style="cardStyle" aria-hidden="true">
+          <AppleNotesCard v-bind="notesProps" />
+        </article>
         <div class="cards-grid">
           <div
             v-for="(page, index) in pages"
@@ -269,7 +279,8 @@
                 :class="['export-card', template.className, index > 0 ? 'is-continuation' : '']"
                 :style="cardStyle"
               >
-                <template v-if="config.template === 'modern'">
+                <AppleNotesCard v-if="config.template === 'appleNotes'" v-bind="notesProps" :html="page" />
+                <template v-else-if="config.template === 'modern'">
                   <div class="modern-knowledge">
                     <div v-if="index === 0" class="modern-knowledge__image">
                       <img v-if="config.coverImage" :src="config.coverImage" class="theme-cover-img" />
@@ -467,13 +478,13 @@
           <label class="label">画布比例</label>
           <div class="ratio-grid">
             <button
-              v-for="(item, key) in ratios"
+              v-for="key in availableRatios"
               :key="key"
               :class="['ratio-btn', config.ratio === key ? 'active' : '']"
               @click="config.ratio = key"
             >
               <span class="ratio-shape" :style="ratioShapeStyle(key)"></span>
-              <em>{{ item.label }}</em>
+              <em>{{ ratios[key].label }}</em>
             </button>
           </div>
         </section>
@@ -522,7 +533,7 @@
             <button class="btn ghost font-refresh" @click="openFontDir">打开目录</button>
           </div>
           <div class="range-row"><div class="range-line"><span>内容字号</span><span>{{ config.contentFontSize }}px</span></div><input v-model.number="config.contentFontSize" type="range" min="12" max="34" class="range-input" /></div>
-          <div class="range-row"><div class="range-line"><span>行高</span><span>{{ config.lineHeight }}</span></div><input v-model.number="config.lineHeight" type="range" min="1.2" max="2.2" step="0.05" class="range-input" /></div>
+          <div class="range-row"><div class="range-line"><span>行高</span><span>{{ config.lineHeight }}</span></div><input v-model.number="config.lineHeight" type="range" min="1.2" max="2.2" :step="config.template === 'appleNotes' ? 0.01 : 0.05" class="range-input" /></div>
           <div class="range-row"><div class="range-line"><span>正文图片高度</span><span>{{ config.imageMaxHeight }}%</span></div><input v-model.number="config.imageMaxHeight" type="range" min="20" max="75" step="1" class="range-input" /></div>
           <label v-if="capabilities.textColor" class="label">字体颜色</label>
           <input v-if="capabilities.textColor" v-model="config.textColor" type="color" class="color-input" />
@@ -559,8 +570,12 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import * as htmlToImage from 'html-to-image'
+import AppleNotesCard from './AppleNotesCard.vue'
+import NotesToolbar from './NotesToolbar.vue'
+import { paginateNotes } from './notesPagination.js'
 import {
   extractTitle,
+  formatTimestamp,
   markdownToHtml,
   paginateMarkdown,
   ratios,
@@ -600,8 +615,8 @@ const api = window.localCardApi
 const APP_STATE_KEY = 'markdown-card-app-state'
 const APP_STATE_VERSION = 4
 const STARTUP_TEMPLATE = 'scholarly'
+const DEFAULT_PREVIEW_SCALE = 70
 const systemFontOptions = [
-  { label: '默认 (跟随模板)', value: '' },
   { label: '微软雅黑', value: '"Microsoft YaHei", "PingFang SC", sans-serif' },
   { label: '宋体', value: 'SimSun, "Songti SC", serif' },
   { label: '黑体', value: 'SimHei, "Microsoft YaHei", sans-serif' },
@@ -612,6 +627,7 @@ const systemFontOptions = [
 const loadedFontFamilies = new Set()
 const templateScopedKeys = [
   'ratio',
+  'previewScale',
   'watermark',
   'showWatermark',
   'coverImage',
@@ -635,6 +651,9 @@ const files = ref([
 const activeIndex = ref(0)
 const outputDir = ref('')
 const pages = ref([])
+const notesMeasureCard = ref(null)
+const notesWordCount = ref(0)
+const notesDate = ref(new Date())
 const overflowPages = ref([])
 const missingImages = ref([])
 const exporting = ref(false)
@@ -759,7 +778,7 @@ const config = reactive({
   timeFormat: 'YYYY-MM-DD',
   background: templates.scholarly.background,
   textColor: templates.scholarly.textColor,
-  previewScale: 54,
+  previewScale: DEFAULT_PREVIEW_SCALE,
   exportScale: 2,
   padding: templates.scholarly.padding,
   contentFontSize: templates.scholarly.contentFontSize,
@@ -772,11 +791,18 @@ const config = reactive({
 
 const activeFile = computed(() => files.value[activeIndex.value] || files.value[0])
 const template = computed(() => templates[config.template] || templates.modern)
+const availableRatios = computed(() => template.value.ratios || ['1:1', '3:4', '4:3', '9:16', '16:9'])
 const capabilities = computed(() => templateCapabilities[config.template] || templateCapabilities.modern)
 const authorCapabilities = computed(() => capabilities.value.author || { enabled: false })
 const authorEditorVisible = computed(() => authorCapabilities.value.toggle === false || config.showAuthor)
 const ratio = computed(() => ratios[config.ratio] || ratios['3:4'])
 const renderTitle = computed(() => config.title.trim() || extractTitle(draftMarkdown.value, activeFile.value?.name || '未命名文章'))
+const notesProps = computed(() => ({
+  timestamp: formatTimestamp({ timeFormat: templates.appleNotes.time.format }, notesDate.value),
+  title: renderTitle.value,
+  author: config.authorUsername,
+  wordCount: notesWordCount.value
+}))
 const titleInputLabel = computed(() => capabilities.value.title?.label || '标题')
 const titleInputPlaceholder = computed(() => capabilities.value.title?.render === false ? '输入导出文件名...' : '输入文章标题...')
 const canExport = computed(() => pages.value.length > 0 && outputDir.value)
@@ -801,28 +827,14 @@ const customBackgroundColor = computed({
   set: value => { config.background = value }
 })
 const fontOptions = computed(() => [
+  { label: config.template === 'appleNotes' ? '小米 MiSans Regular（模板默认）' : '默认 (跟随模板)', value: '' },
   ...systemFontOptions,
   ...customFonts.value.map(font => ({
     label: font.name,
     value: font.cssFamily
   }))
 ])
-const currentTime = computed(() => {
-  const current = now.value
-  const y = current.getFullYear()
-  const m = String(current.getMonth() + 1).padStart(2, '0')
-  const d = String(current.getDate()).padStart(2, '0')
-  const h = String(current.getHours()).padStart(2, '0')
-  const minute = String(current.getMinutes()).padStart(2, '0')
-  if (config.timeFormat === 'MMM DD YYYY') {
-    const month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][current.getMonth()]
-    return `${month} ${d} ${y}`
-  }
-  if (config.timeFormat === 'MM/DD') return `${m}月${d}日`
-  if (config.timeFormat === 'YYYY年MM月DD日') return `${y}年${m}月${d}日`
-  if (config.timeFormat === 'YYYY年MM月DD日 HH:mm') return `${y}年${m}月${d}日 ${h}:${minute}`
-  return `${y}-${m}-${d}`
-})
+const currentTime = computed(() => formatTimestamp(config, now.value))
 const currentWeekday = computed(() => (
   ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][now.value.getDay()]
 ))
@@ -928,10 +940,16 @@ async function repaginate() {
   const title = renderTitle.value
   const markdown = await prepareMarkdownForRender()
   if (markdown === null) return
-  pages.value = paginateMarkdown(markdown, {
-    ...config,
-    title
-  })
+  if (config.template === 'appleNotes') {
+    const runId = markdownResolveRunId
+    const result = await paginateNotes(markdown, notesMeasureCard.value)
+    if (runId !== markdownResolveRunId || config.template !== 'appleNotes') return
+    notesDate.value = new Date()
+    notesWordCount.value = result.wordCount
+    pages.value = result.pages
+  } else {
+    pages.value = paginateMarkdown(markdown, { ...config, title })
+  }
   await nextTick()
   scheduleOverflowCheck()
 }
@@ -1060,6 +1078,7 @@ function defaultTemplateSettings(key) {
   const nextCapabilities = templateCapabilities[key] || templateCapabilities.modern
   return {
     ratio: next.defaultRatio,
+    previewScale: DEFAULT_PREVIEW_SCALE,
     background: next.background,
     textColor: next.textColor,
     padding: next.padding,
@@ -1096,12 +1115,11 @@ function rememberCurrentTemplateSettings() {
 function applyTemplateSettings(key, reset = false) {
   const defaults = defaultTemplateSettings(key)
   const remembered = !reset ? templateSettings.value[key] : null
-  const nextCapabilities = templateCapabilities[key] || templateCapabilities.modern
   Object.assign(config, {
     ...defaults,
     ...(remembered || {})
   })
-  if (!nextCapabilities.time) config.showTime = false
+  enforceTemplateCapabilities(key)
 }
 
 function resetCurrentTemplate() {
@@ -1152,6 +1170,9 @@ function applyConfigSnapshot(value) {
 
 function enforceTemplateCapabilities(key = config.template) {
   const nextCapabilities = templateCapabilities[key] || templateCapabilities.modern
+  if (!availableRatios.value.includes(config.ratio)) config.ratio = template.value.defaultRatio
+  if (!nextCapabilities.background) config.background = template.value.background
+  if (!nextCapabilities.textColor) config.textColor = template.value.textColor
   if (!nextCapabilities.time) config.showTime = false
   if (!nextCapabilities.pageNumber) config.showPageNumber = false
   if (!nextCapabilities.watermark?.enabled) config.showWatermark = false
@@ -1310,11 +1331,23 @@ function fontFormatFromDataUrl(dataUrl) {
   return 'truetype'
 }
 
+// These faces are also used by the toolbar, date and footer when the user
+// overrides the two editable fonts. Embed them in the exported SVG/PNG.
+const notesFonts = [
+  { family: 'Notes MiSans', weight: 400, format: 'woff2', sourceUrl: new URL('./assets/MiSans-Regular.woff2', import.meta.url).href },
+  { family: 'Notes MiSans', weight: 700, format: 'woff2', sourceUrl: new URL('./assets/MiSans-Bold.woff2', import.meta.url).href }
+]
+
 function selectedCustomFonts() {
   const selectedFamilies = `${config.titleFontFamily}\n${config.contentFontFamily}`
-  return customFonts.value.filter(font => (
+  const fonts = customFonts.value.filter(font => (
     font?.family && (font?.dataUrl || font?.sourceUrl) && selectedFamilies.includes(font.family)
   ))
+  if (config.template === 'appleNotes') {
+    fonts.push(notesFonts[0])
+    if (!config.titleFontFamily || !config.contentFontFamily) fonts.push(notesFonts[1])
+  }
+  return fonts
 }
 
 async function hydrateSelectedFontData(fonts = selectedCustomFonts()) {
@@ -1331,7 +1364,7 @@ let exportFontCssCacheKey = ''
 let exportFontCssCacheValue = ''
 
 function buildCustomFontEmbedCss(fonts = selectedCustomFonts()) {
-  const cacheKey = fonts.map(font => `${font.family}:${font.dataUrl.length}`).join('|')
+  const cacheKey = fonts.map(font => `${font.family}:${font.weight || 400}:${font.dataUrl.length}`).join('|')
   if (cacheKey === exportFontCssCacheKey) return exportFontCssCacheValue
 
   exportFontCssCacheKey = cacheKey
@@ -1339,8 +1372,8 @@ function buildCustomFontEmbedCss(fonts = selectedCustomFonts()) {
     .map(font => {
       const family = cssString(font.family)
       const source = cssString(font.dataUrl)
-      const format = cssString(fontFormatFromDataUrl(font.dataUrl))
-      return `@font-face{font-family:${family};src:url(${source}) format(${format});font-weight:normal;font-style:normal;font-display:block;}`
+      const format = cssString(font.format || fontFormatFromDataUrl(font.dataUrl))
+      return `@font-face{font-family:${family};src:url(${source}) format(${format});font-weight:${font.weight || 400};font-style:normal;font-display:block;}`
     })
     .join('\n')
   return exportFontCssCacheValue
@@ -1349,13 +1382,8 @@ function buildCustomFontEmbedCss(fonts = selectedCustomFonts()) {
 async function ensureExportFontsReady(fonts = selectedCustomFonts()) {
   if (!document.fonts) return
 
-  const families = new Set()
-  for (const font of fonts) {
-    if (font?.family) families.add(font.family)
-  }
-
-  await Promise.all([...families].map(family => (
-    document.fonts.load(`16px ${cssString(family)}`).catch(() => undefined)
+  await Promise.all(fonts.map(font => (
+    document.fonts.load(`${font.weight || 400} 16px ${cssString(font.family)}`).catch(() => undefined)
   )))
 
   try {

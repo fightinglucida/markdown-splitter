@@ -4,6 +4,7 @@ const { join } = require('path')
 const { spawnSync } = require('child_process')
 
 const root = join(__dirname, '..')
+const { version } = require('../package.json')
 const releaseDir = process.env.M2C_RELEASE_DIR
   ? join(root, process.env.M2C_RELEASE_DIR)
   : join(root, 'release')
@@ -67,6 +68,10 @@ function patchExecutableIcon(exePath) {
 
   return run(rcedit, [
     exePath,
+    '--set-file-version',
+    version,
+    '--set-product-version',
+    version,
     '--set-icon',
     appIconPath,
     '--set-version-string',

@@ -1,6 +1,6 @@
 {
   "name": "markdown-card-local-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Local desktop client for batch rendering Markdown files into card images.",
   "author": "LinshuTech",
