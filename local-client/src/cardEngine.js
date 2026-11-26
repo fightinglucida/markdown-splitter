@@ -327,149 +327,146 @@ export function extractTitle(markdown, fallback = '未命名文章') {
 }
 
 export function stripFrontmatter(markdown) {
-  return markdown.replace(/^---[\s\S]*?---\s*/, '')
+  return markdown.replace(/^---[ \t]*\r?\n(?:[\s\S]*?\r?\n)?---[ \t]*(?:\r?\n|$)/, '')
 }
 
-export function markdownToHtml(markdown) {
-  return marked.parse(markdown || '')
+const blankLineToken = {
+  type: 'html',
+  text: '<div class="markdown-blank-line" aria-hidden="true"></div>\n'
 }
 
-export function splitMarkdown(markdown, { preserveTitleHeading = false } = {}) {
-  let clean = stripFrontmatter(markdown)
-  if (!preserveTitleHeading) clean = clean.replace(/^\s*#\s+.+$/m, '')
-  return splitManualSections(clean).map(splitBlocks).filter(section => section.length > 0)
+function appendBlankLines(tokens, count) {
+  for (let i = 0; i < count; i += 1) tokens.push(blankLineToken)
+}
+
+function trailingNewlines(raw) {
+  const whitespace = raw.match(/(?:\n[ \t]*)+$/)?.[0] || ''
+  return (whitespace.match(/\n/g) || []).length
+}
+
+// Marked can put the same paragraph separator in a space token or consume
+// it at the end of a heading, quote, or table.
+function preserveBlankLines(tokens, keepTrailing = true) {
+  const result = []
+  let newlines = 0
+  let hasBlock = false
+
+  for (const token of tokens) {
+    if (token.type === 'space') {
+      newlines += (token.raw.match(/\n/g) || []).length
+      continue
+    }
+
+    appendBlankLines(result, newlines - Number(hasBlock))
+    if (token.type === 'blockquote') {
+      token.tokens = preserveBlankLines(token.tokens)
+    } else if (token.type === 'list') {
+      token.items.forEach((item, index) => {
+        item.tokens = preserveBlankLines(item.tokens, false)
+        if (index < token.items.length - 1) {
+          appendBlankLines(item.tokens, trailingNewlines(item.raw) - 1)
+        }
+      })
+    }
+
+    result.push(token)
+    hasBlock = true
+    const literal = token.type === 'html' || (token.type === 'code' && !token.codeBlockStyle)
+    newlines = literal ? 0 : trailingNewlines(token.raw)
+  }
+
+  if (keepTrailing) appendBlankLines(result, newlines - Number(hasBlock))
+  return result
+}
+
+export function cardMarkdownSections(markdown, { preserveTitleHeading = false } = {}) {
+  let removedTitle = preserveTitleHeading
+  return splitManualSections(stripFrontmatter(markdown)).map(section => {
+    const tokens = preserveBlankLines(marked.lexer(section))
+    return tokens.filter(token => {
+      if (removedTitle || token.type !== 'heading' || !/^ {0,3}#\s/.test(token.raw)) return true
+      removedTitle = true
+      return false
+    })
+  })
+}
+
+export function renderCardTokens(tokens) {
+  // Marked mutates loose task-list tokens while rendering their checkboxes.
+  // The paginator renders the same tokens again when trying the next block.
+  return marked.parser(structuredClone(tokens))
+}
+
+export function splitMarkdown(markdown, options) {
+  return cardMarkdownSections(markdown, options).map(splitBlocks).filter(section => section.length > 0)
 }
 
 export function splitManualSections(markdown) {
   const pages = []
-  let currentManual = []
+  let currentManual = ''
   let fence = ''
 
-  for (const line of markdown.trim().split(/\r?\n/)) {
-    const marker = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
+  for (const line of markdown.replace(/\r\n?/g, '\n').split(/(?<=\n)/)) {
+    const marker = line.trimEnd().match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
     if (marker) {
       if (!fence) fence = marker[1]
       else if (marker[1].startsWith(fence) && !marker[2].trim()) fence = ''
     }
     if (!fence && line.trim() === '---') {
-      pages.push(currentManual.join('\n').trim())
-      currentManual = []
+      pages.push(currentManual)
+      currentManual = ''
     } else {
-      currentManual.push(line)
+      currentManual += line
     }
   }
-  pages.push(currentManual.join('\n').trim())
+  pages.push(currentManual)
 
   return pages
 }
 
-function splitBlocks(section) {
-  const lines = section.split(/\r?\n/)
-  const blocks = []
-  let buffer = []
-  let inFence = false
-  let paragraphId = 0
-  const topLevelListItem = /^\s{0,3}(?:\d+[.)]|[-*+])\s+/
-
-  const flush = () => {
-    const text = buffer.join('\n').trim()
-    if (text) {
-      const units = splitBlockIntoUnits(text, paragraphId)
-      blocks.push(...units)
-      paragraphId += 1
+function splitBlocks(tokens) {
+  return tokens.flatMap(token => {
+    if (token.type === 'list') {
+      return token.items.map((item, index) => ({ token, item, index }))
     }
-    buffer = []
-  }
-
-  for (const line of lines) {
-    if (/^\s*```/.test(line)) {
-      buffer.push(line)
-      inFence = !inFence
-      if (!inFence) flush()
-      continue
+    if (token.type === 'paragraph' && token.text.length > 40 && !token.text.includes('\n')) {
+      // Split only at punctuation in plain text, keeping inline Markdown intact.
+      const parts = [[]]
+      for (const inline of token.tokens) {
+        if (inline.type !== 'text') {
+          parts.at(-1).push(inline)
+          continue
+        }
+        for (const text of inline.text.split(/(?<=[。！？!?；;])/)) {
+          parts.at(-1).push({ ...inline, text })
+          if (/[。！？!?；;]$/.test(text)) parts.push([])
+        }
+      }
+      const sentences = parts.filter(part => part.length > 0)
+      if (sentences.length > 1) return sentences.map(inline => ({ token, inline }))
     }
-
-    if (!inFence && topLevelListItem.test(line)) {
-      flush()
-      buffer.push(line)
-      continue
-    }
-
-    if (!inFence && line.trim() === '') {
-      flush()
-      continue
-    }
-
-    buffer.push(line)
-  }
-
-  flush()
-  return blocks
-}
-
-function splitBlockIntoUnits(text, id) {
-  if (!isSplittableParagraph(text)) {
-    return [{ text, group: `block-${id}`, merge: false }]
-  }
-
-  const sentences = text
-    .replace(/\s*\n\s*/g, '')
-    .match(/[^。！？!?；;]+[。！？!?；;]?|.+$/g)
-    ?.map(item => item.trim())
-    .filter(Boolean) || [text]
-
-  if (sentences.length <= 1) {
-    return [{ text, group: `paragraph-${id}`, merge: false }]
-  }
-
-  return sentences.map(sentence => ({
-    text: sentence,
-    group: `paragraph-${id}`,
-    merge: true
-  }))
-}
-
-function isSplittableParagraph(text) {
-  const trimmed = text.trim()
-  if (!trimmed) return false
-  if (trimmed.includes('\n')) return false
-  if (/^\s{0,3}#{1,6}\s/.test(trimmed)) return false
-  if (/^\s*([-*+]|\d+\.)\s+/.test(trimmed)) return false
-  if (/^\s*>/.test(trimmed)) return false
-  if (/^\s*```/.test(trimmed)) return false
-  if (/^\s*\|/.test(trimmed)) return false
-  if (/^\s*</.test(trimmed)) return false
-  return /[。！？!?；;]/.test(trimmed) && trimmed.length > 40
+    return [{ token }]
+  })
 }
 
 function renderUnits(units) {
-  const blocks = []
-  let paragraph = null
-
-  const flushParagraph = () => {
-    if (paragraph) {
-      blocks.push(paragraph.text)
-      paragraph = null
-    }
-  }
-
-  for (const unit of units) {
-    if (unit.merge) {
-      if (!paragraph || paragraph.group !== unit.group) {
-        flushParagraph()
-        paragraph = { group: unit.group, text: unit.text }
-      } else {
-        paragraph.text += unit.text
+  const tokens = []
+  let previous
+  for (const { token, item, index, inline } of units) {
+    if (item) {
+      if (previous !== token) {
+        tokens.push({ ...token, start: token.ordered ? token.start + index : token.start, items: [] })
       }
-      continue
+      tokens.at(-1).items.push(item)
+    } else if (inline) {
+      if (previous !== token) tokens.push({ ...token, tokens: [] })
+      tokens.at(-1).tokens.push(...inline)
+    } else {
+      tokens.push(token)
     }
-
-    flushParagraph()
-    blocks.push(unit.text)
+    previous = token
   }
-
-  flushParagraph()
-  return blocks.join('\n\n')
+  return renderCardTokens(tokens)
 }
 
 export async function waitForAssets(root = document) {
@@ -539,7 +536,7 @@ export function createMeasurer(config) {
       weekdayEls.forEach(el => { el.textContent = formatWeekday() })
       if (watermarkEl) watermarkEl.textContent = config.watermark || ''
       if (pageEl) pageEl.textContent = config.showPageNumber ? measurementPageLabel(config, pageIndex, totalHint) : ''
-      contentEl.innerHTML = markdownToHtml(renderUnits(blocks) || '&nbsp;')
+      contentEl.innerHTML = renderUnits(blocks)
       return contentEl.scrollHeight <= contentEl.clientHeight
     },
     destroy() {

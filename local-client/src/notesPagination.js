@@ -1,17 +1,10 @@
-import { marked } from 'marked'
-import { splitManualSections, stripFrontmatter, waitForAssets } from './cardEngine.js'
+import { cardMarkdownSections, renderCardTokens, waitForAssets } from './cardEngine.js'
 
 // Keep lists, inline formatting and code fences intact until after Markdown parsing.
 function notesSections(markdown) {
-  let removedTitle = false
-  return splitManualSections(stripFrontmatter(markdown)).map(section => {
-    const tokens = marked.lexer(section).filter(token => {
-      if (removedTitle || token.type !== 'heading' || !/^\s*#\s/.test(token.raw)) return true
-      removedTitle = true
-      return false
-    })
+  return cardMarkdownSections(markdown).map(tokens => {
     const element = document.createElement('div')
-    element.innerHTML = marked.parser(tokens)
+    element.innerHTML = renderCardTokens(tokens)
     return Array.from(element.childNodes).filter(node =>
       node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.data.trim())
     )

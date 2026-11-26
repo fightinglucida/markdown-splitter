@@ -288,7 +288,7 @@
                     </div>
                     <div class="modern-knowledge__body">
                       <h1 v-if="index === 0" class="modern-knowledge__title">{{ renderTitle }}</h1>
-                      <main class="modern-knowledge__desc markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <main class="modern-knowledge__desc markdown-body card-content" v-html="page"></main>
                       <div class="modern-knowledge__footer" v-if="config.showWatermark && config.watermark">
                         <div class="modern-knowledge__divider"></div>
                         <p class="modern-knowledge__signature">-- {{ config.watermark }} --</p>
@@ -308,7 +308,7 @@
                     <p class="dailylearn-cover__subtitle">Deepseek | 提效 | 知识卡片</p>
                   </div>
                   <div v-else class="elegant-content-page">
-                    <main class="elegant-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                    <main class="elegant-content markdown-body card-content" v-html="page"></main>
                     <footer class="elegant-footer">
                       <span class="author-inline" v-if="config.showAuthor">
                         <span class="author-avatar small"><img :src="authorImage" /></span>
@@ -329,7 +329,7 @@
                       <div class="teaching-avatar"><img :src="authorImage" /></div>
                       <h1>{{ renderTitle }}</h1>
                     </header>
-                    <main class="teaching-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                    <main class="teaching-content markdown-body card-content" v-html="page"></main>
                     <footer class="teaching-footer">
                       <span v-if="config.showWatermark">{{ config.watermark }}</span>
                       <span v-if="config.showPageNumber">{{ index + 1 }} / {{ pages.length }}</span>
@@ -346,7 +346,7 @@
                         <span class="scholarly-username">{{ config.authorUsername }}</span>
                       </div>
                     </header>
-                    <main class="scholarly-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                    <main class="scholarly-content markdown-body card-content" v-html="page"></main>
                     <span class="scholarly-date" v-if="capabilities.time && config.showTime">{{ currentTime }}</span>
                     <span class="scholarly-page" v-if="config.showPageNumber">{{ pageLabel(index) }}</span>
                   </div>
@@ -367,7 +367,7 @@
                           </div>
                         </div>
                       </header>
-                      <main class="layered-note-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <main class="layered-note-content markdown-body card-content" v-html="page"></main>
                     </div>
                     <span v-if="config.showPageNumber" class="layered-note-page">{{ pageLabel(index) }}</span>
                   </div>
@@ -377,7 +377,7 @@
                   <div class="stacked-paper-stage">
                     <div class="stacked-paper-sheet">
                       <time v-if="config.showTime" class="stacked-paper-time">{{ currentTime }}</time>
-                      <main class="stacked-paper-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <main class="stacked-paper-content markdown-body card-content" v-html="page"></main>
                       <footer class="stacked-paper-footer">
                         <div class="stacked-paper-author">
                           <div class="stacked-paper-avatar"><img :src="authorImage" /></div>
@@ -397,7 +397,7 @@
                       <time class="sticky-note-date">{{ currentTime }}</time>
                     </header>
                     <div class="sticky-note-paper">
-                      <main class="sticky-note-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <main class="sticky-note-content markdown-body card-content" v-html="page"></main>
                     </div>
                   </div>
                 </template>
@@ -409,7 +409,7 @@
                         <span class="green-note-dots" aria-hidden="true"><i></i><i></i><i></i></span>
                         <span class="green-note-label">Text Note</span>
                       </header>
-                      <main class="green-note-content text-note-body markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <main class="green-note-content text-note-body markdown-body card-content" v-html="page"></main>
                       <footer class="green-note-footer"><span></span></footer>
                     </div>
                   </div>
@@ -418,7 +418,7 @@
                 <template v-else-if="config.template === 'blueNote'">
                   <div class="blue-note-stage">
                     <div class="blue-note-paper">
-                      <main class="blue-note-content text-note-body markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                      <main class="blue-note-content text-note-body markdown-body card-content" v-html="page"></main>
                       <footer class="blue-note-footer">
                         <span class="blue-note-rule"></span>
                         <span class="blue-note-weekday">{{ currentWeekday }}</span>
@@ -431,7 +431,7 @@
                 <template v-else>
                   <div class="generic-card">
                     <h1 v-if="index === 0" class="generic-title">{{ renderTitle }}</h1>
-                    <main class="generic-content markdown-body card-content" v-html="markdownToHtml(page)"></main>
+                    <main class="generic-content markdown-body card-content" v-html="page"></main>
                     <footer class="generic-footer">
                       <div class="generic-author" v-if="config.showAuthor">
                         <span class="author-avatar small"><img :src="authorImage" /></span>
@@ -576,7 +576,6 @@ import { paginateNotes } from './notesPagination.js'
 import {
   extractTitle,
   formatTimestamp,
-  markdownToHtml,
   paginateMarkdown,
   ratios,
   templateCapabilities,
